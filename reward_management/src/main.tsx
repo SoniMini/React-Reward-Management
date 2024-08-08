@@ -1,0 +1,126 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'; 
+import App from './App.tsx';
+
+import Login from './pages/auth/Login';
+import AdminDashboard from './pages/admin/admindashboards/AdminDashboard.tsx';
+import ProductMaster from './pages/admin/productdashboards/ProductMaster.tsx';
+import ProductQRHistory from './pages/admin/productdashboards/ProductQRHistory.tsx';
+import DownloadQRCode from './pages/admin/productdashboards/DownloadQR.tsx';
+import AddProduct from './pages/admin/productdashboards/Addproduct.tsx';
+import EditProduct from './pages/admin/productdashboards/EditProduct.tsx';
+import CarpenterRegistration from './pages/admin/carpenterdashboard/CarpenterRegistration.tsx';
+import CarpenterDetails from './pages/admin/carpenterdashboard/CarpenterDetails.tsx';
+import CarpenterRewardRequest from './pages/admin/rewardrequest/RewardRequest.tsx';
+import CarpenterRedeemptionHistory from './pages/admin/rewardrequest/RedeemptionHistory.tsx';
+import AdminAnnouncement from './pages/admin/announcement/AnnouncementDashboard.tsx';
+import TransactionHistory from './pages/admin/transactions/TransactionHistroy.tsx';
+import FAQDashboard from './pages/admin/faq/FAQDashboard.tsx';
+import AddUserDashboard from './pages/admin/admindashboards/AddUser.tsx';
+import SetRewardPoint from './pages/admin/setrewardpoint/SetRewardPoint.tsx';
+
+import CarpenterDashboard from './pages/carpenter/CarpenterDashboard.tsx'
+import CarpenterBankingHistory from './pages/carpenter/BankingHistory.tsx'
+import { FrappeProvider } from 'frappe-react-sdk';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <FrappeProvider
+        socketPort={import.meta.env.VITE_SOCKET_PORT}
+        siteName={import.meta.env.VITE_SITE_NAME}
+      >
+        <Login />
+      </FrappeProvider>
+    ),
+  },
+  {
+    path: "/",
+    element: <App />,
+     
+    children: [
+      {
+        path: "admin-dashboard",
+        element: <AdminDashboard />,
+      },
+      {
+        path: "product-master",
+        element: <ProductMaster/>,
+      },
+      {
+        path: "product-qr-history",
+        element: <ProductQRHistory/>,
+      },
+      {
+        path: "add-product",
+        element: <AddProduct/>,
+      },
+      {
+        path: "edit-product",
+        element: <EditProduct/>,
+      },
+      {
+        path: "download-qr-code",
+        element: <DownloadQRCode/>,
+      },
+      {
+        path: "carpenter-registration",
+        element: <CarpenterRegistration/>,
+      },
+      {
+        path: "carpenter-details",
+        element: <CarpenterDetails/>,
+      },
+      {
+        path: "redeemption-request",
+        element: <CarpenterRewardRequest/>,
+      },
+      {
+        path: "redeemption-history",
+        element: <CarpenterRedeemptionHistory/>,
+      },
+      {
+        path: "announcement",
+        element: <AdminAnnouncement/>,
+      },
+      {
+        path: "transaction-history",
+        element: <TransactionHistory/>,
+      },
+      {
+        path: "frequently-asked-question",
+        element: <FAQDashboard/>,
+      },
+      {
+        path: "add-user",
+        element: <AddUserDashboard/>,
+      },
+      {
+        path: "set-reward-points",
+        element: <SetRewardPoint/>,
+      },
+      {
+        path: "carpenter-dashboard",
+        element: <CarpenterDashboard/>,
+      },
+      {
+        path: "banking-history",
+        element: <CarpenterBankingHistory/>,
+      },
+      {
+        path: "*",
+        element: <Navigate to="/login" replace />, // Use Navigate here
+      },
+    ],
+  },
+], {
+  basename: import.meta.env.VITE_BASE_PATH
+});
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>
+);

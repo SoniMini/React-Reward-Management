@@ -5,3 +5,7 @@
 tags
 node_modules
 __pycache__
+
+reward_management_app/public/reward_management
+reward_management_app/public/node_modules
+reward_management_app/www/reward_management.html
