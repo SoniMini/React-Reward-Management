@@ -131,7 +131,7 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
                                     )}
                                 </Link>
                             </div>
-                        </div>
+                        </div> 
 
 
                         <div className="header-content-right flex items-center ">

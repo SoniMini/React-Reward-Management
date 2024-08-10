@@ -31,6 +31,7 @@ const FAQDashboard: React.FC = () => {
     const { data } = useFrappeGetDocList<FAQ>('FAQ', {
         fields: ['name', 'question', 'status', 'created_date','answer'],
         page: currentPage,
+        filters: [['status', '=', 'Active']],
         pageSize: itemsPerPage
     });
 
@@ -39,7 +40,8 @@ const FAQDashboard: React.FC = () => {
             setFaqData(data);
         }
     }, [data]);
-
+    
+    console.log("faqData",faqData);
     const totalPages = Math.ceil((faqData?.length || 0) / itemsPerPage);
 
     const handlePrevPage = () => {

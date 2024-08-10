@@ -44,6 +44,43 @@ def get_all_products():
 
     except Exception as e:
         frappe.throw(_("Error fetching products: {0}").format(str(e)))
+        
+        
+        
+# show product details and images 
+@frappe.whitelist(allow_guest=True)
+def get_all_products_data():
+    try:
+        # Fetch all products
+        products = frappe.get_all("Product",
+            fields=["name", "product_name", "reward_points", "discription", "product_image", "category"],
+            order_by="creation desc"
+        )
+
+        if products:
+            all_products = []
+
+            for product in products:
+                # Prepare product details including child table data
+                product_details = {
+                    "product_id": product.get("name"),
+                    "product_name": product.get("product_name"),
+                    "reward_points": product.get("reward_points"),
+                    "discription": product.get("discription"),
+                    "category": product.get("category"),
+                    "product_image": product.get("product_image")  # Initialize an empty list for images
+                }
+
+                all_products.append(product_details)
+
+            return all_products  # Return the list of products
+
+        else:
+            frappe.throw(_("No products found."))
+
+    except Exception as e:
+        frappe.throw(_("Error fetching products: {0}").format(str(e)))
+
 
 @frappe.whitelist(allow_guest=True)
 def update_product(product_id, product_name, reward_points):

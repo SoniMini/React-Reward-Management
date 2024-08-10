@@ -100,9 +100,34 @@ export const SidebarData = [
     icon: <FaUserPlus  className='sidebaricon'/>
   },
   {
+    title: 'Dashboard',
+    path: '/carpenter-dashboard',
+    icon: <FaUserPlus  className='sidebaricon'/>
+  },
+  {
+    title: 'QR Scanner',
+    path: '/qr-scanner',
+    icon: <FaUserPlus  className='sidebaricon'/>
+  },
+  {
     title: 'Banking History',
     path: '/banking-history',
     icon: <FaUserPlus  className='sidebaricon'/>
-  }
+  },
+  {
+    title: 'Point History',
+    path: '/point-history',
+    icon: <FaUserPlus  className='sidebaricon'/>
+  },
+  {
+    title: 'Redeem Request',
+    path: '/redeem-request',
+    icon: <FaUserPlus  className='sidebaricon'/>
+  },
+  {
+    title: 'Help & Support',
+    path: '/help-and-support',
+    icon: <FaUserPlus  className='sidebaricon'/>
+  },
   
 ];

@@ -26,16 +26,30 @@ const BankingHistory: React.FC = () => {
     const [transactionData, setTransactionData] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [userData, setUserData] = useState<any>(null);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/api/method/frappe.auth.get_logged_user`);
+                console.log("Logged user data:", response);
+                setUserData(response.data.message);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+
+        const fetchTransactionData = async () => {
             try {
                 const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.bank_history.get_bank_history_details`);
-                console.log("bank table data",response);
-                
+                console.log("Bank table data:", response);
+
+                // Access the nested array within the response
+                const bankData = response.data.message.data;
+
                 // Ensure response is in the expected format
-                if (Array.isArray(response.data)) {
-                    setTransactionData(response.data);
+                if (Array.isArray(bankData)) {
+                    setTransactionData(bankData);
                 } else {
                     setError("Unexpected response format");
                 }
@@ -47,7 +61,8 @@ const BankingHistory: React.FC = () => {
             }
         };
 
-        fetchData();
+        fetchUserData();
+        fetchTransactionData();
     }, []);
 
     const totalPages = Math.ceil((transactionData.length || 0) / itemsPerPage);
@@ -79,10 +94,7 @@ const BankingHistory: React.FC = () => {
     };
 
     const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
+        const [day, month, year] = dateString.split('-');
         return `${day}-${month}-${year}`;
     };
 
@@ -107,10 +119,12 @@ const BankingHistory: React.FC = () => {
                             onSearch={handleSearch} 
                             onAddButtonClick={handleAddProductClick} 
                             buttonText="Add Announcement" // Custom button text
-                            showButton={false} // Show the button
+                            showButton={false} // Hide the button
                         />
 
                         <div className="box-body m-5">
+                          
+
                             <TableComponent<Transaction>
                                 columns={[
                                     { header: 'Bank History ID', accessor: 'name' },
@@ -133,7 +147,7 @@ const BankingHistory: React.FC = () => {
                                 editHeader='Action'
                                  
                                 columnStyles={{
-                                    'Transaction ID': 'text-[var(--primaries)] font-semibold', // Example style for QR ID column
+                                    'Bank History ID': 'text-[var(--primaries)] font-semibold', // Example style for QR ID column
                                 }}
                             />
                         </div>

@@ -37,7 +37,22 @@
     width: 15rem;
 }
 
+/* When the sidebar is active (narrow), hide the menu text */
+.side-menu.narrow .menu-text {
+    display: none;
+  }
+  
+  /* When the sidebar is hovered, show the menu text */
+  .side-menu.narrow:hover .menu-text {
+    display: block;
+  }
 
+  .side-menu.narrow:hover .cUXLct{
+    display: block;
+  }
+  .side-menu.narrow:hover .menulistcollapsed {
+    display: block;
+  }
 
 
 /* Hide menu text when sidebar is narrow */

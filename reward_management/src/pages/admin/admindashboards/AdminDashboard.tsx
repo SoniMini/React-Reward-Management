@@ -21,8 +21,6 @@ const AdminDashboard: React.FC = () => {
         fields: ['name', 'full_name', 'mobile_number', 'city', 'total_points']
     });
 
-    console.log("data", carpentersData);
-
     useEffect(() => {
         // Fetch total product count
         const fetchProductCount = async () => {

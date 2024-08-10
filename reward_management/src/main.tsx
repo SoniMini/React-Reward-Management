@@ -22,6 +22,12 @@ import SetRewardPoint from './pages/admin/setrewardpoint/SetRewardPoint.tsx';
 
 import CarpenterDashboard from './pages/carpenter/CarpenterDashboard.tsx'
 import CarpenterBankingHistory from './pages/carpenter/BankingHistory.tsx'
+import PointHistory from './pages/carpenter/PointHistory.tsx'
+import QRCodeScanner from './pages/carpenter/QRScanner.tsx'
+import HelpAndSupport from './pages/carpenter/HelpAndSupport.tsx'
+import RedeemRequest from './pages/carpenter/RewardRequest.tsx'
+import CusromerProducts from './pages/customer/CustomerProduct.tsx'
+import CustomerProductDetails from './pages/customer/ViewProduct.tsx'
 import { FrappeProvider } from 'frappe-react-sdk';
 
 const router = createBrowserRouter([
@@ -33,6 +39,30 @@ const router = createBrowserRouter([
         siteName={import.meta.env.VITE_SITE_NAME}
       >
         <Login />
+      </FrappeProvider>
+    ),
+  },
+
+
+  {
+    path: "/customer-product",
+    element: (
+      <FrappeProvider
+        socketPort={import.meta.env.VITE_SOCKET_PORT}
+        siteName={import.meta.env.VITE_SITE_NAME}
+      >
+        <CusromerProducts />
+      </FrappeProvider>
+    ),
+  },
+  {
+    path: "/view-product-details",
+    element: (
+      <FrappeProvider
+        socketPort={import.meta.env.VITE_SOCKET_PORT}
+        siteName={import.meta.env.VITE_SITE_NAME}
+      >
+        <CustomerProductDetails />
       </FrappeProvider>
     ),
   },
@@ -110,8 +140,24 @@ const router = createBrowserRouter([
         element: <CarpenterBankingHistory/>,
       },
       {
+        path: "point-history",
+        element: <PointHistory/>,
+      },
+      {
+        path: "qr-scanner",
+        element: <QRCodeScanner/>,
+      },
+      {
+        path: "redeem-request",
+        element: <RedeemRequest/>,
+      },
+      {
+        path: "help-and-support",
+        element: <HelpAndSupport/>,
+      },
+      {
         path: "*",
-        element: <Navigate to="/login" replace />, // Use Navigate here
+        element: <Navigate to="/" replace />, // Use Navigate here
       },
     ],
   },

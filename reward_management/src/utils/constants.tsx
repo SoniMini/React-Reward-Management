@@ -13,3 +13,5 @@ export const API_SECRET = "5c6d4e7bbe7093b";
 // export const BASE_URL = "http://127.0.0.1:8000/";
 
 export const BASE_URL = "http://127.0.0.1:8028/";
+
+// export const BASE_URL = "http://192.168.1.25:8080/";

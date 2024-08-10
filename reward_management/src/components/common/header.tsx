@@ -82,6 +82,7 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
         root.style.setProperty('--data-class', theme.class);
 
         const sidemenu = document.querySelector(".side-menu");
+        // console.log("sidemenu------",sidemenu);
         const appHeader = document.querySelector(".app-header");
         if (sidemenu) {
             const sidebarWidth = isSidebarActive ? '5rem' : '15rem'; // Width changes based on icon

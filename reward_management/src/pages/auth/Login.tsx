@@ -1,7 +1,7 @@
 import React, { useState, Fragment, useEffect } from 'react';
 import desktoplogo from "@/assets/images/logo-2.png";
 import { Box, Button, Callout, Card, Flex, Text } from '@radix-ui/themes';
-import { useFrappeAuth } from 'frappe-react-sdk';
+// import { useFrappeAuth } from 'frappe-react-sdk';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BASE_URL, API_KEY, API_SECRET } from "../../utils/constants";
@@ -10,7 +10,23 @@ import '../../assets/css/style.css';
 
 
 
+
 const Login = () => {
+
+    // const {
+    //     currentUser,
+    //     isValidating,
+    //     isLoading,
+    //     login,
+    //     logout,
+    //     error,
+    //     updateCurrentUser,
+    //     getUserCookie,
+    //   } = useFrappeAuth();
+
+   
+   
+
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [loginError, setLoginError] = useState<string>('');
@@ -78,13 +94,15 @@ const Login = () => {
                 usr: username,
                 pwd: password
             });
-            console.log('Login successful:', response.data);
+            console.log('Login successful:', response.data.full_name);
 
             // Fetch roles
             const rolesResponse = await fetchUserRoles(username);
-
+            console.log("rolesResponse----",rolesResponse);
+            
             // Extract roles from the response
             const roles = rolesResponse.message || []; // Assuming `message` contains the array of roles
+            localStorage.setItem('user_roles', JSON.stringify(roles));
 
             console.log('User roles:', roles);
 
@@ -251,7 +269,7 @@ const Login = () => {
 
     const handlelogincarpenter = async (e: React.FocusEvent) => {
         e.preventDefault();
-        
+    
         // Assuming you have an OTP input field in your form
         const otp = mobileotp; // Replace `otpInput` with your actual OTP input state or value
     
@@ -271,8 +289,23 @@ const Login = () => {
     
             // Check if the OTP verification was successful
             if (response.data.message.status === "success") {
-                // Redirect to the admin dashboard
-                navigate('/carpenter-dashboard'); // Replace with the correct path to your admin dashboard
+                // Save login status in localStorage
+                localStorage.setItem('login', 'true');
+    
+                // Save user data in localStorage
+                const credentials = {
+                    mobile_number: mobilenumber,
+                    user_name: response.data.message.user_name, // Adjust based on your API response
+                    email: response.data.message.email, // If email is returned in the response
+                    // Add more user data as needed
+                };
+                localStorage.setItem('credentials', JSON.stringify(credentials));
+    
+                console.log('Login Status:', localStorage.getItem('login'));
+                console.log('User Credentials:', JSON.parse(localStorage.getItem('credentials')));
+    
+                // Redirect to the carpenter dashboard
+                navigate('/carpenter-dashboard'); // Replace with the correct path to your carpenter dashboard
             } else {
                 setLoginError('Invalid OTP. Please try again.');
             }
@@ -469,7 +502,7 @@ const Login = () => {
                                         </Box>
 
                                         <Box className="mt-4 text-center">
-                                            <Text className="text-default">Login as a <a href="#" className="text-primary">Customer?</a></Text>
+                                            <Text className="text-default">Login as a <a href="/customer-product" className="text-primary">Customer?</a></Text>
                                         </Box>
                                     </form>
                                 )}
@@ -518,7 +551,7 @@ const Login = () => {
                                             <Text>OR</Text>
                                         </Box>
                                         <Box className="mt-4 text-center">
-                                            <Text className="text-default">Login as a <a href="#" className="text-primary">Customer?</a></Text>
+                                            <Text className="text-default">Login as a <a href="" className="text-primary" onClick={() => setCurrentForm("carpenterLogin")}>Customer?</a></Text>
                                         </Box>
                                     </form>
                                 )}

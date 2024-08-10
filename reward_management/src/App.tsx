@@ -12,8 +12,11 @@ function App() {
   const [isSidebarActive, setIsSidebarActive] = useState(false);
 
   const toggleSidebar = () => {
+   
     setIsSidebarActive(!isSidebarActive);
+    
   };
+ 
 
   useEffect(() => {
     console.log(`Route changed to: ${location.pathname}`);

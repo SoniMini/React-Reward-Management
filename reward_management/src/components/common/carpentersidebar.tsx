@@ -48,7 +48,7 @@ const Sidebar = ({ isSidebarActive }) => {
                 />
             </div>
             <div className='main-sidebar'>
-                <div className="main-sidebar-scroll">
+                <div className="">
                     <ul>
                         {SidebarData.map((item, index) => {
                             // Render SubMenu for items with sub-navigation
