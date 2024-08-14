@@ -105,7 +105,7 @@ const RedeemptionHistory: React.FC = () => {
                 <div className="xl:col-span-12 col-span-12">
                     <div className="box">
                         <TableBoxComponent 
-                            title="Redeemption Requests" 
+                            title="Redeemption Request History" 
                             onSearch={handleSearch} 
                             onAddButtonClick={handleAddProductClick} 
                             buttonText="Back" // Custom button text

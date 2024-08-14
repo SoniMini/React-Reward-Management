@@ -56,7 +56,7 @@ export const SidebarData = [
   },
   {
     title: 'Carpenter Dashboard',
-    // path: '/admin-dashboard',
+    // path: '/carpenter-dashboard',
     icon: <GrUserWorker className='sidebaricon'  />,
 
     iconClosed:<SlArrowRight  style={iconStyle} /> ,

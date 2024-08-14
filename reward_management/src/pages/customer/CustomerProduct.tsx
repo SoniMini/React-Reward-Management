@@ -8,15 +8,12 @@ import Modalsearch from "@/components/common/modalsearch/modalsearch";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'boxicons/css/boxicons.min.css';
 import sidebarLogo from '../../assets/images/logo-2.png';
-import { Link  } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const CustomerProducts = () => {
   const [fullScreen, setFullScreen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
   const [productsData, setProductsData] = useState([]);
-  // const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,13 +33,6 @@ const CustomerProducts = () => {
     fetchData();
   }, []);
 
-
-//  Handle Product View Page---
-  // const handleViewProduct = () => {
-  //   navigate(`/view-product-details?product_id=${product.product_id}`);
-  // };
-  
-
   const handleOpenSearchModal = () => {
     setIsSearchModalOpen(true);
   };
@@ -60,27 +50,6 @@ const CustomerProducts = () => {
       }
     }
     setFullScreen(!fullScreen);
-  };
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = productsData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(productsData.length / itemsPerPage);
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
   };
 
   return (
@@ -118,10 +87,10 @@ const CustomerProducts = () => {
         <div className='mb-4'>
           <h3 className='text-defaulttextcolor text-lg text-center'>Products</h3>
         </div>
-        <div className="grid grid-cols-12 gap-x-6 ">
+        <div className="grid grid-cols-12 gap-x-6">
           <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-8 md:col-span-12 col-span-12">
             <div className="grid grid-cols-12 gap-x-6">
-              {currentItems.map((product, index) => (
+              {productsData.map((product, index) => (
                 <div
                   className="xxl:col-span-3 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12"
                   key={index}
@@ -143,7 +112,6 @@ const CustomerProducts = () => {
                           <i className="ri-shopping-cart-line bg-primary/20 p-2 text-primary rounded-[8px] "></i>
                         </Link>
                         <Link aria-label="View product" to={`/view-product-details?product_id=${product.product_id}`} className="view">
-
                           <i className="ri-eye-line bg-success/20 text-success p-2 rounded-[8px] "></i>
                         </Link>
                       </div>
@@ -164,48 +132,6 @@ const CustomerProducts = () => {
           </div>
         </div>
       </div>
-{/* 
-      <div className="box-footer p-4 border-t">
-        <div className="sm:flex items-center">
-          <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 font-normal text-defaultsize">
-            Showing {currentItems.length} Entries <i className="bi bi-arrow-right ms-2 font-semibold"></i>
-          </div>
-          <div className="ms-auto">
-            <nav aria-label="Page navigation" className="pagination-style-4">
-              <ul className="ti-pagination flex items-center px-3 mb-0">
-                <li className="page-item px-2">
-                  <button
-                    className="page-link"
-                    onClick={handlePrevPage}
-                    disabled={currentPage === 1}
-                  >
-                    Prev
-                  </button>
-                </li>
-                {Array.from({ length: totalPages }, (_, index) => (
-                  <li className="page-item px-2" key={index + 1}>
-                    <button
-                      className={`page-link ${currentPage === index + 1 ? 'active' : ''}`}
-                      onClick={() => handlePageChange(index + 1)}
-                    >
-                      {index + 1}
-                    </button>
-                  </li>
-                ))}
-                <li className="page-item px-2">
-                  <button
-                    className="page-link"
-                    onClick={handleNextPage}
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                  </button>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </div> */}
 
       <Modalsearch isOpen={isSearchModalOpen} onClose={handleCloseSearchModal} />
     </Fragment>
