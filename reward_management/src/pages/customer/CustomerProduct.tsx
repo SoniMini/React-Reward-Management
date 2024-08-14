@@ -8,7 +8,7 @@ import Modalsearch from "@/components/common/modalsearch/modalsearch";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'boxicons/css/boxicons.min.css';
 import sidebarLogo from '../../assets/images/logo-2.png';
-import { Link } from 'react-router-dom';
+import { Link  } from 'react-router-dom';
 
 const CustomerProducts = () => {
   const [fullScreen, setFullScreen] = useState(false);
@@ -16,6 +16,7 @@ const CustomerProducts = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [productsData, setProductsData] = useState([]);
+  // const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +35,12 @@ const CustomerProducts = () => {
   
     fetchData();
   }, []);
+
+
+//  Handle Product View Page---
+  // const handleViewProduct = () => {
+  //   navigate(`/view-product-details?product_id=${product.product_id}`);
+  // };
   
 
   const handleOpenSearchModal = () => {
@@ -135,7 +142,8 @@ const CustomerProducts = () => {
                         <Link aria-label="Add to cart" to="#" className="cart">
                           <i className="ri-shopping-cart-line bg-primary/20 p-2 text-primary rounded-[8px] "></i>
                         </Link>
-                        <Link aria-label="View product" to="#" className="view">
+                        <Link aria-label="View product" to={`/view-product-details?product_id=${product.product_id}`} className="view">
+
                           <i className="ri-eye-line bg-success/20 text-success p-2 rounded-[8px] "></i>
                         </Link>
                       </div>
@@ -156,7 +164,7 @@ const CustomerProducts = () => {
           </div>
         </div>
       </div>
-
+{/* 
       <div className="box-footer p-4 border-t">
         <div className="sm:flex items-center">
           <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 font-normal text-defaultsize">
@@ -197,7 +205,7 @@ const CustomerProducts = () => {
             </nav>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <Modalsearch isOpen={isSearchModalOpen} onClose={handleCloseSearchModal} />
     </Fragment>

@@ -25,7 +25,7 @@ const CarpenterRegistration: React.FC = () => {
     const [itemsPerPage] = useState(5); // Number of items per page
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedCarpenter, setSelectedCarpenter] = useState<CarpenterRegistrations | null>(null);
-
+    const [searchQuery, setSearchQuery] = useState('');
     const { data: carpenterregisterData } = useFrappeGetDocList<CarpenterRegistrations>('Carpenter Registration', {
         fields: ['name', 'carpainter_id', 'carpainter_name', 'mobile_number', 'city', 'registration_date', 'status', 'approved_date']
     });
@@ -49,9 +49,11 @@ const CarpenterRegistration: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
+        setSearchQuery(value); // Update search query
+        setCurrentPage(1);
         console.log("Search value:", value);
-        // Implement search logic here
     };
+
 
     const handleAddProductClick = () => {
         console.log("Add Product button clicked");
@@ -174,6 +176,22 @@ const CarpenterRegistration: React.FC = () => {
         approved_date: formatDate(carpenterregistration.approved_date),
     })) || [];
 
+     // Adjusted filtering logic to include all columns
+     const filteredData = formattedCarpenterRegistrationData.filter(transaction => {
+        const query = searchQuery.toLowerCase();
+        return (
+            (transaction.name && transaction.name.toLowerCase().includes(query)) ||
+            (transaction.carpainter_id && transaction.carpainter_id.toLowerCase().includes(query)) ||
+            (transaction.carpainter_name && transaction.carpainter_name.toLowerCase().includes(query)) ||
+            (transaction.mobile_number && transaction.mobile_number.toLowerCase().includes(query)) ||
+            (transaction.city && transaction.city.toLowerCase().includes(query)) ||
+            (transaction.registration_date && transaction.registration_date.toLowerCase().includes(query)) ||
+            (transaction.status && transaction.status.toLowerCase().includes(query)) ||
+            (transaction.approved_date && transaction.approved_date.toLowerCase().includes(query))
+        );
+    });
+
+
     const handleCancel = () => {
         console.log("Edit cancelled");
         handleCloseModal();
@@ -206,7 +224,7 @@ const CarpenterRegistration: React.FC = () => {
                                     { header: 'Status', accessor: 'status' },
                                     { header: 'Approved Date', accessor: 'approved_date' },
                                 ]}
-                                data={formattedCarpenterRegistrationData}
+                                data={filteredData || []}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}

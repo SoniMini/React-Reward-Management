@@ -28,7 +28,9 @@ import HelpAndSupport from './pages/carpenter/HelpAndSupport.tsx'
 import RedeemRequest from './pages/carpenter/RewardRequest.tsx'
 import CusromerProducts from './pages/customer/CustomerProduct.tsx'
 import CustomerProductDetails from './pages/customer/ViewProduct.tsx'
+import Adminprofile from './pages/admin/admindashboards/AdminProfile.tsx'
 import { FrappeProvider } from 'frappe-react-sdk';
+import AdminProfile from './pages/admin/admindashboards/AdminProfile.tsx';
 
 const router = createBrowserRouter([
   {
@@ -71,6 +73,10 @@ const router = createBrowserRouter([
     element: <App />,
      
     children: [
+      {
+        path: "admin-profile",
+        element: <AdminProfile/>,
+      },
       {
         path: "admin-dashboard",
         element: <AdminDashboard />,

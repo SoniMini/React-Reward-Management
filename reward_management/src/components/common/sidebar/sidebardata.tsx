@@ -10,6 +10,13 @@ import { GrUserWorker } from "react-icons/gr";
 import { MdRedeem } from "react-icons/md";
 import { MdCampaign } from "react-icons/md";
 import { FaUserPlus } from "react-icons/fa6";
+import { IconCashRegister } from '@tabler/icons-react';
+import { IconLayoutDashboard } from '@tabler/icons-react';
+import { IconScan } from '@tabler/icons-react';
+import { IconBuildingBank } from '@tabler/icons-react';
+import { IconCoins } from '@tabler/icons-react';
+import RedeemIcon from '@mui/icons-material/Redeem'; 
+import { IconHelpHexagon } from '@tabler/icons-react';
 import '../../../assets/css/sidebar.css';
 
 
@@ -26,7 +33,7 @@ export const SidebarData = [
   },
   {
     title: 'Product Dashboard',
-    path: '/admin-dashboard',
+    // path: '/admin-dashboard',
     icon: <AiFillProduct className='sidebaricon' />,
     iconClosed:<SlArrowRight style={iconStyle}  /> ,
     iconOpened: <SlArrowDown style={iconStyle}  />,
@@ -49,7 +56,7 @@ export const SidebarData = [
   },
   {
     title: 'Carpenter Dashboard',
-    path: '/admin-dashboard',
+    // path: '/admin-dashboard',
     icon: <GrUserWorker className='sidebaricon'  />,
 
     iconClosed:<SlArrowRight  style={iconStyle} /> ,
@@ -76,7 +83,7 @@ export const SidebarData = [
   {
     title: 'Transaction History',
     path: '/transaction-history',
-    icon: <IoIcons.IoMdHelpCircle className='sidebaricon' />
+    icon: <IconCashRegister className='sidebaricon' />
   },
   {
     title: 'Announcement',
@@ -86,12 +93,12 @@ export const SidebarData = [
   {
     title: 'Set Reward Points',
     path: '/set-reward-points',
-    icon: <MdCampaign className='sidebaricon'  />
+    icon: <IconCoins className='sidebaricon'  />
   },
   {
     title: "FAQ's",
     path: '/frequently-asked-question',
-    icon: <IoIcons.IoMdPeople className='sidebaricon'  />
+    icon: <IoIcons.IoMdHelpCircle className='sidebaricon'  />
   },
   
   {
@@ -102,32 +109,32 @@ export const SidebarData = [
   {
     title: 'Dashboard',
     path: '/carpenter-dashboard',
-    icon: <FaUserPlus  className='sidebaricon'/>
+    icon: <IconLayoutDashboard  className='sidebaricon'/>
   },
   {
     title: 'QR Scanner',
     path: '/qr-scanner',
-    icon: <FaUserPlus  className='sidebaricon'/>
+    icon: <IconScan  className='sidebaricon'/>
   },
   {
     title: 'Banking History',
     path: '/banking-history',
-    icon: <FaUserPlus  className='sidebaricon'/>
+    icon: <IconBuildingBank  className='sidebaricon'/>
   },
   {
     title: 'Point History',
     path: '/point-history',
-    icon: <FaUserPlus  className='sidebaricon'/>
+    icon: <IconCoins  className='sidebaricon'/>
   },
   {
     title: 'Redeem Request',
     path: '/redeem-request',
-    icon: <FaUserPlus  className='sidebaricon'/>
+    icon: <RedeemIcon  className='sidebaricon'/>
   },
   {
     title: 'Help & Support',
     path: '/help-and-support',
-    icon: <FaUserPlus  className='sidebaricon'/>
+    icon: <IconHelpHexagon  className='sidebaricon'/>
   },
   
 ];

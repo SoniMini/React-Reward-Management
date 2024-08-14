@@ -1,11 +1,37 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import sidebarLogo from '../../assets/images/logo-2.png';
-import ecommerceimg15 from "../../assets/images/reward_management/9.jpg";
 import Modalsearch from "@/components/common/modalsearch/modalsearch";
+
+import axios from 'axios';
+import { BASE_URL } from "../../utils/constants";
 
 const Productdetails = () => {
   const [fullScreen, setFullScreen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [productDetails, setProductDetails] = useState(null);
+
+  // Extract product_id from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const productId = urlParams.get('product_id');
+
+  useEffect(() => {
+    if (!productId) {
+      console.error('No product ID found in URL');
+      return;
+    }
+
+    const fetchProductDetails = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.product_master.get_product_details?product_id=${productId}`);
+        console.log("data product card",response);
+        setProductDetails(response.data.message.message);
+      } catch (error) {
+        console.error('Error fetching product details:', error);
+      }
+    };
+
+    fetchProductDetails();
+  }, [productId]);
 
   const handleOpenSearchModal = () => {
     setIsSearchModalOpen(true);
@@ -63,57 +89,51 @@ const Productdetails = () => {
             <div className="box-body">
               <div className="sm:grid grid-cols-12 gap-x-6">
                 <div className="xxl:col-span-5 xl:col-span-12 col-span-12">
-                
-                  
-                      <div className="bg-light h-full" >
-                        <img className="object-cover w-full" src={ecommerceimg15} alt="Product" />
-                      
-                
+                  <div className="bg-light h-full">
+                    {productDetails?.product_images ? (
+                      <img
+                        className="object-cover w-full"
+                        src={`${BASE_URL}${productDetails.product_images}`} // Concatenate with base URL if needed
+                        alt={productDetails.product_name}
+                      />
+                    ) : (
+                      <p>No image available</p>
+                    )}
                   </div>
                 </div>
                 <div className="xxl:col-span-7 xl:col-span-12 col-span-12">
-                  <div className="md:grid grid-cols-12 gap-x-3">
-                    <div className="xl:col-span-12 col-span-12 mt-4">
-                      <div className="mb-4">
-                        <p className="text-[.9375rem] font-semibold mb-1">Description :</p>
-                        <p className="text-[#8c9097] dark:text-white/50 mb-0">
-                          Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati accusamus, quaerat nam quo optio reiciendis harum reprehenderit omnis tempora adipisci in iste aperiam unde, repellendus possimus explicabo veritatis? Dignissimos, id.
-                        </p>
-                      </div>
-                      <div className="mb-4">
-                        {/* Add additional content or sections here if needed */}
-                      </div>
-                      <div className="mb-4">
-                        <p className="text-[.9375rem] font-semibold mb-2">Product Details :</p>
-                        <div className="table-responsive min-w-full">
-                          <table className="table table-bordered whitespace-nowrap w-full">
-                            <tbody>
-                              <tr className="border border-defaultborder dark:border-defaultborder/10">
-                                <th scope="row" className="font-semibold text-start">Brand</th>
-                                <td>Orange.Inc</td>
-                              </tr>
-                              <tr className="border border-defaultborder dark:border-defaultborder/10">
-                                <th scope="row" className="font-semibold text-start">Model Name</th>
-                                <td>Orange watch series 4</td>
-                              </tr>
-                              <tr className="border border-defaultborder dark:border-defaultborder/10">
-                                <th scope="row" className="font-semibold text-start">Color</th>
-                                <td>Raging Brass</td>
-                              </tr>
-                              <tr className="border border-defaultborder dark:border-defaultborder/10">
-                                <th scope="row" className="font-semibold text-start">Style</th>
-                                <td>GPS</td>
-                              </tr>
-                              <tr className="border border-defaultborder dark:border-defaultborder/10">
-                                <th scope="row" className="font-semibold text-start">Special Features</th>
-                                <td>Heart rate sensor, GPS, Wifi calling, AMOLED display, etc.</td>
-                              </tr>
-                            </tbody>
-                          </table>
+                  {productDetails ? (
+                    <div className="md:grid grid-cols-12 gap-x-3">
+                      <div className="xl:col-span-12 col-span-12 mt-4">
+                        <div className="mb-4">
+                          <p className="text-[.9375rem] font-semibold mb-1">Description :</p>
+                          <p className="text-[#8c9097] dark:text-white/50 mb-0">
+                            <div dangerouslySetInnerHTML={{ __html: productDetails.description }} />
+                          </p>
+                        </div>
+                        <div className="mb-4">
+                          <p className="text-[.9375rem] font-semibold mb-2">Product Details :</p>
+                          <div className="table-responsive min-w-full">
+                            <table className="table table-bordered whitespace-nowrap w-full">
+                              <tbody>
+                                <tr className="border border-defaultborder dark:border-defaultborder/10">
+                                  <th scope="row" className="font-semibold text-start">Product Name</th>
+                                  <td>{productDetails.product_name}</td>
+                                </tr>
+                                <tr className="border border-defaultborder dark:border-defaultborder/10">
+                                  <th scope="row" className="font-semibold text-start">Category</th>
+                                  <td>{productDetails.category}</td>
+                                </tr>
+                                
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <p>Loading product details...</p>
+                  )}
                 </div>
               </div>
             </div>

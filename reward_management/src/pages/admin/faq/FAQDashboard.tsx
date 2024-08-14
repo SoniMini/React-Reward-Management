@@ -27,6 +27,7 @@ const FAQDashboard: React.FC = () => {
     const [selectedFAQ, setSelectedFAQ] = useState<FAQ | null>(null);
     const [faqData, setFaqData] = useState<FAQ[]>([]);
     const [isReadOnly, setIsReadOnly] = useState(false);
+    const [searchQuery , setSearchQuery] = useState('');
 
     const { data } = useFrappeGetDocList<FAQ>('FAQ', {
         fields: ['name', 'question', 'status', 'created_date','answer'],
@@ -37,7 +38,7 @@ const FAQDashboard: React.FC = () => {
 
     React.useEffect(() => {
         if (data) {
-            setFaqData(data);
+            setFaqData(data);   
         }
     }, [data]);
     
@@ -57,9 +58,11 @@ const FAQDashboard: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
+        setSearchQuery(value); // Update search query
+        setCurrentPage(1);
         console.log("Search value:", value);
-        // Implement search logic here
     };
+
 
     const handleAddProductClick = () => {
         setModalTitle('Add New FAQ');
@@ -77,63 +80,81 @@ const FAQDashboard: React.FC = () => {
         event.preventDefault();
         console.log("Question:", question);
         console.log("Answer:", answer);
-
+    
         if (!answer || !question) {
             alert("Please enter a valid question and answer.");
             return;
         }
-
+    
         const data = {
             question,
             answer,
             status: "Active",
             created_date: new Date().toISOString().split('T')[0],
         };
-
+    
         try {
-            const response = await fetch('/api/resource/FAQ', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-
+            let response;
+            if (selectedFAQ) {
+                // Update existing FAQ
+                response = await fetch(`/api/resource/FAQ/${selectedFAQ.name}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+            } else {
+                // Add new FAQ
+                response = await fetch('/api/resource/FAQ', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+            }
+    
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-
-            alert('FAQ created successfully!');
-          
+    
+            alert(selectedFAQ ? 'FAQ updated successfully!' : 'FAQ created successfully!');
+            setQuestion('');
+            setAnswer('');
+            handleCloseModal();
+           
         } catch (error) {
             console.error('Error:', error);
-            alert('Failed to create FAQ.');
+            alert('Failed to save FAQ.');
         }
-
-        setQuestion('');
-        setAnswer('');
-        handleCloseModal();
     };
+    
 
     const handleDeleteFAQ = async (item: FAQ) => {
-        try {
-            const response = await fetch(`/api/resource/FAQ/${item.name}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
+        const confirmDelete = window.confirm('Are you sure you want to delete this announcement?');
+        if(confirmDelete){
+            try {
+                const response = await fetch(`/api/resource/FAQ/${item.name}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+        
+                if (!response.ok) {
+                    const responseData = await response.json();
+                    throw new Error(`Error: ${responseData.message || response.statusText}`);
                 }
-            });
-    
-            if (!response.ok) {
-                throw new Error(`Error: ${response.statusText}`);
+        
+                setFaqData(prevData => prevData.filter(faq => faq.name !== item.name));
+                alert('FAQ deleted successfully!');
+            } catch (error) {
+                console.error('Error deleting FAQ:', error);
+                alert('Failed to delete FAQ.');
             }
-    
-            setFaqData(prevData => prevData.filter(faq => faq.name !== item.name));
-            alert('FAQ deleted successfully!');
-        } catch (error) {
-            console.error('Error deleting FAQ:', error);
-            alert('Failed to delete FAQ.');
         }
+       
     };
 
 
@@ -175,6 +196,16 @@ const FAQDashboard: React.FC = () => {
         created_date: faq.created_date ? formatDate(faq.created_date) : '',
     })) || [];
 
+    const filteredData = formattedFAQData.filter(faqData => {
+        const query = searchQuery.toLowerCase();
+        return (
+            (faqData.name && faqData.name.toLowerCase().includes(query)) ||
+            (faqData.question && faqData.question.toLowerCase().includes(query)) ||
+            (faqData.status && faqData.status.toString().toLowerCase().includes(query)) ||
+            (faqData.created_date && faqData.created_date.toLowerCase().includes(query))
+        );
+    });
+
     return (
         <Fragment>
             <Pageheader currentpage="FAQ" activepage="Faq's" mainpage="Faq's" />
@@ -196,7 +227,7 @@ const FAQDashboard: React.FC = () => {
                                     { header: 'Status', accessor: 'status' },
                                     { header: 'Created Date', accessor: 'created_date' },
                                 ]}
-                                data={formattedFAQData}
+                                data={filteredData || []}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}

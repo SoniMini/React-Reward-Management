@@ -27,6 +27,7 @@ const BankingHistory: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [userData, setUserData] = useState<any>(null);
+    const [searchQuery , setSearchQuery] = useState('');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -84,8 +85,9 @@ const BankingHistory: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
+        setSearchQuery(value); // Update search query
+        setCurrentPage(1);
         console.log("Search value:", value);
-        // Implement search logic here
     };
 
     const handleAddProductClick = () => {
@@ -103,6 +105,19 @@ const BankingHistory: React.FC = () => {
         ...transaction,
         transfer_date: transaction.transfer_date ? formatDate(transaction.transfer_date) : '',
     })) : [];
+
+    const filteredData = formattedTransactionData.filter(transactionData => {
+        const query = searchQuery.toLowerCase();
+        return (
+            (transactionData.name && transactionData.name.toLowerCase().includes(query)) ||
+            (transactionData.redeem_request_id && transactionData.redeem_request_id.toLowerCase().includes(query)) ||
+            (transactionData.mobile_number && transactionData.mobile_number.toString().toLowerCase().includes(query)) ||
+            (transactionData.amount !== undefined && transactionData.amount.toString().toLowerCase().includes(searchQuery)) ||
+            (transactionData.transfer_date && transactionData.transfer_date.toLowerCase().includes(query)) ||
+            (transactionData.transfer_time && transactionData.transfer_time.toLowerCase().includes(query)) ||
+            (transactionData.transaction_id && transactionData.transaction_id.toLowerCase().includes(query))
+        );
+    });
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -135,7 +150,7 @@ const BankingHistory: React.FC = () => {
                                     { header: 'Transaction Date', accessor: 'transfer_date' },
                                     { header: 'Transaction Time', accessor: 'transfer_time' },
                                 ]}
-                                data={formattedTransactionData}
+                                data={filteredData || []}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}

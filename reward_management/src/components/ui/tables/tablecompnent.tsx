@@ -59,7 +59,7 @@ const TableComponent = <T,>({
     const totalPages = Math.ceil(data.length / itemsPerPage);
 
     return (
-        <div className="table-responsive pt-2">
+        <div className="table-responsive pt-2 overflow-y-auto ">
             <table className="table whitespace-nowrap min-w-full">
                 <thead>
                     <tr>
@@ -84,7 +84,7 @@ const TableComponent = <T,>({
                             {columns.map((column) => (
                                 <td
                                     key={column.accessor as string}
-                                    className={`p-3 text-defaultsize font-medium whitespace-nowrap border border-gray-300 border-b-0 ${columnStyles[column.header] || 'text-defaulttextcolor'}`}
+                                    className={`p-3  text-defaultsize font-medium whitespace-nowrap border border-gray-300 border-b-0 ${columnStyles[column.header] || 'text-defaulttextcolor'}`}
                                 >
                                     {typeof item[column.accessor] === 'string' 
                                         ? stripHtmlTags(item[column.accessor] as string) 

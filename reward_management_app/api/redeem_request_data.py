@@ -28,18 +28,3 @@ def get_redeem_request_details():
         return {"message": [], "error": str(e)}
 
     
-#total redemptions count 
-@frappe.whitelist(allow_guest=True)
-def count_redemptions():
-    # Fetch count of customers from database
-    total_redemptions = frappe.db.count("Redeem Request", filters={"request_status": "Approved"})
-
-    return total_redemptions
-
-#total redeem request count 
-@frappe.whitelist(allow_guest=True)
-def count_redeem_request():
-    # Fetch count of customers from database
-    total_redeem_request = frappe.db.count("Redeem Request", filters={"request_status": "Pending"})
-
-    return total_redeem_request

@@ -25,6 +25,7 @@ const AnnouncementDashboard: React.FC = () => {
     const [answer, setAnswer] = useState('');
     const [date, setDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
     const { data: announcementsData, mutate: mutateAnnouncements } = useFrappeGetDocList<Announcements>('Announcements', {
         fields: ['name', 'title', 'subject', 'published_on', 'end_date']
@@ -48,9 +49,11 @@ const AnnouncementDashboard: React.FC = () => {
         setCurrentPage(pageNumber);
     };
 
+    
     const handleSearch = (value: string) => {
+        setSearchQuery(value); // Update search query
+        setCurrentPage(1);
         console.log("Search value:", value);
-        // Implement search logic here
     };
 
     const handleAddProductClick = () => {
@@ -172,7 +175,7 @@ const AnnouncementDashboard: React.FC = () => {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+        return `${day}-${month}-${year}`;
     };
 
     const formattedAnnouncementsData = announcementsData?.map(announcement => ({
@@ -180,6 +183,19 @@ const AnnouncementDashboard: React.FC = () => {
         published_on: announcement.published_on ? formatDateToMySQL(announcement.published_on) : '',
         end_date: announcement.end_date ? formatDateToMySQL(announcement.end_date) : '',
     })) || [];
+
+
+    const filteredData = formattedAnnouncementsData.filter(announcementsData => {
+        const query = searchQuery.toLowerCase();
+        return (
+            (announcementsData.name && announcementsData.name.toLowerCase().includes(query)) ||
+            (announcementsData.title && announcementsData.title.toLowerCase().includes(query)) ||
+            (announcementsData.subject && announcementsData.subject.toString().toLowerCase().includes(query)) ||
+            (announcementsData.published_on && announcementsData.published_on.toLowerCase().includes(query)) ||
+            (announcementsData.end_date && announcementsData.end_date.toString().toLowerCase().includes(query))
+        );
+    });
+
 
     return (
         <Fragment>
@@ -208,7 +224,7 @@ const AnnouncementDashboard: React.FC = () => {
                                     { header: 'Published On', accessor: 'published_on' },
                                     { header: 'End Date', accessor: 'end_date' },
                                 ]}
-                                data={formattedAnnouncementsData}
+                                data={filteredData || []}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}

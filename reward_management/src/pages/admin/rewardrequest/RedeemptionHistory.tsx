@@ -25,16 +25,48 @@ interface RewardRequestHistory {
     approve_time?: string,
 }
 
+// Utility function to format dates
+const formatDate = (dateStr: string | undefined): string => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const day = ('0' + date.getDate()).slice(-2);
+    const month = ('0' + (date.getMonth() + 1)).slice(-2); // Months are 0-based
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+};
+
+
 const RedeemptionHistory: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5); // Number of items per page
     const navigate = useNavigate(); 
+    const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
     const { data: rewardrequesthistoryData } = useFrappeGetDocList<RewardRequestHistory>('Redeem Request', {
         fields: ['name', 'customer_id', 'total_points', 'current_point_status', 'redeemed_points', 'received_date', 'received_time', 'request_status', 'approved_on', 'approve_time', 'transection_id', 'amount']
     });
+    const formattedData = rewardrequesthistoryData?.map(request => ({
+        ...request,
+        received_date: formatDate(request.received_date),
+        approved_on: formatDate(request.approved_on),
+        // Format other dates as needed
+    }));
 
-    const totalPages = Math.ceil((rewardrequesthistoryData?.length || 0) / itemsPerPage);
+         // Filter data based on search query
+         const filteredData = formattedData?.filter(request => 
+            request.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            request.customer_id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (request.redeemed_points !== undefined && request.redeemed_points.toString().toLowerCase().includes(searchQuery)) ||
+          
+            (request.approved_on !== undefined && request.approved_on.toString().toLowerCase().includes(searchQuery)) ||
+            (request.approve_time !== undefined && request.approve_time.toString().toLowerCase().includes(searchQuery)) ||
+            (request.current_point_status !== undefined && request.current_point_status.toString().toLowerCase().includes(searchQuery)) ||
+           
+            request.request_status?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+
+    const totalPages = Math.ceil((formattedData?.length || 0) / itemsPerPage);
 
     const handlePrevPage = () => {
         if (currentPage > 1) {
@@ -53,6 +85,8 @@ const RedeemptionHistory: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
+        setSearchQuery(value); // Update search query
+        setCurrentPage(1);
         console.log("Search value:", value);
         // Implement search logic here
     };
@@ -93,7 +127,7 @@ const RedeemptionHistory: React.FC = () => {
                                    
                                  
                                 ]}
-                                data={rewardrequesthistoryData || []}
+                                data={filteredData || []}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}

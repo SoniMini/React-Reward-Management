@@ -16,7 +16,7 @@ def check_user_registration(mobile_number):
         user_info = frappe.get_value(
             "User",
             {"mobile_no": mobile_number},
-            ["name", "full_name", "email"],
+            ["name", "full_name", "email","role_profile_name"],
             as_dict=True
         )
 
@@ -27,13 +27,15 @@ def check_user_registration(mobile_number):
                 frappe.session.user = user_info.get("name")
                 frappe.session.full_name = user_info.get("full_name")
                 frappe.session.email = user_info.get("email")
+                frappe.session.role_profile_name = user_info.get("role_profile_name")
 
                 return {
                     "registered": True,
                     "message": "User logged in successfully.",
                     "full_name": user_info.get("full_name"),
                     "email": user_info.get("email"),
-                    "username": user_info.get("name")
+                    "username": user_info.get("name"),
+                    "role_profile_name" : user_info.get("role_profile_name")
                 }
             else:
                 # If only Mobile Verification exists and not User

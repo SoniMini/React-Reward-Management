@@ -25,6 +25,7 @@ const QRScanner = () => {
       try {
         const userResponse = await axios.get(`${BASE_URL}/api/method/frappe.auth.get_logged_user`);
         const userData = userResponse.data;
+
         if (userData.message) {
           console.log("Logged user data:", userData);
           setUserEmail(userData.message);

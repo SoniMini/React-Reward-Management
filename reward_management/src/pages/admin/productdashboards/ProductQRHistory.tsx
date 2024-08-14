@@ -27,6 +27,7 @@ const ProductQRHistory: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(12);
     const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
     useEffect(() => {
         const fetchData = async () => {
@@ -38,7 +39,7 @@ const ProductQRHistory: React.FC = () => {
                     const qrTableData = response.data.message[0].qr_table_data || [];
                     const formattedData = qrTableData.map(item => ({
                         ...item,
-                        scanned: item.scanned === '1' ? 'Redeemed Scanned' : 'Not Redeemed',
+                        scanned: item.scanned == '1' ? 'Redeemed' : 'Not Redeemed',
                     }));
                     setData(formattedData);
                 } else {
@@ -54,7 +55,6 @@ const ProductQRHistory: React.FC = () => {
         fetchData();
     }, []);
     
-
     const totalPages = Math.ceil((data.length || 0) / itemsPerPage);
 
     const handlePrevPage = () => {
@@ -74,8 +74,8 @@ const ProductQRHistory: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        console.log("Search value:", value);
-        // Implement search logic here
+        setSearchQuery(value); // Update search query
+        setCurrentPage(1);
     };
 
     const handleAddProductClick = () => {
@@ -85,6 +85,19 @@ const ProductQRHistory: React.FC = () => {
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
+
+    // Filter the data based on search query
+    const filteredData = data.filter(item => {
+        const query = searchQuery.toLowerCase();
+        return (
+            (item.product_qr_name && item.product_qr_name.toLowerCase().includes(query)) ||
+            (item.product_table_name && item.product_table_name.toLowerCase().includes(query)) ||
+            (item.carpenter_id && item.carpenter_id.toLowerCase().includes(query)) ||
+            (item.points !== undefined && item.points.toString().toLowerCase().includes(query)) || // Convert number to string for search
+            (item.scanned && item.scanned.toLowerCase().includes(query)) ||
+            (item.generated_date && item.generated_date.toLowerCase().includes(query)) 
+        );
+    });
 
     return (
         <Fragment>
@@ -133,7 +146,7 @@ const ProductQRHistory: React.FC = () => {
                                         }
                                     },
                                 ]}
-                                data={Array.isArray(data) ? data : []}
+                                data={filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}

@@ -21,6 +21,7 @@ interface Transaction {
 const TransactionHistory: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5); // Number of items per page
+    const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
     const { data: transactionData, error } = useFrappeGetDocList<Transaction>('Bank Balance', {
         fields: ['name', 'redeem_request_id', 'carpainter_id', 'mobile_number', 'transaction_id', 'transfer_date', 'amount', 'transfer_time']
@@ -49,13 +50,13 @@ const TransactionHistory: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
+        setSearchQuery(value); // Update search query
+        setCurrentPage(1);
         console.log("Search value:", value);
-        // Implement search logic here
     };
 
     const handleAddProductClick = () => {
         console.log("Add Product button clicked");
-        // Implement add product logic here
     };
 
     const formatDate = (dateString: string) => {
@@ -66,11 +67,25 @@ const TransactionHistory: React.FC = () => {
         return `${day}-${month}-${year}`;
     };
 
-    // Format transaction data dates
     const formattedTransactionData = transactionData?.map(transaction => ({
         ...transaction,
         transfer_date: transaction.transfer_date ? formatDate(transaction.transfer_date) : '',
     })) || [];
+
+    const filteredData = formattedTransactionData.filter(transaction => {
+        const query = searchQuery.toLowerCase();
+        return (
+            (transaction.name && transaction.name.toLowerCase().includes(query)) ||
+            (transaction.carpainter_id && transaction.carpainter_id.toLowerCase().includes(query)) ||
+            (transaction.redeem_request_id && transaction.redeem_request_id.toString().toLowerCase().includes(query)) ||
+            (transaction.carpainter_name && transaction.carpainter_name.toLowerCase().includes(query)) ||
+            (transaction.transaction_id && transaction.transaction_id.toString().toLowerCase().includes(query)) ||
+            (transaction.transfer_date && transaction.transfer_date.toLowerCase().includes(query)) ||
+            (transaction.amount !== undefined && transaction.amount.toString().toLowerCase().includes(query)) ||
+            (transaction.mobile_number && transaction.mobile_number.toLowerCase().includes(query)) ||
+            (transaction.transfer_time && transaction.transfer_time.toLowerCase().includes(query))
+        );
+    });
 
     return (
         <Fragment>
@@ -83,8 +98,8 @@ const TransactionHistory: React.FC = () => {
                             title="Carpenter Transaction History" 
                             onSearch={handleSearch} 
                             onAddButtonClick={handleAddProductClick} 
-                            buttonText="Add Announcement" // Custom button text
-                            showButton={false} // Show the button
+                            buttonText="Add Announcement" 
+                            showButton={false}
                         />
 
                         <div className="box-body m-5">
@@ -99,7 +114,7 @@ const TransactionHistory: React.FC = () => {
                                     { header: 'Transaction Date', accessor: 'transfer_date' },
                                     { header: 'Transaction Time', accessor: 'transfer_time' },
                                 ]}
-                                data={formattedTransactionData}
+                                data={filteredData || []}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}
@@ -109,9 +124,8 @@ const TransactionHistory: React.FC = () => {
                                 showEdit={false} 
                                 showDelete={false}
                                 editHeader='Action'
-                                 
                                 columnStyles={{
-                                    'Transaction ID': 'text-[var(--primaries)] font-semibold', // Example style for QR ID column
+                                    'Transaction ID': 'text-[var(--primaries)] font-semibold',
                                 }}
                             />
                         </div>
@@ -121,4 +135,5 @@ const TransactionHistory: React.FC = () => {
         </Fragment>
     );
 };
+
 export default TransactionHistory;

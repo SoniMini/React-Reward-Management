@@ -1,5 +1,3 @@
-// pages/ProductMaster.tsx
-
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 import Pageheader from '@/components/common/pageheader/pageheader';
@@ -21,12 +19,27 @@ interface Carpenter {
 const CarpenterDetails: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const { data: carpenterData } = useFrappeGetDocList<Carpenter>('Carpenter', {
-        fields: ['name', 'full_name', 'city', 'mobile_number','total_points','current_points','redeem_points']
+        fields: ['name', 'full_name', 'city', 'mobile_number', 'total_points', 'current_points', 'redeem_points']
     });
 
-    const totalPages = Math.ceil((carpenterData?.length || 0) / itemsPerPage);
+    // Function to filter data based on search query
+    const filteredData = carpenterData?.filter(carpenter => {
+        const query = searchQuery.toLowerCase();
+        return (
+            (carpenter.name && carpenter.name.toLowerCase().includes(query)) ||
+            (carpenter.full_name && carpenter.full_name.toLowerCase().includes(query)) ||
+            (carpenter.city && carpenter.city.toLowerCase().includes(query)) ||
+            (carpenter.mobile_number && carpenter.mobile_number.toLowerCase().includes(query)) ||
+            (carpenter.total_points && carpenter.total_points.toString().includes(query)) ||
+            (carpenter.current_points && carpenter.current_points.toString().includes(query)) ||
+            (carpenter.redeem_points && carpenter.redeem_points.toString().includes(query))
+        );
+    });
+
+    const totalPages = Math.ceil((filteredData?.length || 0) / itemsPerPage);
 
     const handlePrevPage = () => {
         if (currentPage > 1) {
@@ -45,8 +58,9 @@ const CarpenterDetails: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
+        setSearchQuery(value);
+        setCurrentPage(1);
         console.log("Search value:", value);
-        // Implement search logic here
     };
 
     const handleAddProductClick = () => {
@@ -79,10 +93,8 @@ const CarpenterDetails: React.FC = () => {
                                     { header: 'Total Points', accessor: 'total_points' },
                                     { header: 'Available Points', accessor: 'current_points' },
                                     { header: 'Redeemed Points ', accessor: 'redeem_points' },
-                                   
-                                 
                                 ]}
-                                data={carpenterData || []}
+                                data={filteredData || []}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}
@@ -90,7 +102,6 @@ const CarpenterDetails: React.FC = () => {
                                 handlePageChange={handlePageChange}
                                 showProductQR={false} 
                                 showEdit={false} 
-                                 
                                 columnStyles={{
                                     'Carpenter ID': 'text-[var(--primaries)] font-semibold',
                                 }}
@@ -102,4 +113,5 @@ const CarpenterDetails: React.FC = () => {
         </Fragment>
     );
 };
+
 export default CarpenterDetails;

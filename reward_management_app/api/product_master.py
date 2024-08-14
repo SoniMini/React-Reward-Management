@@ -265,3 +265,29 @@ def get_tableproduct_detail(product_id=None):
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "get_tableproduct_detail Error")
         frappe.throw(_("An error occurred while fetching product details."))
+        
+        
+        
+        
+# customer product details cards-----------
+# Edit Product Details API-------
+@frappe.whitelist(allow_guest=True)
+def get_product_detail(product_id):
+    if not product_id:
+        frappe.throw(_("Product ID is required"))
+
+    product = frappe.get_doc("Product", product_id)
+
+    if not product:
+        frappe.throw(_("Product not found"))
+
+    product_details = {
+        "product_id": product.name,
+        "product_name": product.product_name,
+        "category": product.category,
+        "description": product.discription,
+        "reward_points":product.reward_points,
+        "product_images": product.product_image
+    }
+
+    return {"message": product_details}

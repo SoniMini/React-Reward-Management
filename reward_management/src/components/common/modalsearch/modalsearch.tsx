@@ -1,13 +1,27 @@
-import { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useRef } from 'react';
 import { SidebarData } from '@/components/common/sidebar/sidebardata';
 import { Link } from 'react-router-dom';
 import '../../../assets/css/modalsearch.css';
 import '../../../assets/css/style.css';
-import { FiSearch,FiMic,FiMoreVertical,FiUser, FiX  } from "react-icons/fi";
+import { FiX } from "react-icons/fi";
 
 const Modalsearch = ({ isOpen, onClose }) => {
+  const modalRef = useRef(null);
+  const [isHover, setIsHover] = useState(false);
   const [_show, setShow] = useState(isOpen);
+  const [show1, setShow1] = useState(false);
+  const [InputValue, setInputValue] = useState("");
+  const [show2, setShow2] = useState(false);
+  const [searchcolor, setsearchcolor] = useState("text-dark");
+  const [searchval, setsearchval] = useState("Type something");
+  const [NavData, setNavData] = useState([]);
 
+  // Retrieve roles from localStorage
+  const storedRoles = localStorage.getItem('user_roles');
+  const roles = storedRoles ? JSON.parse(storedRoles) : [];
+  const carpenterrole = localStorage.getItem('carpenterrole');
+  console.log(carpenterrole);
+  
   useEffect(() => {
     setShow(isOpen);
   }, [isOpen]);
@@ -17,46 +31,60 @@ const Modalsearch = ({ isOpen, onClose }) => {
     if (onClose) onClose();
   };
 
-  const [show1, setShow1] = useState(false);
-  const [InputValue, setInputValue] = useState("");
-  const [show2, setShow2] = useState(false);
-  const [searchcolor, setsearchcolor] = useState("text-dark");
-  const [searchval, setsearchval] = useState("Type something");
-  const [NavData, setNavData] = useState([]);
-
   useEffect(() => {
-    const clickHandler = (_event) => {
-      const searchResult = document.querySelector(".search-result");
-      if (searchResult) {
-        searchResult.classList.add("hidden");
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        handleClose();
       }
     };
 
-    document.addEventListener("click", clickHandler);
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
 
     return () => {
-      document.removeEventListener("click", clickHandler);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [isOpen]);
 
-  const myfunction = (inputvalue) => {
+  // Filter SidebarData based on roles
+  const filterSidebarData = () => {
+    if (roles.includes("Administrator")) {
+      const addUserIndex = SidebarData.findIndex(item => item.title === 'Add User');
+      return addUserIndex !== -1 ? SidebarData.slice(0, addUserIndex + 1) : SidebarData;
+    } else if (roles.includes("Admin")) {
+      const faqIndex = SidebarData.findIndex(item => item.title === "FAQ's");
+      return faqIndex !== -1 ? SidebarData.slice(0, faqIndex + 1) : SidebarData;
+    } else if (carpenterrole === "Carpenter") {
+      const startIndex = SidebarData.findIndex(item => item.title === 'Dashboard');
+      const endIndex = SidebarData.findIndex(item => item.title === 'Help & Support');
+      return startIndex !== -1 && endIndex !== -1 ? SidebarData.slice(startIndex, endIndex + 1) : [];
+    } else {
+      return SidebarData;
+    }
+  };
+
+  const myfunction = (inputValue) => {
     document.querySelector(".search-result")?.classList.remove("d-none");
 
-    const i = [];
-    const allElement2 = [];
+    const filteredSidebarData = filterSidebarData();
+    const searchResults = [];
 
-    SidebarData.forEach((mainLevel) => {
-      if (mainLevel.subNav) {
-        setShow1(true);
-        mainLevel.subNav.forEach((subLevel) => {
-          i.push(subLevel);
-          if (subLevel.subNav) {
-            subLevel.subNav.forEach((subLevel1) => {
-              i.push(subLevel1);
-              if (subLevel1.subNav) {
-                subLevel1.subNav.forEach((subLevel2) => {
-                  i.push(subLevel2);
-                });
+    filteredSidebarData.forEach((item) => {
+      if (item.title.toLowerCase().includes(inputValue.toLowerCase())) {
+        searchResults.push(item);
+      }
+
+      if (item.subNav) {
+        item.subNav.forEach((subItem) => {
+          if (subItem.title.toLowerCase().includes(inputValue.toLowerCase())) {
+            searchResults.push(subItem);
+          }
+
+          if (subItem.subNav) {
+            subItem.subNav.forEach((deepSubItem) => {
+              if (deepSubItem.title.toLowerCase().includes(inputValue.toLowerCase())) {
+                searchResults.push(deepSubItem);
               }
             });
           }
@@ -64,70 +92,33 @@ const Modalsearch = ({ isOpen, onClose }) => {
       }
     });
 
-    for (const allElement of i) {
-      if (allElement.title.toLowerCase().includes(inputvalue.toLowerCase())) {
-        if (allElement.title.toLowerCase().startsWith(inputvalue.toLowerCase())) {
-          setShow2(true);
-
-          // Check if the element has a path and doesn't already exist in allElement2 before pushing
-          if (allElement.path && !allElement2.some((el) => el.title === allElement.title)) {
-            allElement2.push(allElement);
-          }
-        }
-      }
+    if (searchResults.length > 0 && inputValue !== "") {
+      setShow1(true);
+      setShow2(true);
+      setsearchcolor("text-dark");
+      setsearchval(`Search results for '${inputValue}'`);
+      setNavData(searchResults);
+    } else {
+      setShow1(false);
+      setShow2(false);
+      setsearchcolor('text-danger');
+      setsearchval("No results found");
     }
-
-    if (!allElement2.length || inputvalue === "") {
-      if (inputvalue === "") {
-        setShow2(false);
-        setsearchval("Type something");
-        setsearchcolor('text-dark');
-      }
-      if (!allElement2.length) {
-        setShow2(false);
-        setsearchcolor('text-danger');
-        setsearchval("There is no component with this name");
-      }
-    }
-
-    setNavData(allElement2);
-  };
-
-  const Removingdata = [
-    { id: 1, name: 'People' },
-    { id: 2, name: 'Pages' },
-    { id: 3, name: 'Articles' },
-    { id: 4, name: 'Tags' },
-  ];
-  const [items, setItems] = useState(Removingdata);
-
-  const handleRemove = (index) => {
-    const updatedItems = [...items];
-    updatedItems.splice(index, 1);
-    setItems(updatedItems);
   };
 
   return (
     <Fragment>
       {isOpen && (
-        <div id="search-modal" className="hs-overlay ti-modal mt-[1.75rem]" onClick={handleClose}>
-          <div className="ti-modal-box ">
+        <div id="search-modal" className="hs-overlay ti-modal mt-[1.75rem]">
+          <div className="ti-modal-box" ref={modalRef}>
             <div className="ti-modal-content !border !border-defaultborder dark:!border-defaultborder !rounded-[0.5rem]">
               <div className="ti-modal-body m-4">
                 <div className="input-group border-[2px] border-[var(--primaries)] rounded-[0.25rem] w-full flex">
-                  <a
-                    aria-label="anchor"
-                    href="#!"
-                    className="input-group-text flex items-center !bg-light border-[#dee2e6] !py-[0.375rem] !px-[0.75rem] !rounded-none !text-[0.875rem]"
-                    id="Search-Grid"
-                  >
-                   <FiSearch  className='text-[0.875rem]'/>
-                  </a>
                   <input
                     type="search"
                     className="form-control border-0 px-2 !text-[0.8rem] w-full focus:ring-transparent"
                     placeholder="Search"
-                    aria-label="Username"
+                    aria-label="Search"
                     defaultValue={InputValue}
                     autoComplete="off"
                     onChange={(ele) => {
@@ -135,67 +126,12 @@ const Modalsearch = ({ isOpen, onClose }) => {
                       setInputValue(ele.target.value);
                     }}
                   />
-                  <a
-                    aria-label="anchor"
-                    href="#!"
-                    className="flex items-center input-group-text !bg-light !py-[0.375rem] !px-[0.75rem]"
-                    id="voice-search"
-                  >
-                   <FiMic  className=' header-link-icon'/>
-                 
-                  </a>
-                  <div className="hs-dropdown ti-dropdown">
-                    <a
-                      aria-label="anchor"
-                      href="#!"
-                      className="flex items-center !border-0 hs-dropdown-toggle ti-dropdown-toggle btn  btn-icon !bg-light !py-[0.375rem] !rounded-none !px-[0.75rem] text-[0.95rem] h-[2.413rem] w-[2.313rem]"
-                    >
-                      <FiMoreVertical />
-                    </a>
-                    <ul className="absolute hs-dropdown-menu ti-dropdown-menu !-mt-2 !p-0 hidden">
-                      <li>
-                        <a
-                          className="ti-dropdown-item flex text-defaulttextcolor dark:text-defaulttextcolor/70 !py-[0.5rem] !px-[0.9375rem] !text-[0.8125rem] font-medium"
-                          href="#!"
-                        >
-                          Action
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="ti-dropdown-item flex text-defaulttextcolor dark:text-defaulttextcolor/70 !py-[0.5rem] !px-[0.9375rem] !text-[0.8125rem] font-medium"
-                          href="#!"
-                        >
-                          Another action
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="ti-dropdown-item flex text-defaulttextcolor dark:text-defaulttextcolor/70 !py-[0.5rem] !px-[0.9375rem] !text-[0.8125rem] font-medium"
-                          href="#!"
-                        >
-                          Something else here
-                        </a>
-                      </li>
-                      <li>
-                        <hr className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <a
-                          className="ti-dropdown-item flex text-defaulttextcolor dark:text-defaulttextcolor/70 !py-[0.5rem] !px-[0.9375rem] !text-[0.8125rem] font-medium"
-                          href="#!"
-                        >
-                          Separated link
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
                 </div>
-                {show1 ? (
+                {show1 && (
                   <div className="box search-result relative z-[9] search-fix border border-gray-200 dark:border-white/10 mt-1 w-100">
                     <div className="box-header">
                       <h6 className="box-title me-2 text-break text-truncate">
-                        Search result of {InputValue}
+                        {searchval}
                       </h6>
                     </div>
                     <div className="box-body p-2 flex flex-col max-h-[250px] overflow-auto">
@@ -203,7 +139,7 @@ const Modalsearch = ({ isOpen, onClose }) => {
                         NavData.map((e) => (
                           <div
                             key={Math.random()}
-                            className="ti-list-group gap-x-3.5 text-gray-800 dark:bg-bgdark dark:border-white/10 dark:text-white"
+                            className="ti-list-group border p-2 gap-x-3.5 text-gray-800 dark:bg-bgdark dark:border-white/10 dark:text-white"
                           >
                             <Link
                               to={`${e.path}/`}
@@ -218,63 +154,15 @@ const Modalsearch = ({ isOpen, onClose }) => {
                           </div>
                         ))
                       ) : (
-                        <b className={`${searchcolor} `}>{searchval}</b>
+                        <b className={`${searchcolor}`}>{searchval}</b>
                       )}
                     </div>
                   </div>
-                ) : (
-                  ""
                 )}
-                <div className="mt-5">
-            <p className="font-normal  text-[#8c9097] dark:text-white/50 text-[0.813rem] dark:text-gray-200 mb-2">Are You Looking For...</p>
-             <div className='flex items-center'>
-            {items.map((idx, index)=>(
-            <span className="search-tags text-[0.75rem] py-[5px] px-[0.55rem] me-1 flex !bg-light" key={index}>
-              <FiUser className='me-2'/>{idx.name}<a
-                href="#!" className="tag-addon header-remove-btn" onClick={() => handleRemove(index)}><span className="sr-only">Remove badge</span><FiX /></a></span>
-                ))}
-  
-          </div>
-          </div>
-          <div className="my-[1.5rem]">
-            <p className="font-normal  text-[#8c9097] dark:text-white/50 text-[0.813rem] mb-2">Recent Search :</p>
-  
-            <div id="dismiss-alert" role="alert"
-              className="!p-2 border dark:border-defaultborder/10 rounded-[0.3125rem] flex items-center text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-2 !text-[0.8125rem] alert">
-              <Link to={`pages/notifications`}><span>Notifications</span></Link>
-              <Link aria-label="anchor" className="ms-auto leading-none" to="#" data-hs-remove-element="#dismiss-alert"><FiX /></Link>
-            </div>
-  
-            <div id="dismiss-alert1" role="alert"
-              className="!p-2 border dark:border-defaultborder/10 rounded-[0.3125rem] flex items-center text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-2 !text-[0.8125rem] alert">
-              <Link to={`uielements/alerts`}><span>Alerts</span></Link>
-              <Link aria-label="anchor" className="ms-auto leading-none" to="#" data-hs-remove-element="#dismiss-alert1"><FiX /></Link>
-            </div>
-  
-            <div id="dismiss-alert2" role="alert"
-              className="!p-2 border dark:border-defaultborder/10 rounded-[0.3125rem] flex items-center text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 !text-[0.8125rem] alert">
-              <Link to={`pages/email/mailapp`}><span>Mail</span></Link>
-              <Link aria-label="anchor" className="ms-auto lh-1" to="#" data-hs-remove-element="#dismiss-alert2"><FiX /></Link>
-            </div>
-          </div>
-        </div>
-        <div className="ti-modal-footer !py-[1rem] !px-[1.25rem] flex justify-end ">
-          <div className="inline-flex rounded-md font-medium shadow-sm">
-            <button type="button"
-              className="ti-btn-group !px-[0.75rem] !py-[0.45rem]  rounded-s-[0.25rem] ti-btn-primary  !rounded-e-none !text-[0.75rem] dark:border-white/10">
-              Search
-            </button>
-            <button type="button"
-              className="ti-btn-group  ti-btn-primary-full rounded-e-[0.25rem] dark:border-white/10 !text-[0.75rem] !rounded-s-none !px-[0.75rem] !py-[0.45rem]">
-              Clear Recents
-            </button>
-          </div>
-        </div>
               </div>
-              
             </div>
           </div>
-      
+        </div>
       )}
     </Fragment>
   );

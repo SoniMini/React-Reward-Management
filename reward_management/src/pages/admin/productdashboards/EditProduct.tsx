@@ -1,55 +1,61 @@
 import React, { Fragment, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Pageheader from '@/components/common/pageheader/pageheader';
 import SunEditor from 'suneditor-react';
-import 'suneditor/dist/css/suneditor.min.css'; // Import SunEditor styles
+import 'suneditor/dist/css/suneditor.min.css';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 import axios from 'axios';
 import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
-import { useNavigate } from 'react-router-dom';
+import SuccessAlert from '@/components/ui/alerts/SuccessAlert';
 
 interface EditProduct {
     product_name?: string;
     productId?: string;
     points?: number;
-    product_image?: string; // Add image_urls to your interface
+    product_image?: string;
 }
 
 const EditProduct: React.FC = () => {
     const [files, setFiles] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
-    const [existingImages, setExistingImages] = useState<string[]>([]); // New state for existing images
+    const [existingImages, setExistingImages] = useState<string[]>([]);
     const [productName, setProductName] = useState('');
     const [rewardPoints, setRewardPoints] = useState('');
     const [productDescription, setProductDescription] = useState('');
     const [productCategory, setProductCategory] = useState('');
     const navigate = useNavigate();
     const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('product'); // Retrieve productId from URL query parameters
+    const productId = urlParams.get('product');
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+
+    useEffect(() => {
+        if (showSuccessAlert) {
+            const timer = setTimeout(() => {
+                setShowSuccessAlert(false);
+                navigate('/product-master'); // Navigate after success alert is hidden
+            }, 3000); // Hide alert after 3 seconds
+            return () => clearTimeout(timer);
+        }
+    }, [showSuccessAlert, navigate]);
 
     useEffect(() => {
         const fetchProductData = async () => {
             if (!productId) return;
-    
+
             try {
                 const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.product_master.get_tableproduct_detail`, {
-                    params: {
-                        product_id: productId
-                    }
+                    params: { product_id: productId }
                 });
-    
-                console.log("API Response:", response.data);
-    
+
                 if (response.data && response.data.message.message) {
                     const product = response.data.message.message;
-                    console.log("Product Details:", product);
-    
+
                     setProductName(product.product_name || '');
                     setRewardPoints(product.reward_points || '');
                     setProductDescription(product.discription || '');
                     setProductCategory(product.category || '');
-    
-                    // Ensure product_image is an array
+
                     const images = Array.isArray(product.product_image) ? product.product_image : [product.product_image].filter(Boolean);
                     setExistingImages(images);
                 } else {
@@ -61,19 +67,16 @@ const EditProduct: React.FC = () => {
                 alert(`Error fetching product data: ${errorMessage}`);
             }
         };
-    
+
         fetchProductData();
     }, [productId]);
-    
-        
-    // Handle file input change
+
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = event.target.files;
         if (selectedFiles) {
             const fileArray = Array.from(selectedFiles);
             setFiles(fileArray);
 
-            // Create image previews
             const previewArray = fileArray.map(file => URL.createObjectURL(file));
             setPreviews(previewArray);
         }
@@ -107,7 +110,6 @@ const EditProduct: React.FC = () => {
         }
     };
 
-    // Reset all form fields
     const resetForm = () => {
         setFiles([]);
         setPreviews([]);
@@ -117,7 +119,6 @@ const EditProduct: React.FC = () => {
         setProductCategory('');
     };
 
-    // Handle form submission
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         const fileUrls = [];
@@ -129,24 +130,26 @@ const EditProduct: React.FC = () => {
             }
         }
 
-        // Update product details
+        const updatedProductImage = fileUrls.length > 0 ? fileUrls[0] : existingImages[0];
+
+        const data = {
+            product_name: productName,
+            category: productCategory,
+            reward_points: rewardPoints,
+            discription: productDescription,
+            product_image: updatedProductImage
+        };
+
         try {
-            await axios.put(`${BASE_URL}/api/method/update_product/${productId}`, {
-                product_name: productName,
-                reward_points: rewardPoints,
-                description: productDescription,
-                category: productCategory,
-                file_urls: [...existingImages, ...fileUrls] // Include existing images and new uploads
-            }, {
+            await axios.put(`${BASE_URL}/api/resource/Product/${productId}`, data, {
                 headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${API_KEY}`,
-                    'X-API-SECRET': API_SECRET,
+                    'Content-Type': 'application/json',
                 }
             });
-            navigate('/product-master'); // Redirect after successful update
+            setShowSuccessAlert(true);
         } catch (error) {
             console.error('Error updating product:', error);
+            alert('An error occurred while updating the product. Please try again.');
         }
     };
 
@@ -215,58 +218,57 @@ const EditProduct: React.FC = () => {
                                                 <input 
                                                     id="product-category-add" 
                                                     name="product-category-add" 
-                                                    className="w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2" 
-                                                    placeholder="Category"
+                                                    className="w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] form-control" 
+                                                    placeholder="Category" 
                                                     value={productCategory}
                                                     onChange={(e) => setProductCategory(e.target.value)}
                                                     required
                                                 />
                                             </div>
-                                            <div className="xxl:col-span-12 xl:col-span-12 col-span-12 mt-4">
-                                                <label htmlFor="product-documents" className="form-label text-sm font-semibold text-defaulttextcolor ">Product Image</label>
-                                                <div id="product-documents-container" className="mt-1">
-                                                {existingImages.length > 0 && existingImages.map((imageUrl, index)  => (
-                                                        <img
-                                                            key={`existing-image-${index}`}
-                                                            src={imageUrl}
-                                                            alt={`Existing Image ${index}`}
-                                                            className="w-full h-auto mb-2"
-                                                        />
-                                                    ))}
-                                                    {previews.length > 0 && previews.map((preview, index) => (
-                                                        <img
-                                                            key={`preview-${index}`}
-                                                            src={preview}
-                                                            alt={`Preview ${index}`}
-                                                            className="w-full h-auto mb-2"
-                                                        />
-                                                    ))}
-                                                </div>
-                                                <input
-                                                    type="file"
-                                                    multiple
-                                                    className="form-control w-full p-2 border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] "
+                                            <div className="xl:col-span-12 col-span-12">
+                                                <label htmlFor="product-images-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Image</label>
+                                                <input 
+                                                    type="file" 
+                                                    multiple 
+                                                    className="form-control w-full border border-defaultborder rounded-[0.5rem] mt-2" 
+                                                    id="product-images-add"
                                                     onChange={handleFileChange}
                                                 />
+                                                <div className="flex gap-4 mt-2">
+                                                    {previews.map((preview, index) => (
+                                                        <img key={index} src={preview} alt={`preview-${index}`} className="w-32 h-32 object-cover" />
+                                                    ))}
+                                                </div>
+                                                {existingImages.length > 0 && (
+                                                    <div className="flex gap-4 mt-2">
+                                                        {existingImages.map((image, index) => (
+                                                            <img key={index} src={image} alt={`existing-${index}`} className="w-32 h-32 object-cover" />
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="px-6 py-4 border-t border-dashed dark:border-defaultborder/10 sm:flex justify-end">
-                                    <button 
+                                    <div className="flex justify-end gap-3 mt-6">
+                                        {/* <button 
+                                            type="reset" 
+                                            className="btn btn-primary w-[6rem] text-white bg-defaultgreen rounded-[0.5rem]"
+                                            onClick={resetForm}
+                                        >
+                                            Reset
+                                        </button> */}
+                                       <button 
                                         type="submit" 
-                                        className="ti-btn ti-btn-primary !font-medium m-1">
+                                        className="ti-btn ti-btn-primary !font-medium m-1"
+                                        >
                                         Edit Product
                                     </button>
-                                    <button 
-                                        type="button" 
-                                        className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"
-                                        onClick={resetForm} // Add the onClick event to reset the form
-                                    >
-                                        Cancel
-                                    </button>
+                                    </div>
                                 </div>
                             </form>
+                            {showSuccessAlert && (
+                                <SuccessAlert message="Product updated successfully!" />
+                            )}
                         </div>
                     </div>
                 </div>

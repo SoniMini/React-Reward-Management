@@ -206,7 +206,7 @@ html {
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 150ms;
-    margin-inline-start: 15rem;
+    /* margin-inline-start: 15rem; */
     height: -webkit-fill-available;
     background-color: var(--body-bg);
     height: 100vh;

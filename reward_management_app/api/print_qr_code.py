@@ -144,29 +144,29 @@ def print_qr_code_images(product_name):
     
 
 
-# count total qr code points-------
-@frappe.whitelist(allow_guest=True)
-def total_points_of_qr_code():
-    # Fetch fields from the Product QR document
-    qr_docs = frappe.get_all("Product QR", fields=["name", "product_name", "quantity"])
+# # count total qr code points-------
+# @frappe.whitelist(allow_guest=True)
+# def total_points_of_qr_code():
+#     # Fetch fields from the Product QR document
+#     qr_docs = frappe.get_all("Product QR", fields=["name", "product_name", "quantity"])
 
-    total_points = 0  # Initialize total points counter
+#     total_points = 0  # Initialize total points counter
 
-    # Fetch child table data linked with qr_table field for each Product QR document
-    for qr_doc in qr_docs:
-        qr_doc['qr_table_data'] = frappe.get_all("Product QR Table",
-                                                 filters={"parent": qr_doc['name']},
-                                                 fields=["product_table_name", "qr_code_image", "product_qr_id", "points", "generated_date"])
+#     # Fetch child table data linked with qr_table field for each Product QR document
+#     for qr_doc in qr_docs:
+#         qr_doc['qr_table_data'] = frappe.get_all("Product QR Table",
+#                                                  filters={"parent": qr_doc['name']},
+#                                                  fields=["product_table_name", "qr_code_image", "product_qr_id", "points", "generated_date"])
         
-        # Calculate the total points for this Product QR document
-        for row in qr_doc['qr_table_data']:
-            total_points += row.get('points', 0)
+#         # Calculate the total points for this Product QR document
+#         for row in qr_doc['qr_table_data']:
+#             total_points += row.get('points', 0)
 
-    # Return the QR docs and total points
-    return {
-        "qr_docs": qr_docs,
-        "total_points": total_points
-    }
+#     # Return the QR docs and total points
+#     return {
+#         "qr_docs": qr_docs,
+#         "total_points": total_points
+#     }
 
 
 

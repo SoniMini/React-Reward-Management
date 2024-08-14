@@ -47,7 +47,7 @@ const Login = () => {
         mobileotp: "",
     });
 
-    const { email, password: registerPassword, firstName, lastName, city, mobile, otp, mobilenumber, mobileotp } = data;
+    let { email, password: registerPassword, firstName, lastName, city, mobile, otp, mobilenumber, mobileotp } = data;
 
     const navigate = useNavigate();
 
@@ -81,6 +81,8 @@ const Login = () => {
             throw error;
         }
     };
+
+    
 
 
 
@@ -117,6 +119,8 @@ const Login = () => {
             } else if (roles.includes('Administrator')) {
                 navigate('/admin-dashboard');
             }
+           
+      
         } catch (err) {
             console.error('Login error:', err);
             setLoginError('An error occurred during login.');
@@ -165,6 +169,8 @@ const Login = () => {
 
                 // Call the function to register a new Carpainter
                 const registerResponse = await registerCarpainter(firstName, lastName, mobile, city);
+
+                console.log("registerResponse",registerResponse);
 
                 if (registerResponse.message.status === "success") {
                     console.log("Carpainter registered successfully:", registerResponse);
@@ -238,8 +244,11 @@ const Login = () => {
                 params: { mobile_number: mobilenumber },
                 headers: { 'Content-Type': 'application/json' }
             });
+
+            localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
     
-            console.log('Check Response Data:', checkResponse.data); // Log the response to inspect its structure
+            console.log('Check Response Data:', checkResponse.data.message.role_profile_name); // Log the response to inspect its structure
+            // var carpenterrole = checkResponse.data.role_profile_name;
     
             if (checkResponse.data.message && checkResponse.data.message.registered) {
                 // If registered, call the OTP generation API
@@ -291,6 +300,10 @@ const Login = () => {
             if (response.data.message.status === "success") {
                 // Save login status in localStorage
                 localStorage.setItem('login', 'true');
+
+            
+
+            
     
                 // Save user data in localStorage
                 const credentials = {
@@ -302,10 +315,21 @@ const Login = () => {
                 localStorage.setItem('credentials', JSON.stringify(credentials));
     
                 console.log('Login Status:', localStorage.getItem('login'));
-                console.log('User Credentials:', JSON.parse(localStorage.getItem('credentials')));
+                // console.log('User Credentials:', JSON.parse(localStorage.getItem('credentials')));
+               
+                // const rolesResponse = await fetchUserRoles(firstName);
+                // console.log("rolesResponse----",rolesResponse);
+                
+                // // Extract roles from the response
+                // const roles = rolesResponse.message || []; // Assuming `message` contains the array of roles
+                // localStorage.setItem('user_roles', JSON.stringify(roles));
     
-                // Redirect to the carpenter dashboard
-                navigate('/carpenter-dashboard'); // Replace with the correct path to your carpenter dashboard
+    
+                navigate('/carpenter-dashboard');
+                // // Redirect to the carpenter dashboard
+                // if (roles.includes('Carpenter')) {
+                // }
+                // Replace with the correct path to your carpenter dashboard
             } else {
                 setLoginError('Invalid OTP. Please try again.');
             }
@@ -365,7 +389,7 @@ const Login = () => {
 
                             <div className="mt-6">
                                 {currentForm === 'login' && (
-                                    <form onSubmit={handleLogin}>
+                                    <form onSubmit={handleLogin} className='max-w-[350px] w-[350px]'>
                                         <Box className="mb-4">
                                             <Text as='label' htmlFor='username' className='text-defaultsize font-semibold '>Username/Email</Text>
                                             <input
@@ -405,7 +429,7 @@ const Login = () => {
 
                                 {currentForm === "register" && (
                                     <form onSubmit={handleRegister}>
-                                        <Box className="mb-4">
+                                        <Box className="mb-4 max-w-[350px] w-[350px]">
                                             <Box className="xl:col-span-12 col-span-12 mb-3">
                                                 <Text as='label' htmlFor="firstName" className="form-label text-defaultsize font-semibold">First Name</Text>
                                                 <input
@@ -459,14 +483,12 @@ const Login = () => {
                                                 {mobile.length !== 10 && mobile.length > 0 && (
                                                     <Text className="text-danger">Mobile number must be exactly 10 digits</Text>
                                                 )}
-                                                {!/^\d+$/.test(mobile) && mobile.length > 0 && (
-                                                    <Text className="text-danger">Mobile number can only contain digits</Text>
-                                                )}
+                                              
                                             </Box>
 
                                             {isOtpVisible ? (
                                                 <>
-                                                    <Box className="xl:col-span-12 col-span-12 mb-3">
+                                                    <Box className="xl:col-span-12 col-span-12 mb-3 ">
                                                         <Text as='label' htmlFor="otp" className="form-label text-defaultsize font-semibold">OTP</Text>
                                                         <input
                                                             type="number"
@@ -508,8 +530,8 @@ const Login = () => {
                                 )}
 
                                 {currentForm === 'carpenterLogin' && (
-                                    <form onSubmit={handleCarpenterLogin}>
-                                        <Box className="mb-4">
+                                    <form onSubmit={handleCarpenterLogin} className='max-w-[350px] w-[350px]'>
+                                        <Box className="mb-4 ">
                                             <Text as='label' htmlFor='mobilenumber' className='text-defaultsize font-semibold'>Mobile Number</Text>
                                             <input
                                                 id='mobilenumber'
@@ -518,8 +540,12 @@ const Login = () => {
                                                 name='mobilenumber'
                                                 onChange={changeHandler}
                                                 value={mobilenumber}
-                                                className="border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                className={`border rounded-[5px] p-2 mt-2 text-xs w-full  ${mobilenumber.length !== 10 || !/^\d+$/.test(mobile) ? 'border-red-500' : ''}`}
+                                                required
                                             />
+                                              {mobilenumber.length !== 10 && mobilenumber.length > 0 && (
+                                                    <Text className="text-danger">Mobile number must be exactly 10 digits</Text>
+                                                )}
                                         </Box>
                                         {isloginOtpVisible ? (
                                             <>

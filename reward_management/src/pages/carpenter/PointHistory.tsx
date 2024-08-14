@@ -33,10 +33,12 @@ const PointHistory: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5); // Number of items per page
     const [carpenterData, setCarpenterData] = useState<PointHistoryItem[]>([]);
+    const [filteredData, setFilteredData] = useState<PointHistoryItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [redeemPoints, setRedeemPoints] = useState<number>(0);
     const [totalPoints, setTotalPoints] = useState<number>(0);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const fetchCarpenterData = async () => {
@@ -51,6 +53,7 @@ const PointHistory: React.FC = () => {
                     const pointHistory = data.data[0].point_history;
                     if (Array.isArray(pointHistory)) {
                         setCarpenterData(pointHistory);
+                        setFilteredData(pointHistory);
                     } else {
                         setError("Unexpected response format: 'point_history' is not an array");
                     }
@@ -64,25 +67,36 @@ const PointHistory: React.FC = () => {
                 setLoading(false);
             }
         };
-// Show Total points and Redeemed points in card---------
+
+        // Show Total points and Redeemed points in card
         const fetchUserPoints = async () => {
             try {
                 const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.carpenter_master.show_total_points`);
                 const { redeem_points, current_points } = response.data.message; 
-                console.log("card data",response);
+                console.log("card data", response);
                 setRedeemPoints(redeem_points);
                 setTotalPoints(current_points);
             } catch (error) {
                 console.error("Error fetching user points:", error);
             }
         };
+
         fetchCarpenterData();
-      
         fetchUserPoints();
     }, []);
 
-    // table pagination----------
-    const totalPages = Math.ceil((carpenterData.length || 0) / itemsPerPage);
+    // Filter data based on search query
+    useEffect(() => {
+        const filtered = carpenterData.filter(item => 
+            Object.values(item).some(value => 
+                value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+            )
+        );
+        setFilteredData(filtered);
+    }, [searchQuery, carpenterData]);
+
+    // Table pagination
+    const totalPages = Math.ceil((filteredData.length || 0) / itemsPerPage);
 
     const handlePrevPage = () => {
         if (currentPage > 1) {
@@ -100,10 +114,11 @@ const PointHistory: React.FC = () => {
         setCurrentPage(pageNumber);
     };
 
-    // handle table search----
+    // Handle table search
     const handleSearch = (value: string) => {
+        setSearchQuery(value); // Update search query
+        setCurrentPage(1);
         console.log("Search value:", value);
-        // Implement search logic here
     };
 
     const handleAddProductClick = () => {
@@ -122,8 +137,8 @@ const PointHistory: React.FC = () => {
                 <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 col-span-12">
                     <div className="grid grid-cols-12 gap-x-6">
                         <div className="xl:col-span-12 col-span-12">
-                            <div className="box">
-                                <div className="box-body">
+                            <div className="">
+                                <div className="">
                                     <div className="grid grid-cols-12 xl:gap-y-0 gap-4">
                                         <div className="category-link xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
                                             <div className="flex flex-row items-start mb-4">
@@ -178,7 +193,7 @@ const PointHistory: React.FC = () => {
                                     { header: 'Earned Points', accessor: 'earned_points' },
                                     { header: 'Date', accessor: 'date' },
                                 ]}
-                                data={carpenterData}
+                                data={filteredData}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}

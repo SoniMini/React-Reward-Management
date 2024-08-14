@@ -22,7 +22,7 @@ const ProductMaster: React.FC = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-
+    
     const [itemsPerPage] = useState(5); // Number of items per page
     const { data: productsData } = useFrappeGetDocList<Product>('Product', {
         fields: ['name', 'product_name', 'category', 'reward_points']
@@ -92,9 +92,10 @@ const ProductMaster: React.FC = () => {
             // Handle the case where no product is selected
         }
     };
+
+
     const handleSearch = (value: string) => {
-        console.log("Search value:", value);
-        // Implement search logic here
+       console.log("first")
     };
 
     const handleAddProductClick = () => {
@@ -102,6 +103,10 @@ const ProductMaster: React.FC = () => {
         navigate('/add-product');
         // Implement add product logic here
     };
+
+
+
+  
 
 
     return (

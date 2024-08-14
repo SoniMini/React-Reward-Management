@@ -33,6 +33,7 @@ const RedeemRequest: React.FC = () => {
     const [pointredeem, setPointRedeem] = useState<string>("");
     const [customerId, setCustomerId] = useState<string>('');  
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [searchQuery , setSearchQuery] = useState('');
 
     useEffect(() => {
         if (showSuccessAlert) {
@@ -121,9 +122,11 @@ const RedeemRequest: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
+        setSearchQuery(value); // Update search query
+        setCurrentPage(1);
         console.log("Search value:", value);
-        // Implement search logic here
     };
+
 
     const handleAddRedeemRequestClick = () => {
         setIsModalOpen(true);
@@ -190,6 +193,21 @@ const RedeemRequest: React.FC = () => {
         received_date: transaction.received_date ? formatDate(transaction.received_date) : '',
     })) : [];
 
+
+    const filteredData = formattedRedeemRequestData.filter(transactionData => {
+        const query = searchQuery.toLowerCase();
+        return (
+            (transactionData.name && transactionData.name.toLowerCase().includes(query)) ||
+            (transactionData.received_date && transactionData.received_date.toLowerCase().includes(query)) ||
+            (transactionData.received_time && transactionData.received_time.toString().toLowerCase().includes(query)) ||
+            (transactionData.redeemed_points !== undefined && transactionData.redeemed_points.toString().toLowerCase().includes(searchQuery)) ||
+            (transactionData.request_status !== undefined && transactionData.request_status.toString().toLowerCase().includes(searchQuery)) ||
+            (transactionData.approved_on && transactionData.approved_on.toLowerCase().includes(query)) ||
+            (transactionData.approve_time && transactionData.approve_time.toLowerCase().includes(query))
+        );
+    });
+
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
@@ -228,7 +246,7 @@ const RedeemRequest: React.FC = () => {
                                     { header: 'Approve Date', accessor: 'approved_on' },
                                     { header: 'Approve Time', accessor: 'approve_time' },
                                 ]}
-                                data={formattedRedeemRequestData}
+                                data={filteredData || []}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}

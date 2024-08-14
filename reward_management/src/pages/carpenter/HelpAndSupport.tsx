@@ -12,15 +12,18 @@ interface FAQ {
 
 const Faqs = () => {
   const [faqData, setFaqData] = useState<FAQ[]>([]);
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
+  const [expandedIndex, setExpandedIndex] = useState(0);
+  
 
   const { data } = useFrappeGetDocList<FAQ>('FAQ', {
     fields: ['name', 'question', 'status', 'created_date', 'answer'],
     filters: [['status', '=', 'Active']],
   });
 
+  
   useEffect(() => {
     if (data) {
+    console.log("faq data",data);
       setFaqData(data);
     }
   }, [data]);
@@ -33,10 +36,11 @@ const Faqs = () => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
 
+  
 
   return(
   <Fragment>
-    <Pageheader currentpage="Faq's" activepage="Pages" mainpage="Faq's" />
+    <Pageheader currentpage="Faq's" activepage="" mainpage="Faq's" />
       <div className="grid grid-cols-12 mb-[3rem] !mx-auto">
         <div className="xl:col-span-12 col-span-12">
           <div className="grid grid-cols-12 !mx-auto">
@@ -57,9 +61,10 @@ const Faqs = () => {
             <div className="xl:col-span-12 col-span-12">
               <div className="box">
                 <div className="box-header">
-                  <div className="box-title text-defaultsize text-defaulttextcolor font-sm">
+                  <div className="box-title text-[.9375rem] text-defaulttextcolor font-bold p-[1.25rem] ">
                     General Topics ?
                   </div>
+                  <hr />
                 </div>
                 <div className="box-body">
                   <div className="hs-accordion-group">
@@ -67,29 +72,49 @@ const Faqs = () => {
                   {faqData.map((faq, index) => (
         <div
           key={faq.name}
-          className="hs-accordion active overflow-hidden border -mt-px first:rounded-t-sm last:rounded-b-sm dark:bg-bgdark dark:border-white/10"
+          className="hs-accordion overflow-hidden border -mt-px first:rounded-t-sm last:rounded-b-sm dark:bg-bgdark dark:border-white/10"
           id={`hs-accordion-heading-${index}`}
         >
           <button
-            className="hs-accordion-toggle hs-accordion-active:text-primary hs-accordion-active:bg-primary/10 group py-4 px-5 inline-flex items-center justify-between gap-x-3 w-full font-semibold text-start text-gray-800 transition hover:text-gray-500 dark:hs-accordion-active:text-primary dark:text-gray-200 dark:hover:text-white/80"
+            className={`group py-4 px-5 inline-flex items-center justify-between gap-x-3 w-full font-semibold text-start transition ${
+              expandedIndex === index
+                ? 'text-primary bg-primary/10 dark:text-primary'  // Active styles
+                : 'text-gray-800 hover:text-gray-500 dark:text-gray-200 dark:hover:text-white/80'  // Inactive styles
+            }`}
             aria-controls={`hs-accordion-collapse-${index}`}
             type="button"
             onClick={() => toggleAccordion(index)}
           >
-            {faq.question} {/* This is the dynamic question */}
+            {faq.question}
             <svg
-              className={`w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-[#8c9097] dark:text:white/50 ${expandedIndex === index ? 'hidden' : 'block'}`}
-              width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
+              className={`w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-[#8c9097] ${expandedIndex === index ? 'hidden' : 'block'}`}
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <path d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5"
-                stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <path
+                d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
             </svg>
             <svg
-              className={`w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-[#8c9097] dark:text:white/50 ${expandedIndex === index ? 'block' : 'hidden'}`}
-              width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
+              className={`w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-[#8c9097] ${expandedIndex === index ? 'block' : 'hidden'}`}
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <path d="M2 11L8.16086 5.31305C8.35239 5.13625 8.64761 5.13625 8.83914 5.31305L15 11"
-                stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <path
+                d="M2 11L8.16086 5.31305C8.35239 5.13625 8.64761 5.13625 8.83914 5.31305L15 11"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
           <div
@@ -97,9 +122,10 @@ const Faqs = () => {
             className={`hs-accordion-content w-full overflow-hidden transition-[height] duration-300 ${expandedIndex === index ? 'block' : 'hidden'}`}
             aria-labelledby={`hs-accordion-heading-${index}`}
           >
-            <p className="text-gray-800 dark:text-gray-200 py-4 px-5">
-              {stripHTML(faq.answer)} {/* This strips out the HTML tags */}
-            </p>
+            {/* <p className="py-4 px-5">
+              {stripHTML(faq.answer)}
+            </p> */}
+              <p className="py-4 px-5" dangerouslySetInnerHTML={{ __html: faq.answer }} />
           </div>
         </div>
       ))}

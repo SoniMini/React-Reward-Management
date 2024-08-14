@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import '../../assets/css/header.css';
 import '../../assets/css/style.css';
 
-import ProfilePic from '../../assets/images/reward_management/9.jpg';
+import ProfilePic from '/src/assets/images/reward_management/9.jpg';
 import { IconAlignLeft } from '@tabler/icons-react';
 import { IconX } from '@tabler/icons-react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -11,7 +11,13 @@ import 'boxicons/css/boxicons.min.css';
 import NotificationDropdown from '@/components/ui/notification';
 import Modalsearch from "./modalsearch/modalsearch";
 
+
 const Header = ({ toggleSidebar, isSidebarActive }) => {
+
+    const Profilephoto = localStorage.getItem("uploadedFileUrl") || ProfilePic;
+    const username = localStorage.getItem("username");
+    const carpenterrole = localStorage.getItem('carpenterrole');
+    console.log(carpenterrole);
     const [fullScreen, setFullScreen] = useState(false);
     const [theme, setTheme] = useState({
         dataNavLayout: 'vertical',
@@ -20,7 +26,8 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
         toggled: '',
         class: 'light',
     });
-
+    
+    // const [value, setValue] = useState(localStorage.getItem("username"));
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [notificationCount, setNotificationCount] = useState(5);
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
@@ -29,6 +36,19 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
+
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         const newValue = localStorage.getItem("username");
+    //         if (newValue !== value) {
+    //             setValue(newValue);
+    //             // Perform your logic here when the value changes
+    //             console.log(`New value: ${newValue}`);
+    //         }
+    //     }, 1000); // Check every second
+
+    //     return () => clearInterval(interval); // Clear the interval when the component unmounts
+    // }, [value]);
 
     const toggleFullScreen = () => {
         const elem = document.documentElement;
@@ -190,30 +210,38 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
                                 <button id="dropdown-profile" type="button"
                                     className="hs-dropdown-toggle ti-dropdown-toggle !gap-2 !p-0 flex-shrink-0 sm:me-2 me-0 !rounded-full !shadow-none text-xs align-middle !border-0 !shadow-transparent "
                                     onClick={handleDropdownToggle}>
-                                    <img className="inline-block rounded-full " src={ProfilePic} width="32" height="32" alt="Image Description" />
+                                    <img className="inline-block rounded-full w-[30px] h-[30px]" src={Profilephoto} width="32" height="32" alt="Image Description" />
                                 </button>
                                 <div className="md:block hidden dropdown-profile cursor-pointer" onClick={handleDropdownToggle}>
-                                    <p className="font-semibold mb-0 leading-none text-[#536485] text-[0.813rem] ">Json Taylor</p>
-                                    <span className="opacity-[0.7] font-normal text-[#536485] block text-[0.6875rem] ">Web Designer</span>
+                                    <p className="font-semibold mb-0 pt-3 leading-none text-[#536485] text-[0.813rem] ">{username}</p>
+                                   
                                 </div>
-                                {/* user profile list--- */}
+                              
                                 <div
                                     className={`hs-dropdown-menu main-header-dropdown ti-dropdown-menu bg-white mt-3 fixed top-12 right-4 border-0 w-[10rem] p-0 border-defaultborder ${isDropdownVisible ? '' : 'hidden'}  pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end`}
                                     aria-labelledby="dropdown-profile"
                                 >
                                     <ul className="text-defaulttextcolor font-medium dark:text-[#8c9097] dark:text-white/50">
-                                        <li className="user-profile-list hover:bg-[var(--bg-primary)] hover:text-[var(--primaries)] ">
-                                            <a className="w-full ti-dropdown-item !text-[0.8125rem] !gap-x-0 !p-[0.65rem] !inline-flex" href={`/admin-dashboard`}>
-                                                <i className="ti ti-user-circle text-[1.125rem] me-2 opacity-[0.7]"></i>Profile
-                                            </a>
-                                        </li>
-                                        <li className="user-profile-list hover:bg-[var(--bg-primary)]  hover:text-[var(--primaries)]">
-                                            <a className="w-full ti-dropdown-item !text-[0.8125rem] !gap-x-0 !p-[0.65rem] !inline-flex" href={`/`}>
-                                                <i className="ti ti-adjustments-horizontal text-[1.125rem] me-2 opacity-[0.7]"></i>Settings
-                                            </a>
-                                        </li>
-                                        <li className="user-profile-list hover:bg-[var(--bg-primary)]  hover:text-[var(--primaries)]">
-                                            <a className="w-full ti-dropdown-item !text-[0.8125rem] !p-[0.65rem] !gap-x-0 !inline-flex" href={`/`}>
+                                         
+                                        {carpenterrole !== "Carpenter" && (
+                                            <li className="user-profile-list hover:bg-[var(--bg-primary)] hover:text-[var(--primaries)]">
+                                                <a className="w-full ti-dropdown-item !text-[0.8125rem] !gap-x-0 !p-[0.65rem] !inline-flex" href={`/admin-profile`}>
+                                                    <i className="ti ti-user-circle text-[1.125rem] me-2 opacity-[0.7]"></i>Profile
+                                                </a>
+                                            </li>
+                                        )}
+                                        
+                                        <li className="user-profile-list hover:bg-[var(--bg-primary)] hover:text-[var(--primaries)]">
+                                            <a
+                                                className="w-full ti-dropdown-item !text-[0.8125rem] !p-[0.65rem] !gap-x-0 !inline-flex"
+                                                href="/"
+                                                onClick={() => {
+                                                    localStorage.removeItem('user_roles'); 
+                                                    localStorage.removeItem('carpenterrole'); 
+                                                    localStorage.removeItem("username");
+
+                                                }}
+                                            >
                                                 <i className="ti ti-logout text-[1.125rem] me-2 opacity-[0.7]"></i>Log Out
                                             </a>
                                         </li>
@@ -222,7 +250,7 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
 
                             </div>
                         </div>
-                        {/* end of user profile */}
+                        
                     </div>
                 </nav>
             </header>
