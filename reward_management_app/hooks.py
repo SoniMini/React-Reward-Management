@@ -229,3 +229,18 @@ app_license = "agpl-3.0"
 
 
 website_route_rules = [{'from_route': '/reward_management/<path:app_path>', 'to_route': 'reward_management'},]
+
+
+fixtures = [
+
+     {
+        "dt": "Role",     
+    },
+     {
+        "dt": "Custom DocPerm",
+    },
+     {
+         "dt":"Role Profile",
+     }
+
+]
