@@ -1,6 +1,6 @@
 import frappe
 from frappe import _
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_users():
     # Query to get users with Admin role
     users_with_admin_role = frappe.get_all(

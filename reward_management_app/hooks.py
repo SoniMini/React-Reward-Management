@@ -130,6 +130,17 @@ app_license = "agpl-3.0"
 # 	}
 # }
 
+
+doc_events = {
+    "User": {
+         "after_insert": "reward_management_app.api.admin_notifications.send_system_notification"
+    },
+   "Redeem Request": {
+        "on_update": "reward_management_app.api.admin_notifications.send_customer_reward_approved_notification",
+    }
+}
+
+
 # Scheduled Tasks
 # ---------------
 
@@ -241,6 +252,10 @@ fixtures = [
     },
      {
          "dt":"Role Profile",
+     },
+     {
+         "dt":"Website Settings",
      }
+
 
 ]

@@ -23,6 +23,8 @@ export interface Carpenter{
 	mobile_number: string
 	/**	Email : Data	*/
 	email?: string
+	/**	Image : Attach Image	*/
+	image?: string
 	/**	Total Points : Int	*/
 	total_points?: number
 	/**	Current Points : Int	*/
@@ -31,6 +33,10 @@ export interface Carpenter{
 	redeem_points?: number
 	/**	City : Data	*/
 	city: string
+	/**	Gender : Link - Gender	*/
+	gender?: string
+	/**	Birth Date : Date	*/
+	birth_date?: string
 	/**	Point History : Table - Carpainter Product Detail	*/
 	point_history?: CarpainterProductDetail[]
 }

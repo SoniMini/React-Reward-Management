@@ -1,9 +1,9 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState,useEffect } from 'react';
 import Pageheader from '@/components/common/pageheader/pageheader';
 import SunEditor from 'suneditor-react';
-
+import { useNavigate } from 'react-router-dom';
 import 'suneditor/dist/css/suneditor.min.css'; // Import SunEditor styles
-
+import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 
@@ -17,6 +17,8 @@ const AddProduct: React.FC = () => {
     const [rewardPoints, setRewardPoints] = useState('');
     const [productDescription, setProductDescription] = useState('');
     const [productCategory, setProductCategory] = useState('');
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const navigate = useNavigate(); // Initialize navigate
 
     // Handle file input change
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +75,11 @@ const AddProduct: React.FC = () => {
         try {
             const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.product_master.add_product`, data);
             console.log("Product added successfully:", response.data);
-            alert("Product added successfully!!!");
+            // alert("Product added successfully!!!");
+           // Navigate after showing the success alert
+           setTimeout(() => {
+            navigate('/product-master');
+        }, 3000); // Delay for 3 seconds
         } catch (error) {
             console.error("Error submitting form", error);
         }
@@ -88,6 +94,20 @@ const AddProduct: React.FC = () => {
         setProductDescription('');
         setProductCategory('');
     };
+
+    
+    useEffect(() => {
+       
+        if (showSuccessAlert) {
+            const timer = setTimeout(() => {
+                setShowSuccessAlert(false);
+                navigate('/product-master'); // Navigate after success alert is hidden
+            }, 3000); // Hide alert after 3 seconds
+            return () => clearTimeout(timer);
+        }
+    }, [showSuccessAlert]);
+
+
 
     // Basic form submission handler
     const handleSubmit = async (event: React.FormEvent) => {
@@ -216,6 +236,15 @@ const AddProduct: React.FC = () => {
                     </div>
                 </div>
             </div>
+            {showSuccessAlert && (
+                                <SuccessAlert 
+                                showButton={false}
+                                showCancleButton={false}
+                                showCollectButton={false}
+                                showAnotherButton={false}
+                                showMessagesecond={false}
+                                message="New Product Added successfully!" />
+                            )}
         </Fragment>
     );
 };

@@ -13,6 +13,11 @@ interface Carpenter {
     total_points?: number;
 }
 
+interface User {
+    name: string;
+    mobile_no: string;
+}
+
 const AdminDashboard: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [productCount, setProductCount] = useState<number>(0);
@@ -25,10 +30,12 @@ const AdminDashboard: React.FC = () => {
     const [countTotalRegisteredCarpenter, setCountTotalRegisteredCarpenter] = useState<number>(0);
     const [itemsPerPage] = useState(5);
 
+    const { data: userData } = useFrappeGetDocList<User>('User', {
+        fields: ['mobile_no', 'name']
+    });
+
     const { data: carpentersData } = useFrappeGetDocList<Carpenter>('Carpenter', {
-        fields: ['name', 'full_name', 'mobile_number', 'city', 'total_points'],
-        page: currentPage,
-        pageSize: itemsPerPage
+        fields: ['name', 'full_name', 'mobile_number', 'city', 'total_points']
     });
 
     useEffect(() => {
@@ -62,21 +69,33 @@ const AdminDashboard: React.FC = () => {
         fetchData();
     }, []);
 
-    const totalPages = Math.ceil((carpentersData?.length || 0) / itemsPerPage);
-    const currentItems = carpentersData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
 
-    const handlePrevPage = () => {
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
-    };
+   // Extract mobile numbers from User data
+   const validMobileNumbers = userData?.map(user => user.mobile_no) || [];
 
-    const handleNextPage = () => {
-        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-    };
+   // Filter Carpenters Data
+   const filteredCarpenters = carpentersData?.filter(carpenter => validMobileNumbers.includes(carpenter.mobile_number)) || [];
 
-    const handlePageChange = (pageNumber: number) => {
-        setCurrentPage(pageNumber);
-    };
+   // Sort by total_points in descending order and get the top 10
+   const top10Carpenters = filteredCarpenters
+       .sort((a, b) => (b.total_points || 0) - (a.total_points || 0))
+       .slice(0, 10);
 
+   // Pagination
+   const totalPages = Math.ceil((top10Carpenters.length || 0) / itemsPerPage);
+   const currentItems = top10Carpenters.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+   const handlePrevPage = () => {
+       if (currentPage > 1) setCurrentPage(currentPage - 1);
+   };
+
+   const handleNextPage = () => {
+       if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+   };
+
+   const handlePageChange = (pageNumber: number) => {
+       setCurrentPage(pageNumber);
+   };
     return (
         <Fragment>
             <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">

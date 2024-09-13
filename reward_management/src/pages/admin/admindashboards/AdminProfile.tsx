@@ -567,7 +567,13 @@ const AdminProfile = () => {
                 </div>
             </div>
             {/* Success Alert */}
-            {showSuccessAlert && <SuccessAlert message="Profile Update successfully!" />}
+            {showSuccessAlert && <SuccessAlert 
+              showButton={false}
+              showCancleButton={false}
+              showCollectButton={false}
+              showAnotherButton={false}
+              showMessagesecond={false}
+              message="Profile Update successfully!" />}
         </Fragment>
     );
 };

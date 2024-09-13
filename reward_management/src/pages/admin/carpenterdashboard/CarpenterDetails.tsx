@@ -16,28 +16,47 @@ interface Carpenter {
     redeem_points: number,
 }
 
+interface User {
+    name: string;
+    mobile_no: string;
+}
+
 const CarpenterDetails: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [searchQuery, setSearchQuery] = useState('');
 
+
+
+    const { data: userData } = useFrappeGetDocList<User>('User', {
+        fields: ['mobile_no', 'name']
+    });
+
     const { data: carpenterData } = useFrappeGetDocList<Carpenter>('Carpenter', {
         fields: ['name', 'full_name', 'city', 'mobile_number', 'total_points', 'current_points', 'redeem_points']
     });
+    
 
-    // Function to filter data based on search query
-    const filteredData = carpenterData?.filter(carpenter => {
-        const query = searchQuery.toLowerCase();
-        return (
-            (carpenter.name && carpenter.name.toLowerCase().includes(query)) ||
-            (carpenter.full_name && carpenter.full_name.toLowerCase().includes(query)) ||
-            (carpenter.city && carpenter.city.toLowerCase().includes(query)) ||
-            (carpenter.mobile_number && carpenter.mobile_number.toLowerCase().includes(query)) ||
-            (carpenter.total_points && carpenter.total_points.toString().includes(query)) ||
-            (carpenter.current_points && carpenter.current_points.toString().includes(query)) ||
-            (carpenter.redeem_points && carpenter.redeem_points.toString().includes(query))
-        );
-    });
+  // Extract mobile numbers from User data
+  const validMobileNumbers = userData?.map(user => user.mobile_no) || [];
+
+  // Filter Carpenters Data
+  const filteredCarpenters = carpenterData?.filter(carpenter => validMobileNumbers.includes(carpenter.mobile_number)) || [];
+
+  // Function to filter data based on search query
+  const filteredData = filteredCarpenters.filter(carpenter => {
+      const query = searchQuery.toLowerCase();
+      return (
+          (carpenter.name && carpenter.name.toLowerCase().includes(query)) ||
+          (carpenter.full_name && carpenter.full_name.toLowerCase().includes(query)) ||
+          (carpenter.city && carpenter.city.toLowerCase().includes(query)) ||
+          (carpenter.mobile_number && carpenter.mobile_number.toLowerCase().includes(query)) ||
+          (carpenter.total_points && carpenter.total_points.toString().includes(query)) ||
+          (carpenter.current_points && carpenter.current_points.toString().includes(query)) ||
+          (carpenter.redeem_points && carpenter.redeem_points.toString().includes(query))
+      );
+  });
+
 
     const totalPages = Math.ceil((filteredData?.length || 0) / itemsPerPage);
 

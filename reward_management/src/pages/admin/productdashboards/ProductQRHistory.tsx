@@ -25,7 +25,7 @@ const ProductQRHistory: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(12);
+    const [itemsPerPage] = useState(100);
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
@@ -33,13 +33,13 @@ const ProductQRHistory: React.FC = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.print_qr_code.print_qr_code`);
-                console.log('Fetched data:', response.data);
-        
+                console.log('Fetched Product QR History data:', response);
+
                 if (response.data && response.data.message && Array.isArray(response.data.message)) {
-                    const qrTableData = response.data.message[0].qr_table_data || [];
+                    const qrTableData = response.data.message.flatMap(item  => item.qr_table_data || []);
                     const formattedData = qrTableData.map(item => ({
                         ...item,
-                        scanned: item.scanned == '1' ? 'Redeemed' : 'Not Redeemed',
+                        scanned: item.scanned === '1' ? 'Redeemed' : 'Not Redeemed',
                     }));
                     setData(formattedData);
                 } else {
@@ -51,7 +51,7 @@ const ProductQRHistory: React.FC = () => {
                 setLoading(false);
             }
         };
-    
+
         fetchData();
     }, []);
     

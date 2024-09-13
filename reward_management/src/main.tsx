@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'; 
 import App from './App.tsx';
-
+import PrivateRoutes from './routes/private-routes';
 import Login from './pages/auth/Login';
+
 import AdminDashboard from './pages/admin/admindashboards/AdminDashboard.tsx';
 import ProductMaster from './pages/admin/productdashboards/ProductMaster.tsx';
 import ProductQRHistory from './pages/admin/productdashboards/ProductQRHistory.tsx';
@@ -28,9 +29,11 @@ import HelpAndSupport from './pages/carpenter/HelpAndSupport.tsx'
 import RedeemRequest from './pages/carpenter/RewardRequest.tsx'
 import CusromerProducts from './pages/customer/CustomerProduct.tsx'
 import CustomerProductDetails from './pages/customer/ViewProduct.tsx'
-import Adminprofile from './pages/admin/admindashboards/AdminProfile.tsx'
+
 import { FrappeProvider } from 'frappe-react-sdk';
 import AdminProfile from './pages/admin/admindashboards/AdminProfile.tsx';
+import CarpenterProfile from './pages/carpenter/CarpenterProfile.tsx';
+import NotificationDashboard from './pages/admin/adminnotifications/AdminNotification.tsx';
 
 const router = createBrowserRouter([
   {
@@ -75,91 +78,100 @@ const router = createBrowserRouter([
     children: [
       {
         path: "admin-profile",
-        element: <AdminProfile/>,
+        element: <PrivateRoutes element={<AdminProfile />} />,
       },
       {
         path: "admin-dashboard",
-        element: <AdminDashboard />,
+        element: <PrivateRoutes element={<AdminDashboard />} />,
       },
       {
         path: "product-master",
-        element: <ProductMaster/>,
+        element : <PrivateRoutes element={<ProductMaster/>}/>,
       },
       {
         path: "product-qr-history",
-        element: <ProductQRHistory/>,
+        element: <PrivateRoutes element={<ProductQRHistory />} />,
       },
       {
         path: "add-product",
-        element: <AddProduct/>,
+        element: <PrivateRoutes element={<AddProduct />} />,
       },
       {
         path: "edit-product",
-        element: <EditProduct/>,
+        element: <PrivateRoutes element={<EditProduct />} />,
       },
       {
         path: "download-qr-code",
-        element: <DownloadQRCode/>,
+        element: <PrivateRoutes element={<DownloadQRCode />} />,
       },
       {
         path: "carpenter-registration",
-        element: <CarpenterRegistration/>,
+        element: <PrivateRoutes element={<CarpenterRegistration />} />,
       },
       {
         path: "carpenter-details",
-        element: <CarpenterDetails/>,
+        element: <PrivateRoutes element={<CarpenterDetails />} />,
       },
       {
         path: "redeemption-request",
-        element: <CarpenterRewardRequest/>,
+        element: <PrivateRoutes element={<CarpenterRewardRequest/>}/>,
       },
       {
         path: "redeemption-history",
-        element: <CarpenterRedeemptionHistory/>,
+        element:<PrivateRoutes element={<CarpenterRedeemptionHistory/>}/>,
       },
       {
         path: "announcement",
-        element: <AdminAnnouncement/>,
+        element: <PrivateRoutes element={<AdminAnnouncement />} />,
       },
       {
         path: "transaction-history",
-        element: <TransactionHistory/>,
+        element: <PrivateRoutes element={<TransactionHistory />} />,
       },
       {
         path: "frequently-asked-question",
-        element: <FAQDashboard/>,
+        element: <PrivateRoutes element={<FAQDashboard />} />,
       },
       {
         path: "add-user",
-        element: <AddUserDashboard/>,
+        element: <PrivateRoutes element={<AddUserDashboard />} />,
       },
       {
         path: "set-reward-points",
-        element: <SetRewardPoint/>,
+        element: <PrivateRoutes element={<SetRewardPoint />} />,
+      },
+      {
+        path : "view-all-notifications",
+        element: <PrivateRoutes  element={<NotificationDashboard />} />,
       },
       {
         path: "carpenter-dashboard",
-        element: <CarpenterDashboard/>,
+        element: <PrivateRoutes element={<CarpenterDashboard />} />,
       },
       {
+        path:"profile-setting",
+        element: <PrivateRoutes  element={<CarpenterProfile />} />,
+      },
+      
+      {
         path: "banking-history",
-        element: <CarpenterBankingHistory/>,
+        element: <PrivateRoutes element={<CarpenterBankingHistory />} />,
       },
       {
         path: "point-history",
-        element: <PointHistory/>,
+        element: <PrivateRoutes element={<PointHistory />} />,
       },
       {
         path: "qr-scanner",
-        element: <QRCodeScanner/>,
+        element: <PrivateRoutes element={<QRCodeScanner />} />,
       },
       {
         path: "redeem-request",
-        element: <RedeemRequest/>,
+        element: <PrivateRoutes element={<RedeemRequest />} />,
       },
       {
         path: "help-and-support",
-        element: <HelpAndSupport/>,
+        element: <PrivateRoutes  element={<HelpAndSupport />} />,
       },
       {
         path: "*",

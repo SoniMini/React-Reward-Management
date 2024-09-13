@@ -14,6 +14,8 @@ export interface RedeemRequest{
 	naming_series?: "Redeem-request.-.YYYY.-.#####"
 	/**	Customer ID : Link - Carpenter	*/
 	customer_id: string
+	/**	Full Name : Data	*/
+	full_name?: string
 	/**	Redeemed Points : Int	*/
 	redeemed_points: number
 	/**	Current Points : Int	*/

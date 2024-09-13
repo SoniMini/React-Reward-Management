@@ -80,8 +80,8 @@ const AddUserDashboard: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        console.log("Search value:", value);
-        // Implement search logic here
+        setSearchQuery(value); // Update search query
+        setCurrentPage(1);
     };
 
     const onSubmit = async (data: any) => {
@@ -159,7 +159,13 @@ const AddUserDashboard: React.FC = () => {
                 />
             )}
              {/* Success Alert */}
-             {showSuccessAlert && <SuccessAlert message="New Admin Created Successfully!" />}
+             {showSuccessAlert && <SuccessAlert 
+               showButton={false}
+               showCancleButton={false}
+               showCollectButton={false}
+               showAnotherButton={false}
+               showMessagesecond={false}
+               message="New Admin Created Successfully!" />}
         </Fragment>
     );
 };

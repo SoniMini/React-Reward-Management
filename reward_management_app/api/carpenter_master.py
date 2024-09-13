@@ -12,6 +12,8 @@ from frappe.utils import nowdate
 def get_carpainter_data():
     try:
         logged_in_user = frappe.session.user
+        frappe.logger().info(f"Logged user data\n\n\n\n: {logged_in_user}")
+
         user_info = frappe.get_doc("User", logged_in_user)
         user_mobile_no = user_info.mobile_no
         

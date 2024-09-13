@@ -21,6 +21,7 @@ def update_registration_request_status(registration_id, status):
                 user.full_name = carpainter.full_name
                 user.email = f"{carpainter.mobile_number}@gmail.com"
                 user.mobile_no = carpainter.mobile_number
+                user.location = carpainter.city
                 user.role_profile_name = "Carpenter"  
                 
                 # Save the User document

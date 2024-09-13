@@ -1,5 +1,5 @@
 
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { FrappeProvider } from 'frappe-react-sdk';
 import '@radix-ui/themes/styles.css';

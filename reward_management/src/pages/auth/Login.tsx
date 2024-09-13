@@ -1,6 +1,6 @@
 import React, { useState, Fragment, useEffect } from 'react';
 import desktoplogo from "@/assets/images/logo-2.png";
-import { Box, Button, Callout, Card, Flex, Text } from '@radix-ui/themes';
+import { Box, Button, Callout, Card, Text } from '@radix-ui/themes';
 // import { useFrappeAuth } from 'frappe-react-sdk';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -129,7 +129,7 @@ const Login = () => {
 
 
     // Send Carpenter Registration Request---------------------
-    const registerCarpainter = async (firstName, lastName, mobile, city) => {
+    const registerCarpainter = async (firstName: string, lastName: string, mobile: string, city: string) => {
         try {
             const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.create_new_carpenter.create_new_carpainters`, {
                 firstname: firstName,
@@ -149,7 +149,7 @@ const Login = () => {
 
 
     //    Handle Carpenter Registration Form---------------------
-    const handleRegister = async (e) => {
+    const handleRegister = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         if (mobile.length !== 10 || !/^\d+$/.test(mobile)) {
             setLoginError('Mobile number must be exactly 10 digits and only contain digits');

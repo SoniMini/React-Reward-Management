@@ -280,7 +280,13 @@ const RedeemRequest: React.FC = () => {
         onPointValueChange={(e) => setPointRedeem(e.target.value)}
     />
 )}
-{showSuccessAlert && <SuccessAlert message="Redeem Request has been sent to the admin successfully!" />}
+{showSuccessAlert && <SuccessAlert
+   showButton={false}
+   showCancleButton={false}
+   showCollectButton={false}
+   showAnotherButton={false}
+   showMessagesecond={false}
+   message="Redeem Request has been sent to the admin successfully!" />}
 
         </Fragment>
     );

@@ -8,13 +8,14 @@ import CreateQRCode from '@/components/ui/models/CreateQRModel.tsx';
 import SuccessAlert from '@/components/ui/alerts/SuccessAlert';
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
 import axios from 'axios';
-import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
+import { BASE_URL} from "../../../utils/constants";
 
 interface Product {
     name: string,
     product_name?: string,
     category: string,
-    reward_points?: number
+    reward_points?: number,
+    quantity?: number 
 }
 
 const ProductMaster: React.FC = () => {
@@ -22,27 +23,57 @@ const ProductMaster: React.FC = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [searchQuery, setSearchQuery] = useState(''); // State for search query
     
     const [itemsPerPage] = useState(5); // Number of items per page
     const { data: productsData } = useFrappeGetDocList<Product>('Product', {
         fields: ['name', 'product_name', 'category', 'reward_points']
     });
+     // Fetch Product QR Data
+     const { data: productQRData } = useFrappeGetDocList<Product>('Product QR', {
+        fields: ['name', 'product_name', 'quantity']
+    });
+      // Combine Product and Product QR Data
+      const combinedData = productsData?.map(product => {
+        const qrData = productQRData?.find(qr => qr.product_name === product.name);
+        return {
+            ...product,
+            quantity: qrData?.quantity || 0  // Add the quantity from Product QR data
+        };
+    });
     const navigate = useNavigate();
 
     useEffect(() => {
         if (showSuccessAlert) {
-            const timer = setTimeout(() => setShowSuccessAlert(false), 3000); // Hide alert after 3 seconds
+            const timer = setTimeout(() => {
+                setShowSuccessAlert(false); // Hide alert after 3 seconds
+                window.location.reload(); // Reload the page
+            }, 3000);
             return () => clearTimeout(timer);
         }
     }, [showSuccessAlert]);
-
+    
     console.log("data", productsData);
+
+
+    // Filter the data based on search query
+   
+    const filteredData = combinedData?.filter(item => {
+        const query = searchQuery.toLowerCase();
+        return (
+            item.name.toLowerCase().includes(query) ||
+            item.product_name?.toLowerCase().includes(query) ||
+            item.category.toLowerCase().includes(query) ||
+            (item.reward_points?.toString().includes(query))
+        );
+    }) || [];
+
 
     // Pagination data
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = productsData?.slice(indexOfFirstItem, indexOfLastItem) || [];
-    const totalPages = Math.ceil((productsData?.length || 0) / itemsPerPage);
+    const currentItems = filteredData?.slice(indexOfFirstItem, indexOfLastItem) || [];
+    const totalPages = Math.ceil((filteredData?.length || 0) / itemsPerPage);
 
     // Pagination handlers
     const handlePrevPage = () => {
@@ -95,8 +126,10 @@ const ProductMaster: React.FC = () => {
 
 
     const handleSearch = (value: string) => {
-       console.log("first")
+        setSearchQuery(value); // Update search query
+        setCurrentPage(1);
     };
+
 
     const handleAddProductClick = () => {
         console.log("Add Product button clicked");
@@ -104,10 +137,7 @@ const ProductMaster: React.FC = () => {
         // Implement add product logic here
     };
 
-
-
-  
-
+     
 
     return (
         <Fragment>
@@ -116,29 +146,7 @@ const ProductMaster: React.FC = () => {
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
                     <div className="box">
-                        {/* <div className="box-header flex justify-between items-center p-4 border-b">
-                            <div className="box-title text-[.9375rem] font-bold text-defaulttextcolor">
-                                Products
-                            </div>
-
-                            <div className="flex">
-                                {/* search box start-- */}
-                        {/* <div className='flex me-3 my-1 h-[36px]'>
-                                    <input className="mb-[0.25rem] ti-form-control text-[0.8rem] form-control-sm rounded-sm" type="text" placeholder="Search Here" onChange={(ele) => { myfunction(ele.target.value); }}
-                                        aria-label=".form-control-sm example" />
-                                </div> */}
-                        {/* end */}
-                        {/* add products */}
-                        {/* <button
-                                        type="button"
-                                        className="ti-btn !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]"
-                                        onClick={() => navigate('/add-product')} // Redirect to /add-product
-                                    >
-                                        <i className="ri-add-line font-semibold align-middle me-1"></i> Add Product
-                                    </button>
-                            </div> */}
-                        {/* end */}
-                        {/* </div>  */}
+                      
                         <TableBoxComponent
                             title="Products"
                             onSearch={handleSearch}
@@ -166,12 +174,12 @@ const ProductMaster: React.FC = () => {
                                     <tbody>
                                         {currentItems.map((product, index) => (
                                             <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                                                <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">{index + 1}</td>
+                                                <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                                 <td className="p-3 text-defaultsize font-semibold text-[var(--primaries)] whitespace-nowrap border border-gray-300">{product.name}</td>
                                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">{product.product_name}</td>
                                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">{product.category}</td>
                                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">{product.reward_points}</td>
-                                                <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">{product.reward_points}</td>
+                                                <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">{product.quantity}</td>
                                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">
                                                     <Link aria-label="anchor" to="#" onClick={() => openModal(product)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
                                                         <i className="ri-qr-code-line"></i>
@@ -194,6 +202,7 @@ const ProductMaster: React.FC = () => {
                                     </tbody>
                                 </table>
                             </div>
+                               
 
                             {/* Pagination */}
                             <div className="box-footer p-4 border-t">
@@ -254,7 +263,13 @@ const ProductMaster: React.FC = () => {
             )}
 
             {/* Success Alert */}
-            {showSuccessAlert && <SuccessAlert message="QR Codes created successfully!" />}
+            {showSuccessAlert && <SuccessAlert 
+              showButton={false}
+              showCancleButton={false}
+              showCollectButton={false}
+              showAnotherButton={false}
+              showMessagesecond={false}
+            message="QR Codes created successfully!" />}
         </Fragment>
     );
 };

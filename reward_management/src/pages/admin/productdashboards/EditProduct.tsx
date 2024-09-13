@@ -267,7 +267,13 @@ const EditProduct: React.FC = () => {
                                 </div>
                             </form>
                             {showSuccessAlert && (
-                                <SuccessAlert message="Product updated successfully!" />
+                                <SuccessAlert 
+                                showButton={false}
+                                showCancleButton={false}
+                                showCollectButton={false}
+                                showAnotherButton={false}
+                                showMessagesecond={false}
+                                message="Product updated successfully!" />
                             )}
                         </div>
                     </div>
