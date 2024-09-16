@@ -3,11 +3,14 @@ import '../../../assets/css/pages/admindashboard.css';
 import Pageheader from '@/components/common/pageheader/pageheader';
 import TableComponent from '@/components/ui/tables/tablecompnent'; // Ensure the import path is correct
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState ,useEffect} from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import EditModalComponent from '@/components/ui/models/RewardRequestEdit';
 import axios from 'axios';
 import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
+import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
+import { PulseLoader } from 'react-spinners';
+
 
 interface CarpenterRegistrations {
     name: string;
@@ -26,9 +29,21 @@ const CarpenterRegistration: React.FC = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedCarpenter, setSelectedCarpenter] = useState<CarpenterRegistrations | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [loading, setLoading] = useState(false); // Loading state
     const { data: carpenterregisterData } = useFrappeGetDocList<CarpenterRegistrations>('Carpenter Registration', {
         fields: ['name', 'carpainter_id', 'carpainter_name', 'mobile_number', 'city', 'registration_date', 'status', 'approved_date']
     });
+
+    useEffect(() => {
+        if (showSuccessAlert) {
+            const timer = setTimeout(() => {
+                setShowSuccessAlert(false);
+                window.location.reload(); // Reload the page after hiding the alert
+            }, 3000); // Hide alert after 3 seconds
+            return () => clearTimeout(timer);
+        }
+    }, [showSuccessAlert]);
 
     const totalPages = Math.ceil((carpenterregisterData?.length || 0) / itemsPerPage);
 
@@ -80,6 +95,7 @@ const CarpenterRegistration: React.FC = () => {
             alert('Failed to update Registration Request: No carpenter name found.');
             return;
         }
+        setLoading(true); // Set loading to true
     
         const now = new Date();
         const currentDate = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
@@ -121,6 +137,9 @@ const CarpenterRegistration: React.FC = () => {
             });
             alert('An error occurred while updating the Registration Request.');
         }
+        finally {
+            setLoading(false); // Set loading to false
+        }
     };
     
     
@@ -137,13 +156,15 @@ const CarpenterRegistration: React.FC = () => {
                 },
             });
     
-            if (response.data.status === "success") {
-                console.log("Registration request status updated successfully");
+            if (response.data.message.status === "success") {
+                console.log("Registration request status updated successfully and create a new user");
+                 // Set the success alert and trigger page reload
+                 setShowSuccessAlert(true);
             } else {
                 console.error("Failed to update registration request status:", response.data.message);
                 alert('Failed to update registration request status.');
             }
-        } catch (error) {
+        } catch (error:any) {
             console.error("Error details:", {
                 message: error.message,
                 response: error.response?.data,
@@ -260,6 +281,23 @@ const CarpenterRegistration: React.FC = () => {
                     setStatus={(value) => setSelectedCarpenter(prev => prev ? { ...prev, status: value } : null)}
                 />
             )}
+               {showSuccessAlert && (
+                <SuccessAlert
+                    showButton={false}
+                    showCancleButton={false}
+                    showCollectButton={false}
+                    showAnotherButton={false}
+                    showMessagesecond={false}
+                    message="Customer Registration Approved successfully!"
+                />
+            )}
+
+            {loading && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-75 z-50">
+                    <PulseLoader color="#845ADF" loading={loading} size={15} />
+                </div>
+            )}
+
         </Fragment>
     );
 };

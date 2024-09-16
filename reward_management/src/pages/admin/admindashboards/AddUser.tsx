@@ -165,7 +165,7 @@ const AddUserDashboard: React.FC = () => {
                showCollectButton={false}
                showAnotherButton={false}
                showMessagesecond={false}
-               message="New Admin Created Successfully!" />}
+               message="New Admin User Created Successfully!" />}
         </Fragment>
     );
 };

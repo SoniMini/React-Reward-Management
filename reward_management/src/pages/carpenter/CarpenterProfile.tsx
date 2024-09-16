@@ -38,19 +38,6 @@ const AdminProfile = () => {
 
 
 
-// const deleteAllCookies = () => {
-//     // Retrieve all cookies
-//     const cookies = document.cookie.split(";");
-
-//     // Iterate through and delete each cookie
-//     for (let cookie of cookies) {
-//         const [name] = cookie.split("=");
-//         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
-//     }
-// };
-
-
-
 
     useEffect(() => {
 
@@ -135,7 +122,6 @@ const AdminProfile = () => {
     };
 
     const update_user_details = async () => {
-        
         try {
             const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.carpenter_profile.update_user_details`, {
                 name: email,  // New email
@@ -148,40 +134,31 @@ const AdminProfile = () => {
                 birth_date: birthdate,
                 location,
             });
-
+    
             if (response.data.message.status === "success") {
                 setShowSuccessAlert(true);
                 console.log("User details updated successfully.");
             } 
-             else if (response.data.message.status === 'error') {
+            else if (response.data.message.status === 'error') {
                 console.log("Update user response:", response);
-                console.error("Error updating user details:", response.data.message);
-    
-    
-              
-                setShowSuccessAlert(true);  // Call logout method to clear session data
-
+                setShowSuccessAlert(true);
+                // setShowSuccessAlert(true); // This should likely be set to false in case of error
             } 
             else {
                 console.error("Unexpected response status:", response.data.message.status);
             }
         } catch (error) {
             console.error("Error updating user details:", error);
-             
             setShowSuccessAlert(false);
         }
     };
-
-
-
-
+    
 
     const openFileInput = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
     };
-
 
 
 

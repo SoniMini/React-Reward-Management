@@ -106,62 +106,71 @@ const CarpenterDashboard: React.FC = () => {
                                         </div>
                                         <Link to="/qr-scanner" className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
                                             <div className="flex flex-row items-start mb-4">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
-                                                    <i className="ti ti-wallet text-[1.25rem]"></i>
-                                                </span>
+                                                <div className='bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center'>
+                                                    <span className="avatar avatar-lg bg-primary text-white inline-flex items-center justify-center w-7 h-7 rounded-[8px]">
+                                                        <i className="bi bi-qr-code-scan text-[1rem]"></i>
+                                                    </span>
+                                                </div>
                                                 <div className="flex flex-col items-start">
                                                     <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
-                                                        <div>QR Scanner</div>
+                                                        <div className='pl-3'>QR Scanner</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </Link>
+
                                         <Link to="/point-history" className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
                                             <div className="flex flex-row items-start mb-4">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
-                                                    <i className="ti ti-wallet text-[1.25rem]"></i>
+                                            <div className='bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center'>
+                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-7 h-7 rounded-[8px]  ">
+                                                    <i className="bi bi-coin text-[1rem]"></i>
                                                 </span>
+                                                </div>
                                                 <div className="flex flex-col items-start">
                                                     <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
-                                                        <div>Point History</div>
+                                                        <div className='pl-3'>Point History</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </Link>
                                         <Link to="/redeem-request" className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
                                             <div className="flex flex-row items-start mb-4 ">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
-                                                    <i className="ti ti-wallet text-[1.25rem]"></i>
+                                            <div className='bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center'>
+                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
+                                                    <i className="ri-gift-line text-[1rem]"></i>
                                                 </span>
+                                                </div>
                                                 <div className="flex flex-col items-start">
                                                     <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
-                                                        <div>Redeem Request</div>
+                                                        <div className='pl-3'>Redeem Request</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </Link>
                                         <Link to="/banking-history" className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
                                             <div className="flex flex-row items-start mb-4 ">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
-                                                    <i className="ti ti-wallet text-[1.25rem]"></i>
+                                            <div className='bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center'>
+                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
+                                                    <i className="ri-bank-line text-[1rem]"></i>
                                                 </span>
+                                                </div>
                                                 <div className="flex flex-col items-start">
                                                     <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
-                                                        <div>Banking History</div>
+                                                        <div className='pl-3'>Bank History</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </Link>
-                                        <Link to="/help-and-support" className="category-link  xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
+                                        <Link to="/help-and-support" className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
                                             <div className="flex flex-row items-start mb-4 ">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
-                                                    <i className="ti ti-wallet text-[1.25rem]"></i>
+                                            <div className='bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center'>
+                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
+                                                    <i className="ri-questionnaire-line text-[1rem]"></i>
                                                 </span>
+                                                </div>
                                                 <div className="flex flex-col items-start">
-
                                                     <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
-                                                        <div>Help and Support</div>
-
+                                                        <div className='pl-3'>Help & Support</div>
                                                     </div>
                                                 </div>
                                             </div>

@@ -2,10 +2,10 @@ from __future__ import unicode_literals
 import json
 import frappe
 from frappe import _
-from frappe.auth import LoginManager
-import requests
-import socket
+from frappe.auth import CookieManager, LoginManager
+
 from frappe import local
+from frappe.utils import get_request_session
 
 
 # user details-----
@@ -56,6 +56,7 @@ def get_user_details(name):
         frappe.log_error(frappe.get_traceback(), _("API Error"))
         raise frappe.ValidationError(_("Error fetching user details: {0}").format(str(e)))
 
+
 # update user profile and id--------
 @frappe.whitelist(allow_guest=True)
 def update_user_details():
@@ -73,20 +74,60 @@ def update_user_details():
             return {"status": "error", "message": "User not found."}
 
         user = frappe.get_doc("User", users[0]["name"])
+
+        if not user.enabled:
+            return {"status": "error", "message": f"User {old_email} is disabled. Please contact your System Manager."}
+
         if old_email != new_email:
+            user.first_name = user_data.get('first_name', user.first_name)
+            user.last_name = user_data.get('last_name', user.last_name)
+            user.full_name = user_data.get('full_name', user.full_name)
+            user.phone = user_data.get('phone', user.phone)
+            user.gender = user_data.get('gender', user.gender)
+            user.birth_date = user_data.get('birth_date', user.birth_date)
+            user.location = user_data.get('location', user.location)
+            user.save()
+            
+               # Check for carpenter document and update it similarly
+            if user.mobile_no:
+                carpenter = frappe.get_all(
+                    "Carpenter", 
+                    filters={"mobile_number": user.mobile_no}, 
+                    fields=["name"]
+                )
+
+                if carpenter:
+                    carpenter_doc = frappe.get_doc("Carpenter", carpenter[0]["name"])
+                    carpenter_doc.first_name = user.first_name
+                    carpenter_doc.last_name = user.last_name
+                    carpenter_doc.full_name = user.full_name
+                    carpenter_doc.city = user.location
+                    carpenter_doc.email = new_email
+                    carpenter_doc.gender = user.gender
+                    carpenter_doc.birth_date = user.birth_date
+
+                    if user_data.get('user_image'):
+                        carpenter_doc.image = user_data.get('user_image')
+                    
+                    carpenter_doc.save()
+
             # Rename the User document and update the email
             frappe.rename_doc("User", old_email, new_email)
             user.email = new_email
-            user.save()
-             # Call the login function with the new email
-            login_user_without_password(new_email)
             
-           # Return response to trigger reload and cache clear on the frontend
+            
+            login_user(new_email)
+            
+
+            user.save()
+            
+            # Return response to trigger reload and cache clear on the frontend
             return {
                 "status": "success", 
                 "message": "Email changed, reload required.", 
                 "reload_required": False,
                 "username": user.name
+               
             }
         
         # If emails match, just update user details
@@ -112,6 +153,7 @@ def update_user_details():
                 carpenter_doc.first_name = user.first_name
                 carpenter_doc.last_name = user.last_name
                 carpenter_doc.full_name = user.full_name
+                carpenter_doc.city = user.location
                 carpenter_doc.gender = user.gender
                 carpenter_doc.birth_date = user.birth_date
 
@@ -131,32 +173,39 @@ def update_user_details():
         return {"status": "error", "message": str(e)}
 
 
+# login with new user email--
+def login_user(user):
+    number = frappe.db.get_value("User", user, ['phone'])
+    frappe.local.login_manager.user = user
+    frappe.local.login_manager.post_login()
+    frappe.db.commit()
 
+    login_token = frappe.generate_hash(length=32)
+    frappe.cache().set_value(
+        f"login_token:{login_token}", frappe.local.session.sid, expires_in_sec=120
+    )
+    # print("\n\n login token", login_token, "\n\n")
+    # return login_token
+    return login_via_token(login_token, number)
 
-def login_user_without_password(email):
-    # Initialize the LoginManager
-    login_manager = LoginManager()
-    
-    # Retrieve the user based on the provided email
-    user = frappe.get_doc('User', email)
-    
-    if user:
-        # Manually set the session to indicate the user is logged in
-        login_manager.login_as(email)
+#  generate new user csrf token and manage cookies and sid ---
+@frappe.whitelist(allow_guest=True)
+def login_via_token(login_token: str, number):
+    sid = frappe.cache().get_value(f"login_token:{login_token}", expires=True)
+    print("api login_via_token", sid)
+    if not sid:
+        frappe.respond_as_web_page(_("Invalid Request"), _(
+            "Invalid Login Token"), http_status_code=417)
+        return
 
-        print(f"User {email} logged in successfully without a password.")
-    else:
-        print(f"User {email} not found.")
-        
-# def clear_sid_cookie():
-#     # Clear the sid cookie by setting it to expire
-#     local.response.cookies['sid'] = {
-#         'expires': 'Thu, 01 Jan 1970 00:00:00 GMT',
-#         'path': '/',
-#         'httponly': True,  # This is how it was set
-#     }
-
-
+    frappe.local.form_dict.sid = sid
+    if number:
+        frappe.local.cookie_manager = CookieManager()
+        frappe.local.cookie_manager.set_cookie("number", number)
+    frappe.local.login_manager = LoginManager()
+   
+    # frappe.utils.set_cookie("my_cookie_name", '7845795655', expires=None)
+    return True
 
   
 # get logged carpenter data-------------  

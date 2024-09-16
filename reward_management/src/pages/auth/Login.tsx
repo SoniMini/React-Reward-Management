@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BASE_URL, API_KEY, API_SECRET } from "../../utils/constants";
 import '../../assets/css/style.css';
+import SuccessAlert from '../../components/ui/alerts/SuccessAlert';
 
 
 
@@ -34,6 +35,9 @@ const Login = () => {
     const [passwordShow, setPasswordShow] = useState<boolean>(false);
     const [isOtpVisible, setIsOtpVisible] = useState(false);
     const [isloginOtpVisible, setIsloginOtpVisible] = useState(false);
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertTitle, setAlertTitle] = useState('');
 
     const [data, setData] = useState({
         email: "",
@@ -165,7 +169,10 @@ const Login = () => {
 
             if (otpResponse.data.message.status === "success") {
                 console.log("OTP matched:", otpResponse);
-                alert("OTP Matched Successfully.");
+                // alert("OTP Matched Successfully.");
+                setAlertTitle('Success');
+                setAlertMessage("OTP Matched Successfully.");
+                setShowSuccessAlert(true);
 
                 // Call the function to register a new Carpainter
                 const registerResponse = await registerCarpainter(firstName, lastName, mobile, city);
@@ -174,13 +181,19 @@ const Login = () => {
 
                 if (registerResponse.message.status === "success") {
                     console.log("Carpainter registered successfully:", registerResponse);
-                    alert("Carpainter Registered Successfully.");
+                    // alert("Carpainter Registered Successfully.");
+                    setAlertTitle('Success');
+                    setAlertMessage("Customer Registration Sent to the Admin Successfully.");
+                    setShowSuccessAlert(true);
                     // Redirect or reset form as needed
                 } else {
                     setLoginError('Failed to register. Please try again.');
                 }
             } else {
-                alert("OTP Not Matched.");
+                // alert("OTP Not Matched.");
+                setAlertTitle('Error');
+                setAlertMessage("OTP Not Matched.");
+                setShowSuccessAlert(true);
                 setLoginError('Failed to match OTP. Please try again.');
             }
         } catch (error) {
@@ -217,7 +230,10 @@ const Login = () => {
 
             if (response.data.message.status === "success") {
                 console.log("otp data", response);
-                alert("Otp has been sent to you mobile number !!!");
+                // alert("Otp has been sent to you mobile number !!!");
+                setAlertTitle('Success');
+                setAlertMessage("Otp has been sent to you mobile number !!!");
+                setShowSuccessAlert(true);
                 setIsOtpVisible(true);
             } else {
                 setLoginError('Failed to send OTP. Please try again.');
@@ -261,7 +277,10 @@ const Login = () => {
                 console.log('OTP Response Data:', otpResponse.data); // Log the OTP response data
     
                 if (otpResponse.data.message.status === "success") {
-                    alert("OTP has been sent to your mobile number!");
+                    // alert("OTP has been sent to your mobile number!");
+                    setAlertTitle('Success');
+                    setAlertMessage("OTP has been sent to your mobile number!");
+                    setShowSuccessAlert(true);
                     setIsloginOtpVisible(true);
                 } else {
                     setLoginError('Failed to send OTP. Please try again.');
@@ -340,9 +359,16 @@ const Login = () => {
     };
     
 
+   
     useEffect(() => {
-
-    }, []);
+        if (showSuccessAlert) {
+            const timer = setTimeout(() => {
+                setShowSuccessAlert(false);
+                // window.location.reload();
+            }, 3000); // Hide alert after 3 seconds
+            return () => clearTimeout(timer); // Cleanup timeout on component unmount
+        }
+    }, [showSuccessAlert]);
 
     return (
         <Fragment>
@@ -587,6 +613,14 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+            {showSuccessAlert && (
+                <SuccessAlert
+                    title={alertTitle}
+                    showButton={false}
+                    
+                    message={alertMessage}
+                />
+            )}
         </Fragment>
     );
 };
