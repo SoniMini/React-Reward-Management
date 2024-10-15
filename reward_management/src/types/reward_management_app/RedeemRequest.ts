@@ -28,6 +28,8 @@ export interface RedeemRequest{
 	request_status?: "Pending" | "Cancel" | "Approved"
 	/**	Mobile Number : Data	*/
 	mobile_number: string
+	/**	Email : Data	*/
+	email?: string
 	/**	Received Date : Date	*/
 	received_date?: string
 	/**	Received Time : Time	*/

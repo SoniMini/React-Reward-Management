@@ -16,6 +16,7 @@
   "request_status",
   "column_break_egy3",
   "mobile_number",
+  "email",
   "received_date",
   "received_time",
   "amount",
@@ -119,11 +120,17 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Full Name"
+  },
+  {
+   "fetch_from": "customer_id.email",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-13 10:32:33.019108",
+ "modified": "2024-10-15 19:16:07.544150",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Redeem Request",

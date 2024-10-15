@@ -25,7 +25,7 @@ const ProductQRHistory: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(100);
+    const [itemsPerPage] = useState(5);
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
@@ -36,7 +36,7 @@ const ProductQRHistory: React.FC = () => {
                 console.log('Fetched Product QR History data:', response);
 
                 if (response.data && response.data.message && Array.isArray(response.data.message)) {
-                    const qrTableData = response.data.message.flatMap(item  => item.qr_table_data || []);
+                    const qrTableData = response.data.message.flatMap(item => item.qr_table_data || []);
                     const formattedData = qrTableData.map(item => ({
                         ...item,
                         scanned: item.scanned === '1' ? 'Redeemed' : 'Not Redeemed',
@@ -54,19 +54,27 @@ const ProductQRHistory: React.FC = () => {
 
         fetchData();
     }, []);
-    
-    const totalPages = Math.ceil((data.length || 0) / itemsPerPage);
+
+    // Filter the data based on search query
+    const filteredData = data.filter(item => {
+        const query = searchQuery.toLowerCase();
+        return (
+            (item.product_qr_name && item.product_qr_name.toLowerCase().includes(query)) ||
+            (item.product_table_name && item.product_table_name.toLowerCase().includes(query)) ||
+            (item.carpenter_id && item.carpenter_id.toLowerCase().includes(query)) ||
+            (item.points !== undefined && item.points.toString().toLowerCase().includes(query)) || // Convert number to string for search
+            (item.scanned && item.scanned.toLowerCase().includes(query)) ||
+            (item.generated_date && item.generated_date.toLowerCase().includes(query))
+        );
+    });
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
     const handlePrevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
     };
 
     const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
     const handlePageChange = (pageNumber: number) => {
@@ -74,7 +82,7 @@ const ProductQRHistory: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value); // Update search query
+        setSearchQuery(value);
         setCurrentPage(1);
     };
 
@@ -86,18 +94,7 @@ const ProductQRHistory: React.FC = () => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
 
-    // Filter the data based on search query
-    const filteredData = data.filter(item => {
-        const query = searchQuery.toLowerCase();
-        return (
-            (item.product_qr_name && item.product_qr_name.toLowerCase().includes(query)) ||
-            (item.product_table_name && item.product_table_name.toLowerCase().includes(query)) ||
-            (item.carpenter_id && item.carpenter_id.toLowerCase().includes(query)) ||
-            (item.points !== undefined && item.points.toString().toLowerCase().includes(query)) || // Convert number to string for search
-            (item.scanned && item.scanned.toLowerCase().includes(query)) ||
-            (item.generated_date && item.generated_date.toLowerCase().includes(query)) 
-        );
-    });
+
 
     return (
         <Fragment>
@@ -146,7 +143,7 @@ const ProductQRHistory: React.FC = () => {
                                         }
                                     },
                                 ]}
-                                data={filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)}
+                                data={filteredData}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}

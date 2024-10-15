@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../assets/css/style.css';
 import '../../assets/css/sidebar.css';
 
-import sidebarLogo from '../../assets/images/logo-2.png';
+import sidebarLogo from '../../assets/images/01.png';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SidebarData } from '@/components/common/sidebar/sidebardata';
 import SubMenu from '@/components/common/sidebar/submenu';

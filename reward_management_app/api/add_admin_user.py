@@ -27,12 +27,13 @@ def get_users():
 
 # create new user-------
 @frappe.whitelist(allow_guest=True)
-def create_admin_user(first_name, last_name, email, mobile_number, password):
-    if not frappe.get_all("User", filters={"email": email}):
+def create_admin_user(first_name, last_name, email, mobile_number, password,username):
+    if not frappe.get_all("User", filters={"email": email,"username":username , "mobile_no":mobile_number}):
         user = frappe.get_doc({
             "doctype": "User",
             "first_name": first_name,
             "last_name": last_name,
+            "username": username,
             "email": email,
             "mobile_no": mobile_number,
             "send_welcome_email": 0,
@@ -42,7 +43,7 @@ def create_admin_user(first_name, last_name, email, mobile_number, password):
         user.insert(ignore_permissions=True)
         return {"status": "success", "message": _("User created successfully.")}
     else:
-        return {"status": "error", "message": _("Email already exists.")}
+        return {"status": "error", "message": _("Email or Username or Mobile number already exists.")}
 
                       
                       

@@ -1,5 +1,5 @@
 import React, { useState, Fragment, useEffect } from 'react';
-import desktoplogo from "@/assets/images/logo-2.png";
+import desktoplogo from "@/assets/images/01.png";
 import { Box, Button, Callout, Card, Text } from '@radix-ui/themes';
 // import { useFrappeAuth } from 'frappe-react-sdk';
 import { useNavigate } from 'react-router-dom';

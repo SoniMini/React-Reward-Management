@@ -1,18 +1,21 @@
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 import Pageheader from '@/components/common/pageheader/pageheader';
-import TableComponent from '@/components/ui/tables/tablecompnent'; 
+import TableComponent from '@/components/ui/tables/tablecompnent';
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
-import ViewModalComponent from '@/components/ui/models/ViewModel';
+// import ViewModalComponent from '@/components/ui/models/ViewModel';
 import React, { Fragment, useState } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import SunEditor from 'suneditor-react';
-import 'suneditor/dist/css/suneditor.min.css'; 
+import 'suneditor/dist/css/suneditor.min.css';
+import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
+import DangerAlert from '../../../components/ui/alerts/DangerAlert';
+
 
 interface FAQ {
     name: string;
     question?: string;
-    answer:string;
+    answer: string;
     status: string;
     created_date?: string;
 }
@@ -26,11 +29,16 @@ const FAQDashboard: React.FC = () => {
     const [answer, setAnswer] = useState('');
     const [selectedFAQ, setSelectedFAQ] = useState<FAQ | null>(null);
     const [faqData, setFaqData] = useState<FAQ[]>([]);
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertTitle, setAlertTitle] = useState('');
+    const [faqToDelete, setFaqToDelete] = useState<FAQ | null>(null);
     const [isReadOnly, setIsReadOnly] = useState(false);
-    const [searchQuery , setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
 
     const { data } = useFrappeGetDocList<FAQ>('FAQ', {
-        fields: ['name', 'question', 'status', 'created_date','answer'],
+        fields: ['name', 'question', 'status', 'created_date', 'answer'],
         page: currentPage,
         filters: [['status', '=', 'Active']],
         pageSize: itemsPerPage
@@ -38,11 +46,18 @@ const FAQDashboard: React.FC = () => {
 
     React.useEffect(() => {
         if (data) {
-            setFaqData(data);   
+            setFaqData(data);
         }
-    }, [data]);
-    
-    console.log("faqData",faqData);
+        if (showSuccessAlert) {
+            const timer = setTimeout(() => {
+                setShowSuccessAlert(false);
+                window.location.reload();
+            }, 3000);
+            return () => clearTimeout(timer); 
+        }
+    }, [data,showSuccessAlert]);
+
+    console.log("faqData", faqData);
     const totalPages = Math.ceil((faqData?.length || 0) / itemsPerPage);
 
     const handlePrevPage = () => {
@@ -58,7 +73,7 @@ const FAQDashboard: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value); // Update search query
+        setSearchQuery(value);
         setCurrentPage(1);
         console.log("Search value:", value);
     };
@@ -80,19 +95,19 @@ const FAQDashboard: React.FC = () => {
         event.preventDefault();
         console.log("Question:", question);
         console.log("Answer:", answer);
-    
+
         if (!answer || !question) {
             alert("Please enter a valid question and answer.");
             return;
         }
-    
+
         const data = {
             question,
             answer,
             status: "Active",
             created_date: new Date().toISOString().split('T')[0],
         };
-    
+
         try {
             let response;
             if (selectedFAQ) {
@@ -114,60 +129,76 @@ const FAQDashboard: React.FC = () => {
                     body: JSON.stringify(data),
                 });
             }
-    
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-    
-            alert(selectedFAQ ? 'FAQ updated successfully!' : 'FAQ created successfully!');
+
+            setShowSuccessAlert(true);
+            setAlertMessage(selectedFAQ ? 'FAQ updated successfully!' : 'FAQ created successfully!');
+            setAlertTitle('Success');
+
+
+            // alert(selectedFAQ ? 'FAQ updated successfully!' : 'FAQ created successfully!');
             setQuestion('');
+
             setAnswer('');
             handleCloseModal();
-           
+
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to save FAQ.');
         }
     };
-    
 
-    const handleDeleteFAQ = async (item: FAQ) => {
-        const confirmDelete = window.confirm('Are you sure you want to delete this announcement?');
-        if(confirmDelete){
+    const handleDeleteFAQ = (item: FAQ) => {
+        setFaqToDelete(item);
+        setIsConfirmDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (faqToDelete) {
             try {
-                const response = await fetch(`/api/resource/FAQ/${item.name}`, {
+                const response = await fetch(`/api/resource/FAQ/${faqToDelete.name}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
                     }
                 });
-        
+
                 if (!response.ok) {
                     const responseData = await response.json();
                     throw new Error(`Error: ${responseData.message || response.statusText}`);
                 }
-        
-                setFaqData(prevData => prevData.filter(faq => faq.name !== item.name));
-                alert('FAQ deleted successfully!');
+
+                setFaqData(prevData => prevData.filter(faq => faq.name !== faqToDelete.name));
+                setAlertTitle('FAQ Deleted');
+                setAlertMessage('FAQ deleted successfully!');
+                setShowSuccessAlert(true);
             } catch (error) {
                 console.error('Error deleting FAQ:', error);
                 alert('Failed to delete FAQ.');
             }
         }
-       
+        setIsConfirmDeleteModalOpen(false);
+        setFaqToDelete(null);
+    };
+
+    const cancelDelete = () => {
+        setIsConfirmDeleteModalOpen(false);
+        setFaqToDelete(null);
     };
 
 
-    
-    const handleEditFAQ = (item : FAQ) => {
-        setSelectedFAQ(item); 
+    const handleEditFAQ = (item: FAQ) => {
+        setSelectedFAQ(item);
         setModalTitle('Edit FAQ');
         setQuestion(item.question || '');
         setAnswer(item.answer || '');
         setIsReadOnly(false);
         setIsModalOpen(true);
     }
-    
+
     const handleView = (item: FAQ) => {
         setSelectedFAQ(item);
         setModalTitle('View FAQ');
@@ -239,7 +270,7 @@ const FAQDashboard: React.FC = () => {
                                 showDelete={true}
                                 onDelete={handleDeleteFAQ}
                                 showView={true}
-                                onView={handleView} 
+                                onView={handleView}
                                 editHeader='Update'
                                 columnStyles={{
                                     'FAQ ID': 'text-[var(--primaries)] font-semibold',
@@ -278,7 +309,7 @@ const FAQDashboard: React.FC = () => {
                                         className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         placeholder="Enter your question here"
                                         id="question"
-                                        
+
                                         value={question}
                                         onChange={(e) => setQuestion(e.target.value)}
                                         readOnly={isReadOnly}
@@ -296,9 +327,9 @@ const FAQDashboard: React.FC = () => {
                                                 ["align", "list", "indent"],
                                                 ["fontColor", "hiliteColor"],
                                                 ["outdent", "indent"],
-                                              
-                                              
-                                              
+
+
+
                                             ],
                                             font: sortedFontOptions,
                                         }}
@@ -342,6 +373,26 @@ const FAQDashboard: React.FC = () => {
                     </div>
                 </div>
             )}
+    {isConfirmDeleteModalOpen && (
+                <DangerAlert
+                type="danger"
+                message="Are you sure you want to delete this FAQ?"
+                onDismiss={cancelDelete}
+                onConfirm={confirmDelete}
+                cancelText="Cancel"
+                confirmText="Continue"
+            />
+            )}
+             {showSuccessAlert && (
+                <SuccessAlert
+                    title={alertTitle}
+                    message={alertMessage}
+                    showButton={false}
+                    onCancel={() => setShowSuccessAlert(false)} onClose={function (): void {
+                        throw new Error('Function not implemented.');
+                    } }                />
+            )}
+           
         </Fragment>
     );
 };

@@ -7,7 +7,7 @@ import '../../assets/css/pages/carpenterproducts.css';
 import Modalsearch from "@/components/common/modalsearch/modalsearch";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'boxicons/css/boxicons.min.css';
-import sidebarLogo from '../../assets/images/logo-2.png';
+import sidebarLogo from '../../assets/images/01.png';
 import { Link } from 'react-router-dom';
 
 const CustomerProducts = () => {

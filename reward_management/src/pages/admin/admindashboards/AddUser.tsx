@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
@@ -9,6 +9,8 @@ import TableComponent from '@/components/ui/tables/tablecompnent';
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
 import AddAdminUser from '@/components/ui/models/AddAdminModel';
 import SuccessAlert from '@/components/ui/alerts/SuccessAlert';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css'; 
 
 // Validation Schema
 const schema = yup.object().shape({
@@ -33,11 +35,23 @@ const AddUserDashboard: React.FC = () => {
         }
     });
 
+
+    const notyf = new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        },
+        duration: 5000, 
+    });
+
+
     const [usersData, setUsersData] = React.useState<User[]>([]);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Number of items per page
+    const [itemsPerPage] = useState(5);
+    const [searchQuery, setSearchQuery] = useState('');
+
 
     React.useEffect(() => {
         if (showSuccessAlert) {
@@ -53,7 +67,7 @@ const AddUserDashboard: React.FC = () => {
             }
         };
         fetchAdminUsers();
-    },[showSuccessAlert]);
+    }, [showSuccessAlert]);
 
     const handleAddButtonClick = () => {
         setIsModalOpen(true);
@@ -63,16 +77,26 @@ const AddUserDashboard: React.FC = () => {
         setIsModalOpen(false);
         reset();
     };
+    // Filter the data based on search query
+    const filteredData = usersData.filter(item => {
+        const query = searchQuery.toLowerCase();
+        return (
+            item.first_name.toLowerCase().includes(query) ||
+            item.last_name.toLowerCase().includes(query) ||
+            item.username.toLowerCase().includes(query) ||
+            item.email.toLowerCase().includes(query) ||
+            item.mobile_no.toLowerCase().includes(query)
+        );
+    });
+
+    const totalPages = Math.ceil((filteredData?.length || 0) / itemsPerPage);
+
     const handlePrevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
     };
 
     const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
     const handlePageChange = (pageNumber: number) => {
@@ -80,24 +104,56 @@ const AddUserDashboard: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value); // Update search query
+        setSearchQuery(value);
         setCurrentPage(1);
+        console.log("Search value:", value);
     };
+   
 
     const onSubmit = async (data: any) => {
-        console.log("btn clicked");
         try {
             const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.add_admin_user.create_admin_user`, {
                 first_name: data.firstName,
                 last_name: data.lastName,
+                username: data.username,
                 email: data.email,
                 mobile_number: data.mobileNumber,
                 password: data.password
             });
+
             console.log("User created successfully", response.data);
-            handleCloseModal();
+            if (response.data.message.status === "success") {
+                setShowSuccessAlert(true);
+                handleCloseModal();
+            } else {
+                notyf.error(response.data.message.message);
+                // Here you can reset the form if needed
+                reset();
+            }
+
         } catch (error) {
             console.error("Error creating admin user:", error);
+            if (error.response && error.response.data) {
+                const serverMessages = error.response.data._server_messages 
+                    ? JSON.parse(error.response.data._server_messages) 
+                    : [];
+
+                const userFriendlyMessages = serverMessages.map((msg: string) => JSON.parse(msg).message);
+
+                // Display the first message to the user
+                notyf.error(userFriendlyMessages.join('\n'));
+
+                // Find the field that caused the error and set focus on it
+                if (userFriendlyMessages.includes("Username already exists")) {
+                    setFocus("username");
+                } else if (userFriendlyMessages.includes("Email is already taken")) {
+                    setFocus("email");
+                } else if (userFriendlyMessages.includes("Mobile number already exists")) {
+                    setFocus("mobileNumber");
+                }
+            } else {
+                notyf.error("An error occurred while creating the user.");
+            }
         }
     };
 
@@ -108,10 +164,10 @@ const AddUserDashboard: React.FC = () => {
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
                     <div className="box">
-                        <TableBoxComponent 
-                            title="User List" 
-                            onSearch={(value) => console.log("Search value:", value)} 
-                            onAddButtonClick={handleAddButtonClick} 
+                        <TableBoxComponent
+                            title="User List"
+                            onSearch={handleSearch}
+                            onAddButtonClick={handleAddButtonClick}
                             buttonText="Add New User"
                             showButton={true}
                         />
@@ -125,7 +181,7 @@ const AddUserDashboard: React.FC = () => {
                                     { header: 'Email', accessor: 'email' },
                                     { header: 'Mobile Number', accessor: 'mobile_no' }
                                 ]}
-                                data={usersData || []}
+                                data={filteredData  || []} 
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}
@@ -158,16 +214,20 @@ const AddUserDashboard: React.FC = () => {
                     errors={errors}
                 />
             )}
-             {/* Success Alert */}
-             {showSuccessAlert && <SuccessAlert 
-               showButton={false}
-               showCancleButton={false}
-               showCollectButton={false}
-               showAnotherButton={false}
-               showMessagesecond={false}
-               message="New Admin User Created Successfully!" />}
+            {/* Success Alert */}
+            {showSuccessAlert && <SuccessAlert
+                showButton={false}
+                showCancleButton={false}
+                showCollectButton={false}
+                showAnotherButton={false}
+                showMessagesecond={false}
+                message="New Admin User Created Successfully!" />}
         </Fragment>
     );
 };
 
 export default AddUserDashboard;
+function setFocus(arg0: string) {
+    throw new Error('Function not implemented.');
+}
+

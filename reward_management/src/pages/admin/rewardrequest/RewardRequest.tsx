@@ -8,7 +8,7 @@ import { useFrappeGetDocList } from 'frappe-react-sdk';
 import { useNavigate } from 'react-router-dom';
 import EditModalComponent from '@/components/ui/models/RewardRequestEdit';
 import axios from 'axios';
-import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
+import { BASE_URL } from "../../../utils/constants";
 
 interface RewardRequest {
     name: string;

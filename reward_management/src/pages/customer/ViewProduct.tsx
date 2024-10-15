@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from 'react';
-import sidebarLogo from '../../assets/images/logo-2.png';
+import sidebarLogo from '../../assets/images/01.png';
 import Modalsearch from "@/components/common/modalsearch/modalsearch";
 
 import axios from 'axios';
