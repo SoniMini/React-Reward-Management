@@ -1,0 +1,22 @@
+{
+  "name": "reward_management_app",
+  "version": "1.0.0",
+  "description": "reward_management_app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "cd reward_management && yarn install",
+    "dev": "cd reward_management && yarn dev",
+    "build": "cd reward_management && yarn build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^5.16.7",
+    "@mui/material": "^5.16.7",
+    "dompurify": "^3.1.6"
+  }
+}

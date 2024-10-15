@@ -130,6 +130,17 @@ app_license = "agpl-3.0"
 # 	}
 # }
 
+
+doc_events = {
+    "User": {
+         "after_insert": "reward_management_app.api.admin_notifications.send_system_notification"
+    },
+   "Redeem Request": {
+        "on_update": "reward_management_app.api.admin_notifications.send_customer_reward_approved_notification",
+    }
+}
+
+
 # Scheduled Tasks
 # ---------------
 
@@ -227,3 +238,24 @@ app_license = "agpl-3.0"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+
+website_route_rules = [{'from_route': '/reward_management/<path:app_path>', 'to_route': 'reward_management'},]
+
+
+fixtures = [
+
+     {
+        "dt": "Role",     
+    },
+     {
+        "dt": "Custom DocPerm",
+    },
+     {
+         "dt":"Role Profile",
+     },
+     {
+         "dt":"Website Settings",
+     }
+
+
+]
