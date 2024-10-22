@@ -17,7 +17,9 @@ interface ProductQRHistory {
     scanned: string,
     generated_date: string,
     qr_code_image: string,
-    points?: number
+    points?: number,
+    carpenter_name:string,
+    mobile_number:string
 }
 
 const ProductQRHistory: React.FC = () => {
@@ -63,6 +65,8 @@ const ProductQRHistory: React.FC = () => {
             (item.product_qr_name && item.product_qr_name.toLowerCase().includes(query)) ||
             (item.product_table_name && item.product_table_name.toLowerCase().includes(query)) ||
             (item.carpenter_id && item.carpenter_id.toLowerCase().includes(query)) ||
+            (item.carpenter_name && item.carpenter_name.toLowerCase().includes(query))||
+            (item.mobile_number && item.mobile_number.toLowerCase()).includes(query)||
             (item.points !== undefined && item.points.toString().toLowerCase().includes(query)) || // Convert number to string for search
             (item.scanned && item.scanned.toLowerCase().includes(query)) ||
             (item.generated_date && item.generated_date.toLowerCase().includes(query))
@@ -129,6 +133,8 @@ const ProductQRHistory: React.FC = () => {
                                         accessor: 'scanned',
                                     },
                                     { header: 'Carpenter ID', accessor: 'carpenter_id' },
+                                    { header: 'Carpenter Name', accessor: 'carpenter_name' },
+                                    { header: 'Mobile Number', accessor: 'mobile_number' },
                                     { header: 'Redeemed Date', accessor: 'redeem_date' },
                                     {
                                         header: 'QR Image',
