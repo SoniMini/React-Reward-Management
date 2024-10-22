@@ -41,6 +41,7 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
     const [notificationCount, setNotificationCount] = useState(5);
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     const [isDropdownVisible, setDropdownVisible] = useState(false);
+    
    
     const [UserImage, setUserImage] = useState(ProfilePic);
 

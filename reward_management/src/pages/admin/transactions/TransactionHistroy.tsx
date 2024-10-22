@@ -21,10 +21,12 @@ interface Transaction {
 const TransactionHistory: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5); // Number of items per page
-    const [searchQuery, setSearchQuery] = useState(''); // State for search query
+    const [searchQuery, setSearchQuery] = useState(''); 
+    const [fromDate, setFromDate] = useState<Date | null>(null);
+    const [toDate, setToDate] = useState<Date | null>(null);
 
     const { data: transactionData, error } = useFrappeGetDocList<Transaction>('Bank Balance', {
-        fields: ['name', 'redeem_request_id', 'carpainter_id', 'mobile_number', 'transaction_id', 'transfer_date', 'amount', 'transfer_time']
+        fields: ['name', 'redeem_request_id', 'carpainter_id','carpainter_name', 'mobile_number', 'transaction_id', 'transfer_date', 'amount', 'transfer_time']
     });
 
     if (error) {
@@ -54,6 +56,12 @@ const TransactionHistory: React.FC = () => {
         setCurrentPage(1);
         console.log("Search value:", value);
     };
+    const handleDateFilter = (from: Date | null, to: Date | null) => {
+        setFromDate(from);
+        setToDate(to);
+        setCurrentPage(1);
+    };
+
 
     const handleAddProductClick = () => {
         console.log("Add Product button clicked");
@@ -72,19 +80,47 @@ const TransactionHistory: React.FC = () => {
         transfer_date: transaction.transfer_date ? formatDate(transaction.transfer_date) : '',
     })) || [];
 
+
+    const parseDateString = (dateString: string): Date | null => {
+        if (typeof dateString !== 'string') {
+            console.error("Expected a string, but received:", dateString);
+            return null;
+        }
+        const parts = dateString.split('-');
+        if (parts.length !== 3) {
+            console.error("Invalid date format:", dateString);
+            return null;
+        }
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; 
+        const year = parseInt(parts[2], 10);
+        return new Date(year, month, day);
+    };
+ 
     const filteredData = formattedTransactionData.filter(transaction => {
         const query = searchQuery.toLowerCase();
-        return (
+        
+        // Parse the transfer_date for filtering
+        const transactionDateString = transaction.transfer_date;
+        const isDateValid = typeof transactionDateString === 'string' && transactionDateString.trim() !== '';
+        const transactionDate = isDateValid ? parseDateString(transactionDateString) : null;
+    
+        // Check if the transaction date is within the selected date range
+        const isWithinDateRange = (!fromDate || (transactionDate && transactionDate >= fromDate)) &&
+            (!toDate || (transactionDate && transactionDate <= toDate));
+    
+        const matchesSearchQuery = 
             (transaction.name && transaction.name.toLowerCase().includes(query)) ||
             (transaction.carpainter_id && transaction.carpainter_id.toLowerCase().includes(query)) ||
             (transaction.redeem_request_id && transaction.redeem_request_id.toString().toLowerCase().includes(query)) ||
             (transaction.carpainter_name && transaction.carpainter_name.toLowerCase().includes(query)) ||
             (transaction.transaction_id && transaction.transaction_id.toString().toLowerCase().includes(query)) ||
-            (transaction.transfer_date && transaction.transfer_date.toLowerCase().includes(query)) ||
             (transaction.amount !== undefined && transaction.amount.toString().toLowerCase().includes(query)) ||
             (transaction.mobile_number && transaction.mobile_number.toLowerCase().includes(query)) ||
-            (transaction.transfer_time && transaction.transfer_time.toLowerCase().includes(query))
-        );
+            (transaction.transfer_time && transaction.transfer_time.toLowerCase().includes(query));
+    
+        // Return true if it is within the date range and matches the search query
+        return isWithinDateRange && matchesSearchQuery;
     });
 
     useEffect(()=>{
@@ -111,6 +147,9 @@ const TransactionHistory: React.FC = () => {
                             onAddButtonClick={handleAddProductClick} 
                             buttonText="Add Announcement" 
                             showButton={false}
+                            showFromDate={true}
+                            showToDate={true}
+                            onDateFilter={handleDateFilter}
                         />
 
                         <div className="box-body m-5">
@@ -119,6 +158,7 @@ const TransactionHistory: React.FC = () => {
                                     { header: 'Transaction ID', accessor: 'name' },
                                     { header: 'Redeem Request ID', accessor: 'redeem_request_id' },
                                     { header: 'Carpenter ID', accessor: 'carpainter_id' },
+                                    { header: 'Carpenter Name', accessor: 'carpainter_name' },
                                     { header: 'Mobile Number', accessor: 'mobile_number' },  
                                     { header: 'Transaction Account', accessor: 'transaction_id' },
                                     { header: 'Amount', accessor: 'amount' },

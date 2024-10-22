@@ -8,6 +8,8 @@ import React, { Fragment, useState } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import DangerAlert from '../../../components/ui/alerts/DangerAlert';
+import { BASE_URL } from "../../../utils/constants";
+
 interface Announcements {
     name: string,
     title?: string,
@@ -18,20 +20,28 @@ interface Announcements {
 
 const AnnouncementDashboard: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Number of items per page
-    const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
-    const [modalMode, setModalMode] = useState<'add' | 'edit'>('add'); // State to track if modal is for add or edit
-    const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcements | null>(null); // State for selected announcement
+     // Number of items per page
+    const [itemsPerPage] = useState(5);
+    // State for modal visibility
+    const [isModalOpen, setIsModalOpen] = useState(false); 
+    // State to track if modal is for add or edit
+    const [modalMode, setModalMode] = useState<'add' | 'edit'>('add'); 
+     // State for selected announcement
+    const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcements | null>(null);
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
     const [date, setDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [searchQuery, setSearchQuery] = useState(''); // State for search query
+    // State for search query
+    const [searchQuery, setSearchQuery] = useState(''); 
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [alertTitle, setAlertTitle] = useState('');
-    const [announcementToDelete, setAnnouncementToDelete] = useState<Announcements | null>(null); // Track the announcement to delete
+    // Track the announcement to delete
+    const [announcementToDelete, setAnnouncementToDelete] = useState<Announcements | null>(null); 
+    const [fromDate, setFromDate] = useState<Date | null>(null);
+    const [toDate, setToDate] = useState<Date | null>(null);
 
     const { data: announcementsData, mutate: mutateAnnouncements } = useFrappeGetDocList<Announcements>('Announcements', {
         fields: ['name', 'title', 'subject', 'published_on', 'end_date']
@@ -39,13 +49,13 @@ const AnnouncementDashboard: React.FC = () => {
 
 
     React.useEffect(() => {
-        document.title="Announcements";
+        document.title='Announcements'
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
                 // window.location.reload();
-            }, 3000);
-            return () => clearTimeout(timer); 
+            }, 3000); 
+            return () => clearTimeout(timer); // Cleanup timeout on component unmount
         }
     }, [showSuccessAlert]);
 
@@ -69,10 +79,19 @@ const AnnouncementDashboard: React.FC = () => {
 
 
     const handleSearch = (value: string) => {
+        // Update search query
         setSearchQuery(value); 
         setCurrentPage(1);
         console.log("Search value:", value);
     };
+
+
+    const handleDateFilter = (from: Date | null, to: Date | null) => {
+        setFromDate(from);
+        setToDate(to);
+        setCurrentPage(1);
+    };
+
 
     const handleAddProductClick = () => {
         setModalMode('add');
@@ -80,11 +99,11 @@ const AnnouncementDashboard: React.FC = () => {
         setAnswer('');
         setDate('');
         setEndDate('');
-        setIsModalOpen(true);
+        setIsModalOpen(true); 
     };
 
     const handleCloseModal = () => {
-        setIsModalOpen(false);
+        setIsModalOpen(false); 
     };
 
     const handleSubmit = async () => {
@@ -96,7 +115,7 @@ const AnnouncementDashboard: React.FC = () => {
         };
 
         try {
-            const response = await fetch('/api/resource/Announcements', {
+            const response = await fetch(`${BASE_URL}/api/resource/Announcements`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -114,7 +133,7 @@ const AnnouncementDashboard: React.FC = () => {
                 handleCloseModal();
                 mutateAnnouncements(); // Refresh the announcements data
             } else {
-                console.error("Failed to add announcement:", responseData); // Log the response data
+                console.error("Failed to add announcement:", responseData); 
             }
         } catch (error) {
             console.error("Error:", error.message || error);
@@ -128,12 +147,13 @@ const AnnouncementDashboard: React.FC = () => {
         const data = {
             title: question,
             subject: answer,
-            published_on: formatDateToMySQL(date),
-            end_date: formatDateToMySQL(endDate)
+            // Convert date to yyyy-mm-dd
+            published_on: formatDateToISO(date), 
+            end_date: formatDateToISO(endDate) 
         };
 
         try {
-            const response = await fetch(`/api/resource/Announcements/${selectedAnnouncement.name}`, {
+            const response = await fetch(`${BASE_URL}/api/resource/Announcements/${selectedAnnouncement.name}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -168,7 +188,7 @@ const AnnouncementDashboard: React.FC = () => {
         if (!announcementToDelete) return;
 
         try {
-            const response = await fetch(`/api/resource/Announcements/${announcementToDelete.name}`, {
+            const response = await fetch(`${BASE_URL}/api/resource/Announcements/${announcementToDelete.name}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -176,8 +196,10 @@ const AnnouncementDashboard: React.FC = () => {
             });
 
             if (!response.ok) {
-                const responseData = await response.json(); // Add this line
-                throw new Error(`Error: ${responseData.message || response.statusText}`); // Use response data for detailed error
+                 // Add this line
+                const responseData = await response.json();
+                // Use response data for detailed error
+                throw new Error(`Error: ${responseData.message || response.statusText}`); 
             }
 
             setAlertTitle('Success');
@@ -204,21 +226,42 @@ const AnnouncementDashboard: React.FC = () => {
         setAnswer(item.subject);
         setDate(item.published_on || '');
         setEndDate(item.end_date || '');
-        setIsModalOpen(true); // Open the modal
+        setIsModalOpen(true); 
     };
 
+   
+
     const formatDateToMySQL = (dateString: string) => {
+        const [year, month, day] = dateString.split('-').map(Number);
+        return `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`;
+    };
+
+
+
+    const parseDateString = (dateString: string): Date | null => {
+        if (typeof dateString !== 'string') {
+            console.error("Expected a string, but received:", dateString);
+            return null;
+        }
+        const parts = dateString.split('-');
+        if (parts.length !== 3) {
+            console.error("Invalid date format:", dateString);
+            return null;
+        }
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; 
+        const year = parseInt(parts[2], 10);
+        return new Date(year, month, day);
+    };
+    
+    const formatDateToISO = (dateString: string) => {
         const date = new Date(dateString);
         const year = date.getFullYear();
         const month = (`0${date.getMonth() + 1}`).slice(-2);
         const day = (`0${date.getDate()}`).slice(-2);
         return `${year}-${month}-${day}`;
     };
-
-    // const formatDateToISO = (dateString: string) => {
-    //     const date = new Date(dateString);
-    //     return date.toISOString().split('T')[0];
-    // };
+    
 
 
     const formattedAnnouncementsData = announcementsData?.map(announcement => ({
@@ -228,38 +271,59 @@ const AnnouncementDashboard: React.FC = () => {
     })) || [];
 
 
-    const filteredData = formattedAnnouncementsData.filter(announcementsData => {
+    const filteredData = formattedAnnouncementsData.filter(announcement => {
         const query = searchQuery.toLowerCase();
+        
+        // Parse the published_on date for filtering
+        const announcementDateString = announcement.published_on;
+        const isDateValid = typeof announcementDateString === 'string' && announcementDateString.trim() !== '';
+        const announcementDate = isDateValid ? parseDateString(announcementDateString) : null;
+
+        const endDateString = announcement.end_date;
+        const isendDateValid = typeof endDateString === 'string' && endDateString.trim() !== '';
+        const endDate = isendDateValid ? parseDateString(endDateString) : null ;
+        
+        // Check if the announcement date is within the selected date range
+        const isWithinDateRange = ((!fromDate || (announcementDate && announcementDate >= fromDate)) &&
+                                  (!toDate || (announcementDate && announcementDate <= toDate)) || (!fromDate || (endDate && endDate >= fromDate)) &&
+                                  (!toDate || (endDate && endDate <= toDate)));
+        
         return (
-            (announcementsData.name && announcementsData.name.toLowerCase().includes(query)) ||
-            (announcementsData.title && announcementsData.title.toLowerCase().includes(query)) ||
-            (announcementsData.subject && announcementsData.subject.toString().toLowerCase().includes(query)) ||
-            (announcementsData.published_on && announcementsData.published_on.toLowerCase().includes(query)) ||
-            (announcementsData.end_date && announcementsData.end_date.toString().toLowerCase().includes(query))
+            isWithinDateRange && // Include date range filtering
+            (
+                (announcement.name && announcement.name.toLowerCase().includes(query)) ||
+                (announcement.title && announcement.title.toLowerCase().includes(query)) ||
+                (announcement.subject && announcement.subject.toString().toLowerCase().includes(query)) ||
+                (announcement.end_date && announcement.end_date.toString().toLowerCase().includes(query))
+            )
         );
     });
+    
 
 
     return (
         <Fragment>
-            {/* <Pageheader currentpage="Announcement" activepage="Announcement" mainpage="Announcement" /> */}
             <Pageheader 
                 currentpage={"Announcement"} 
                 activepage={"/announcement"} 
                 
                 activepagename='Announcement' 
-               
+                
             />
+          
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
-                    <div className="box">
+                    <div className="">
                         <TableBoxComponent
                             title="Announcements"
                             onSearch={handleSearch}
                             onAddButtonClick={handleAddProductClick}
-                            buttonText="Add Announcement" // Custom button text
-                            showButton={true} // Show the button
+                            buttonText="Add Announcement" 
+                            showButton={true} 
+                            showFromDate={true}
+                            showToDate={true}
+                            onDateFilter={handleDateFilter}
                         />
 
                         <div className="box-body m-5">
@@ -288,7 +352,7 @@ const AnnouncementDashboard: React.FC = () => {
                                 showView={false}
                                 editHeader='Action'
                                 columnStyles={{
-                                    'ID': 'text-[var(--primaries)] font-semibold', // Example style for QR ID column
+                                    'ID': 'text-[var(--primaries)] font-semibold', 
                                 }}
                             />
                         </div>
@@ -329,7 +393,7 @@ const AnnouncementDashboard: React.FC = () => {
                     confirmText="Continue"
                 />
             )}
-              {showSuccessAlert && (
+            {showSuccessAlert && (
                 <SuccessAlert
                     title={alertTitle}
                     showButton={false}

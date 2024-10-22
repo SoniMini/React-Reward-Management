@@ -21,8 +21,8 @@ def create_new_carpainters(firstname, lastname, city, mobile):
             "full_name": full_name,  # Set full_name here
             "city": city,
             "mobile_number": mobile,
-            # "naming_series": "Carpainter.-.{full_name}.-.YYYY.-.#####",  # Adjust as per your naming convention
-            "status": "Pending"  # Set status to "Pending"
+            # "email": f"{mobile}@gmail.com", 
+            # "status": "Pending"  # Set status to "Pending"
         })
         carpenter.insert()
 

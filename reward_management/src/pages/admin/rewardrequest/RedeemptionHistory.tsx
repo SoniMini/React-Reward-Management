@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 interface RewardRequestHistory {
     name: string,
     customer_id?: string,
+    full_name?:string,
     redeemed_points: string,
     current_point_status?: number,
     total_points?: string,
@@ -41,9 +42,11 @@ const RedeemptionHistory: React.FC = () => {
     const [itemsPerPage] = useState(5); // Number of items per page
     const navigate = useNavigate(); 
     const [searchQuery, setSearchQuery] = useState(''); // State for search query
+    const [fromDate, setFromDate] = useState<Date | null>(null);
+    const [toDate, setToDate] = useState<Date | null>(null);
 
     const { data: rewardrequesthistoryData } = useFrappeGetDocList<RewardRequestHistory>('Redeem Request', {
-        fields: ['name', 'customer_id', 'total_points', 'current_point_status', 'redeemed_points', 'received_date', 'received_time', 'request_status', 'approved_on', 'approve_time', 'transection_id', 'amount']
+        fields: ['name', 'customer_id', 'total_points', 'current_point_status','full_name', 'redeemed_points','mobile_number' ,'received_date', 'received_time', 'request_status', 'approved_on', 'approve_time', 'transection_id', 'amount']
     });
     const formattedData = rewardrequesthistoryData?.map(request => ({
         ...request,
@@ -51,20 +54,48 @@ const RedeemptionHistory: React.FC = () => {
         approved_on: formatDate(request.approved_on),
         // Format other dates as needed
     }));
+    const parseDateString = (dateString: string): Date | null => {
+        if (typeof dateString !== 'string') {
+            console.error("Expected a string, but received:", dateString);
+            return null;
+        }
+        const parts = dateString.split('-');
+        if (parts.length !== 3) {
+            console.error("Invalid date format:", dateString);
+            return null;
+        }
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; 
+        const year = parseInt(parts[2], 10);
+        return new Date(year, month, day);
+    };
+
 
          // Filter data based on search query
-         const filteredData = formattedData?.filter(request => 
-            request.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            request.customer_id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (request.redeemed_points !== undefined && request.redeemed_points.toString().toLowerCase().includes(searchQuery)) ||
-          
-            (request.approved_on !== undefined && request.approved_on.toString().toLowerCase().includes(searchQuery)) ||
-            (request.approve_time !== undefined && request.approve_time.toString().toLowerCase().includes(searchQuery)) ||
-            (request.current_point_status !== undefined && request.current_point_status.toString().toLowerCase().includes(searchQuery)) ||
-           
-            request.request_status?.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-
+         const filteredData = formattedData?.filter(request => {
+            // Parse the approved_on date string into a Date object
+            const approvedDateString = request.approved_on; 
+            const isDateValid = typeof approvedDateString === 'string' && approvedDateString.trim() !== '';
+            const approvedDate = isDateValid ? parseDateString(approvedDateString) : null;
+    
+            // Check if the approved_on date is within the selected date range
+            const isWithinDateRange = (!fromDate || (approvedDate && approvedDate >= fromDate)) &&
+                (!toDate || (approvedDate && approvedDate <= toDate));
+    
+            return (
+                request.request_status === "Approved" &&
+                isWithinDateRange &&
+                (
+                    request.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    request.customer_id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    (request.redeemed_points !== undefined && request.redeemed_points.toString().toLowerCase().includes(searchQuery)) ||
+                    (request.approved_on !== undefined && request.approved_on.toString().toLowerCase().includes(searchQuery)) ||
+                    (request.approve_time !== undefined && request.approve_time.toString().toLowerCase().includes(searchQuery)) ||
+                    (request.current_point_status !== undefined && request.current_point_status.toString().toLowerCase().includes(searchQuery)) ||
+                    request.request_status?.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+            );
+        });
 
     const totalPages = Math.ceil((formattedData?.length || 0) / itemsPerPage);
 
@@ -89,6 +120,12 @@ const RedeemptionHistory: React.FC = () => {
         setCurrentPage(1);
         console.log("Search value:", value);
         // Implement search logic here
+    };
+    const handleDateFilter = (from: Date | null, to: Date | null) => {
+        setFromDate(from);
+        setToDate(to);
+        // Reset to the first page
+        setCurrentPage(1);
     };
 
     const handleAddProductClick = () => {
@@ -118,9 +155,12 @@ const RedeemptionHistory: React.FC = () => {
                             title="Redeemption Request History" 
                             onSearch={handleSearch} 
                             onAddButtonClick={handleAddProductClick} 
-                            buttonText="Back" // Custom button text
-                            showButton={true} // Show the button
+                            buttonText="Back" 
+                            showButton={true}
                             icon="ri-arrow-left-line"
+                            showFromDate={true}
+                            showToDate={true}
+                            onDateFilter={handleDateFilter}
                         />
 
                         <div className="box-body m-5">
@@ -128,6 +168,8 @@ const RedeemptionHistory: React.FC = () => {
                                 columns={[
                                     { header: 'Request ID', accessor: 'name' },
                                     { header: 'Carpenter ID', accessor: 'customer_id' },
+                                    { header: 'Carpenter Name', accessor: 'full_name' },
+                                    { header: 'Mobile Number', accessor: 'mobile_number' },
                 
                                     { header: 'Current Points', accessor: 'current_point_status' },
                                     { header: 'Redeem Request Points', accessor: 'redeemed_points' },

@@ -84,7 +84,7 @@ const NotificationsDashboard = () => {
         }
     }, [data]);
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <div></div>;
     if (error) return <div>Error loading notifications</div>;
 
     return (

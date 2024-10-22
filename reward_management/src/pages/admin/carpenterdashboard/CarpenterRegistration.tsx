@@ -30,7 +30,9 @@ const CarpenterRegistration: React.FC = () => {
     const [selectedCarpenter, setSelectedCarpenter] = useState<CarpenterRegistrations | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const [loading, setLoading] = useState(false); // Loading state
+    const [loading, setLoading] = useState(false); 
+    const [fromDate, setFromDate] = useState<Date | null>(null);
+    const [toDate, setToDate] = useState<Date | null>(null);
     const { data: carpenterregisterData } = useFrappeGetDocList<CarpenterRegistrations>('Carpenter Registration', {
         fields: ['name', 'carpainter_id', 'carpainter_name', 'mobile_number', 'city', 'registration_date', 'status', 'approved_date']
     });
@@ -69,7 +71,11 @@ const CarpenterRegistration: React.FC = () => {
         setCurrentPage(1);
         console.log("Search value:", value);
     };
-
+    const handleDateFilter = (from: Date | null, to: Date | null) => {
+        setFromDate(from);
+        setToDate(to);
+        setCurrentPage(1);
+    };
 
     const handleAddProductClick = () => {
         console.log("Add Product button clicked");
@@ -194,27 +200,68 @@ const CarpenterRegistration: React.FC = () => {
         return `${day}-${month}-${year}`;
     };
 
+    const parseDateString = (dateString: string): Date | null => {
+        if (typeof dateString !== 'string') {
+            console.error("Expected a string, but received:", dateString);
+            return null;
+        }
+        const parts = dateString.split('-');
+        if (parts.length !== 3) {
+            console.error("Invalid date format:", dateString);
+            return null;
+        }
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; 
+        const year = parseInt(parts[2], 10);
+        return new Date(year, month, day);
+    };
+
+
     const formattedCarpenterRegistrationData = carpenterregisterData?.map(carpenterregistration => ({
         ...carpenterregistration,
         registration_date: formatDate(carpenterregistration.registration_date),
         approved_date: formatDate(carpenterregistration.approved_date),
     })) || [];
 
+    
+
      // Adjusted filtering logic to include all columns
      const filteredData = formattedCarpenterRegistrationData.filter(transaction => {
         const query = searchQuery.toLowerCase();
+    
+        // Parse registration_date for filtering
+        const registrationDateString = transaction.registration_date;
+        const registrationDate = parseDateString(registrationDateString);
+        
+        // Parse approved_date for filtering
+        const approvedDateString = transaction.approved_date;
+        const approvedDate = parseDateString(approvedDateString);
+        
+        // Check if the registration_date is within the selected date range
+        const isRegistrationDateInRange = 
+            (!fromDate || (registrationDate && registrationDate >= fromDate)) &&
+            (!toDate || (registrationDate && registrationDate <= toDate));
+    
+        // Check if the approved_date is within the selected date range
+        const isApprovedDateInRange = 
+            (!fromDate || (approvedDate && approvedDate >= fromDate)) &&
+            (!toDate || (approvedDate && approvedDate <= toDate));
+    
+        // Check if either date falls within the selected date range
+        const isWithinDateRange = isRegistrationDateInRange || isApprovedDateInRange;
+    
         return (
-            (transaction.name && transaction.name.toLowerCase().includes(query)) ||
-            (transaction.carpainter_id && transaction.carpainter_id.toLowerCase().includes(query)) ||
-            (transaction.carpainter_name && transaction.carpainter_name.toLowerCase().includes(query)) ||
-            (transaction.mobile_number && transaction.mobile_number.toLowerCase().includes(query)) ||
-            (transaction.city && transaction.city.toLowerCase().includes(query)) ||
-            (transaction.registration_date && transaction.registration_date.toLowerCase().includes(query)) ||
-            (transaction.status && transaction.status.toLowerCase().includes(query)) ||
-            (transaction.approved_date && transaction.approved_date.toLowerCase().includes(query))
+            isWithinDateRange &&
+            (
+                (transaction.name && transaction.name.toLowerCase().includes(query)) ||
+                (transaction.carpainter_id && transaction.carpainter_id.toLowerCase().includes(query)) ||
+                (transaction.carpainter_name && transaction.carpainter_name.toLowerCase().includes(query)) ||
+                (transaction.mobile_number && transaction.mobile_number.toLowerCase().includes(query)) ||
+                (transaction.city && transaction.city.toLowerCase().includes(query)) ||
+                (transaction.status && transaction.status.toLowerCase().includes(query))
+            )
         );
     });
-
 
     const handleCancel = () => {
         console.log("Edit cancelled");
@@ -240,7 +287,10 @@ const CarpenterRegistration: React.FC = () => {
                             onSearch={handleSearch} 
                             onAddButtonClick={handleAddProductClick} 
                             buttonText="Add New Product" // Custom button text
-                            showButton={false} // Show the button
+                            showButton={false} 
+                            showFromDate={true}
+                            showToDate={true}
+                            onDateFilter={handleDateFilter}
                         />
 
                         <div className="box-body m-5">

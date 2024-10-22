@@ -36,6 +36,8 @@ const FAQDashboard: React.FC = () => {
     const [isReadOnly, setIsReadOnly] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
+    const [fromDate, setFromDate] = useState<Date | null>(null);
+    const [toDate, setToDate] = useState<Date | null>(null);
 
     const { data } = useFrappeGetDocList<FAQ>('FAQ', {
         fields: ['name', 'question', 'status', 'created_date', 'answer'],
@@ -78,6 +80,13 @@ const FAQDashboard: React.FC = () => {
         setCurrentPage(1);
         console.log("Search value:", value);
     };
+     // date filter---
+     const handleDateFilter = (from: Date | null, to: Date | null) => {
+        setFromDate(from);
+        setToDate(to);
+        setCurrentPage(1);
+    };
+
 
 
     const handleAddProductClick = () => {
@@ -222,22 +231,48 @@ const FAQDashboard: React.FC = () => {
         const year = date.getFullYear();
         return `${day}-${month}-${year}`;
     };
-
+    const parseDateString = (dateString: string): Date | null => {
+        if (typeof dateString !== 'string') {
+            console.error("Expected a string, but received:", dateString);
+            return null;
+        }
+        const parts = dateString.split('-');
+        if (parts.length !== 3) {
+            console.error("Invalid date format:", dateString);
+            return null;
+        }
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; 
+        const year = parseInt(parts[2], 10);
+        return new Date(year, month, day);
+    };
+    
     const formattedFAQData = faqData?.map(faq => ({
         ...faq,
         created_date: faq.created_date ? formatDate(faq.created_date) : '',
     })) || [];
 
-    const filteredData = formattedFAQData.filter(faqData => {
+    const filteredData = formattedFAQData.filter(faq => {
         const query = searchQuery.toLowerCase();
-        return (
-            (faqData.name && faqData.name.toLowerCase().includes(query)) ||
-            (faqData.question && faqData.question.toLowerCase().includes(query)) ||
-            (faqData.status && faqData.status.toString().toLowerCase().includes(query)) ||
-            (faqData.created_date && faqData.created_date.toLowerCase().includes(query))
-        );
+        
+        
+        // Parse the created_date for filtering
+        const createdDateString = faq.created_date;
+        const isDateValid = typeof createdDateString === 'string' && createdDateString.trim() !== '';
+        const faqDate = isDateValid ? parseDateString(createdDateString) : null;
+    
+        // Check if the created_date is within the selected date range
+        const isWithinDateRange = (!fromDate || (faqDate && faqDate >= fromDate)) &&
+                                  (!toDate || (faqDate && faqDate <= toDate));
+    
+        // Check for query matches
+        const isNameMatch = faq.name && faq.name.toLowerCase().includes(query);
+        const isQuestionMatch = faq.question && faq.question.toLowerCase().includes(query);
+        const isStatusMatch = faq.status && faq.status.toString().toLowerCase().includes(query);
+        
+        // Combine conditions
+        return isWithinDateRange && (isNameMatch || isQuestionMatch || isStatusMatch);
     });
-
     return (
         <Fragment>
               <Pageheader 
@@ -257,6 +292,9 @@ const FAQDashboard: React.FC = () => {
                             onAddButtonClick={handleAddProductClick}
                             buttonText="Add New FAQ"
                             showButton={true}
+                            showFromDate={true}
+                            showToDate={true}
+                            onDateFilter={handleDateFilter}
                         />
                         <div className="box-body m-5">
                             <TableComponent<FAQ>

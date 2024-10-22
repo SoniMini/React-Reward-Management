@@ -123,6 +123,7 @@
   },
   {
    "fetch_from": "customer_id.email",
+   "fetch_if_empty": 1,
    "fieldname": "email",
    "fieldtype": "Data",
    "label": "Email"
@@ -130,7 +131,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-15 19:16:07.544150",
+ "modified": "2024-10-22 16:44:11.267382",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Redeem Request",

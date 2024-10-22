@@ -27,9 +27,11 @@ const ProductQRHistory: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(15);
     const navigate = useNavigate();
-    const [searchQuery, setSearchQuery] = useState(''); // State for search query
+    const [searchQuery, setSearchQuery] = useState('');
+    const [fromDate, setFromDate] = useState<Date | null>(null);
+    const [toDate, setToDate] = useState<Date | null>(null);
 
     useEffect(() => {
         document.title="Product QR History";
@@ -58,18 +60,44 @@ const ProductQRHistory: React.FC = () => {
         fetchData();
     }, []);
 
+    const parseDateString = (dateString: string): Date | null => {
+        console.log("Input dateString:", dateString); // Log the value
+        if (typeof dateString !== 'string') {
+            console.error("Expected a string, but received:", dateString);
+            return null; // or some default value
+        }
+        const parts = dateString.split('-'); // Assuming you're splitting by '-'
+        if (parts.length !== 3) {
+            console.error("Invalid date format:", dateString);
+            return null; // or some default value
+        }
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Months are 0-based in JavaScript
+        const year = parseInt(parts[2], 10);
+        return new Date(year, month, day);
+    };
+
     // Filter the data based on search query
     const filteredData = data.filter(item => {
         const query = searchQuery.toLowerCase();
+        const generatedDateString = item.generated_date;
+        const isDateValid = typeof generatedDateString === 'string' && generatedDateString.trim() !== '';
+        const generatedDate = isDateValid ? parseDateString(generatedDateString) : null;
+    
+        // Check if generatedDate is valid
+        const isWithinDateRange = (!fromDate || (generatedDate && generatedDate >= fromDate)) &&
+                                  (!toDate || (generatedDate && generatedDate <= toDate));
+        
         return (
-            (item.product_qr_name && item.product_qr_name.toLowerCase().includes(query)) ||
-            (item.product_table_name && item.product_table_name.toLowerCase().includes(query)) ||
-            (item.carpenter_id && item.carpenter_id.toLowerCase().includes(query)) ||
-            (item.carpenter_name && item.carpenter_name.toLowerCase().includes(query))||
-            (item.mobile_number && item.mobile_number.toLowerCase()).includes(query)||
-            (item.points !== undefined && item.points.toString().toLowerCase().includes(query)) || // Convert number to string for search
-            (item.scanned && item.scanned.toLowerCase().includes(query)) ||
-            (item.generated_date && item.generated_date.toLowerCase().includes(query))
+            isWithinDateRange &&
+            (
+                item.product_qr_name?.toLowerCase().includes(query) ||
+                item.product_table_name?.toLowerCase().includes(query) ||
+                item.carpenter_id?.toLowerCase().includes(query) ||
+                item.points?.toString().toLowerCase().includes(query) ||
+                item.scanned?.toLowerCase().includes(query) ||
+                (isDateValid && generatedDateString.toLowerCase().includes(query))
+            )
         );
     });
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -90,6 +118,12 @@ const ProductQRHistory: React.FC = () => {
         setSearchQuery(value);
         setCurrentPage(1);
     };
+    const handleDateFilter = (from: Date | null, to: Date | null) => {
+        setFromDate(from);
+        setToDate(to);
+        setCurrentPage(1); // Reset to the first page
+    };
+
 
     const handleAddProductClick = () => {
         console.log("Add Product button clicked");
@@ -119,6 +153,9 @@ const ProductQRHistory: React.FC = () => {
                             onAddButtonClick={handleAddProductClick}
                             buttonText="Add New Product"
                             showButton={false}
+                            showFromDate={true}
+                            showToDate={true}
+                            onDateFilter={handleDateFilter}
                         />
 
                         <div className="box-body m-5">

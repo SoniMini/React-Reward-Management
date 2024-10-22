@@ -72,7 +72,7 @@ def send_system_notification(doc, method=None):
     user = frappe.get_doc("User", user_email)
     
     # Check if the user has a role profile named "Customer"
-    if user.role_profile_name == "Customer":
+    if user.role_profile_name == "Carpenter":
         username = user.full_name  # Access the username field
 
         # Create a new notification log entry
@@ -95,27 +95,67 @@ def send_system_notification(doc, method=None):
 
 
 
+# @frappe.whitelist()
+# def send_customer_reward_approved_notification(doc, method=None):
+#     # Ensure the reward request status is 'Approved'
+#     if doc.request_status == 'Approved':
+#         # Fetch customer details using the customer_id field from Redeem Request
+#         try:
+#             # Use the customer_id field to fetch the Customer document
+#             customer = frappe.get_doc("Redeem Request", doc.name)
+#         except frappe.DoesNotExistError:
+#             frappe.throw(_("Customer {0} not found").format(doc.name))
+
+#         # Assuming the mobile_number is stored in customer.mobile_no
+#         # Generate the email format using mobile_number@gmail.com
+#         customer_email = f"{customer.mobile_number}@gmail.com"
+        
+#         # Create a new notification log entry for the customer
+#         notification = frappe.get_doc({
+#             'doctype': 'Notification Log',
+#             'for_user': customer_email,  # Send notification to the specific customer
+#             'subject': 'Reward Request Approved',
+#             'type':'Alert',
+#             'email_content': f"""
+#                 <p>{customer.full_name}, 
+#                 <a href="../../rewards/redeem-request">Your request for 
+#                 <strong>{doc.redeemed_points}</strong> points redemption has been approved!</a></p>
+#             """,
+#             'document_type': 'Redeem Request',
+#             'document_name': doc.name  # The name of the triggered document
+#         })
+#         notification.insert(ignore_permissions=True)
+#         frappe.db.commit()
+
+#         return "Notification Reward Request has been sent successfully"
+#     else:
+#         return "Request not approved, no notification sent"
+
 @frappe.whitelist()
 def send_customer_reward_approved_notification(doc, method=None):
     # Ensure the reward request status is 'Approved'
     if doc.request_status == 'Approved':
-        # Fetch customer details using the customer_id field from Redeem Request
         try:
-            # Use the customer_id field to fetch the Customer document
+            # Fetch the Redeem Request document (which contains the customer information)
             customer = frappe.get_doc("Redeem Request", doc.name)
         except frappe.DoesNotExistError:
             frappe.throw(_("Customer {0} not found").format(doc.name))
 
-        # Assuming the mobile_number is stored in customer.mobile_no
-        # Generate the email format using mobile_number@gmail.com
-        customer_email = f"{customer.mobile_number}@gmail.com"
+        # Get the customer's mobile number
+        customer_mobile = customer.mobile_number
+
+        # Find the corresponding User by matching the mobile number
+        user = frappe.db.get_value("User", {"mobile_no": customer_mobile}, "name")
         
-        # Create a new notification log entry for the customer
+        if not user:
+            frappe.throw(_("No user found with mobile number {0}").format(customer_mobile))
+
+        # Create a new notification log entry for the user found via the mobile number
         notification = frappe.get_doc({
             'doctype': 'Notification Log',
-            'for_user': customer_email,  # Send notification to the specific customer
+            'for_user': user,  # Send notification to the matched user
             'subject': 'Reward Request Approved',
-            'type':'Alert',
+            'type': 'Alert',
             'email_content': f"""
                 <p>{customer.full_name}, 
                 <a href="../../rewards/redeem-request">Your request for 
@@ -127,7 +167,7 @@ def send_customer_reward_approved_notification(doc, method=None):
         notification.insert(ignore_permissions=True)
         frappe.db.commit()
 
-        return "Notification Reward Request has been sent successfully"
+        return "Notification sent successfully to the user"
     else:
         return "Request not approved, no notification sent"
 
