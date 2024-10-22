@@ -30,6 +30,7 @@ const ProductQRHistory: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
     useEffect(() => {
+        document.title="Product QR History";
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.print_qr_code.print_qr_code`);
@@ -98,7 +99,12 @@ const ProductQRHistory: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Product QR History" activepage="Product Dashboard" mainpage="Product QR History" />
+            {/* <Pageheader currentpage="Product QR History" activepage="Product Dashboard" mainpage="Product QR History" /> */}
+            <Pageheader 
+                currentpage={"Product QR History"} 
+                activepage={"/product-qr-history"} 
+                activepagename='Product QR History' 
+            />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">

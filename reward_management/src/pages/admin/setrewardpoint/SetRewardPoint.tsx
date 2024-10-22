@@ -15,6 +15,7 @@ const SetRewardPointsDashboard: React.FC = () => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
     useEffect(() => {
+        document.title="Set Reward Points";
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
@@ -89,7 +90,12 @@ const SetRewardPointsDashboard: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Set Reward Points" activepage="Set Reward Points" mainpage="Set Reward Points" />
+                <Pageheader 
+                currentpage={"Set Reward Points"} 
+                activepage={"/set-reward-points"} 
+                activepagename="Set Reward Points"
+            />
+            {/* <Pageheader currentpage="Set Reward Points" activepage="Set Reward Points" mainpage="Set Reward Points" /> */}
             <div className="grid grid-cols-12 gap-x-6 p-6">
                 <div className="col-span-12 flex justify-center items-center">
                     <div className="xl:col-span-3 col-span-12 bg-white mt-5 rounded-lg shadow-lg p-6">

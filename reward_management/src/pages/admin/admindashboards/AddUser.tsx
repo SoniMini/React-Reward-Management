@@ -54,6 +54,7 @@ const AddUserDashboard: React.FC = () => {
 
 
     React.useEffect(() => {
+        document.title="Add User";
         if (showSuccessAlert) {
             const timer = setTimeout(() => setShowSuccessAlert(false), 3000);
             return () => clearTimeout(timer);
@@ -159,7 +160,14 @@ const AddUserDashboard: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Add User" activepage="Add User" mainpage="Add User" />
+            {/* <Pageheader currentpage="Add User" activepage="Add User" mainpage="Add User" /> */}
+            <Pageheader 
+                currentpage={"Add User"} 
+                activepage={"/add-user"} 
+                
+                activepagename='Add User' 
+               
+            />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">

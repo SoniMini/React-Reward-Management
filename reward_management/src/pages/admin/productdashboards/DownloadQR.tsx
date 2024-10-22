@@ -31,6 +31,7 @@ const DownloadQRCode: React.FC = () => {
     const productName = urlParams.get('product');
 
     useEffect(() => {
+        document.title="Download QR";
         const fetchData = async () => {
             if (!productName) {
                 setError('Product name is missing in the URL');

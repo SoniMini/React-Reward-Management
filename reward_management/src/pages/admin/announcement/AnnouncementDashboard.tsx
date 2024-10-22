@@ -39,12 +39,13 @@ const AnnouncementDashboard: React.FC = () => {
 
 
     React.useEffect(() => {
+        document.title="Announcements";
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
                 // window.location.reload();
-            }, 3000); // Hide alert after 3 seconds
-            return () => clearTimeout(timer); // Cleanup timeout on component unmount
+            }, 3000);
+            return () => clearTimeout(timer); 
         }
     }, [showSuccessAlert]);
 
@@ -68,7 +69,7 @@ const AnnouncementDashboard: React.FC = () => {
 
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value); // Update search query
+        setSearchQuery(value); 
         setCurrentPage(1);
         console.log("Search value:", value);
     };
@@ -79,11 +80,11 @@ const AnnouncementDashboard: React.FC = () => {
         setAnswer('');
         setDate('');
         setEndDate('');
-        setIsModalOpen(true); // Open the modal when the button is clicked
+        setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
-        setIsModalOpen(false); // Close the modal
+        setIsModalOpen(false);
     };
 
     const handleSubmit = async () => {
@@ -214,10 +215,10 @@ const AnnouncementDashboard: React.FC = () => {
         return `${year}-${month}-${day}`;
     };
 
-    const formatDateToISO = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toISOString().split('T')[0];
-    };
+    // const formatDateToISO = (dateString: string) => {
+    //     const date = new Date(dateString);
+    //     return date.toISOString().split('T')[0];
+    // };
 
 
     const formattedAnnouncementsData = announcementsData?.map(announcement => ({
@@ -241,7 +242,14 @@ const AnnouncementDashboard: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Announcement" activepage="Announcement" mainpage="Announcement" />
+            {/* <Pageheader currentpage="Announcement" activepage="Announcement" mainpage="Announcement" /> */}
+            <Pageheader 
+                currentpage={"Announcement"} 
+                activepage={"/announcement"} 
+                
+                activepagename='Announcement' 
+               
+            />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">

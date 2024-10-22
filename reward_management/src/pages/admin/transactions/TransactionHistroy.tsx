@@ -3,7 +3,7 @@ import '../../../assets/css/pages/admindashboard.css';
 import Pageheader from '@/components/common/pageheader/pageheader';
 import TableComponent from '@/components/ui/tables/tablecompnent';
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState ,useEffect} from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 
 interface Transaction {
@@ -87,9 +87,20 @@ const TransactionHistory: React.FC = () => {
         );
     });
 
+    useEffect(()=>{
+        document.title="Trasaction History";
+    })
+
     return (
         <Fragment>
-            <Pageheader currentpage="Transaction History" activepage="Transaction History" mainpage="Transaction History" />
+             <Pageheader 
+                currentpage={"Transaction History"} 
+                activepage={"/transaction-history"} 
+        
+                activepagename="Transaction History"
+             
+            />
+            {/* <Pageheader currentpage="Transaction History" activepage="Transaction History" mainpage="Transaction History" /> */}
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">

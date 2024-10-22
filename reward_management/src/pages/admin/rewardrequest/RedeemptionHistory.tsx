@@ -5,7 +5,7 @@ import '../../../assets/css/pages/admindashboard.css';
 import Pageheader from '@/components/common/pageheader/pageheader';
 import TableComponent from '@/components/ui/tables/tablecompnent';
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState ,useEffect } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import { useNavigate } from 'react-router-dom'; 
 
@@ -96,10 +96,20 @@ const RedeemptionHistory: React.FC = () => {
         navigate('/redeemption-request');
         // Implement add product logic here
     };
+    useEffect(()=>{
+        document.title="Redeemption History";
+    });
 
     return (
         <Fragment>
-            <Pageheader currentpage="Reward Request" activepage="Reward Request" mainpage="Reward Request" />
+            {/* <Pageheader currentpage="Reward Request" activepage="Reward Request" mainpage="Reward Request" /> */}
+            <Pageheader
+                currentpage={"Reward History"}
+                activepage={"/redeemption-request"}
+                mainpage={"/redeemption-history"}
+                activepagename='Reward Request'
+                mainpagename='Reward History'
+            />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">

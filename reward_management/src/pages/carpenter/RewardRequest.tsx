@@ -213,7 +213,14 @@ const RedeemRequest: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Redeem Request" activepage="Redeem Request" mainpage="Redeem Request" />
+              <Pageheader 
+                currentpage={"Redeem Request"} 
+                activepage={"/redeem-request"} 
+        
+                activepagename="Redeem Request"
+             
+            />
+            {/* <Pageheader currentpage="Redeem Request" activepage="Redeem Request" mainpage="Redeem Request" /> */}
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">

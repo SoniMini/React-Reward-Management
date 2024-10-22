@@ -40,6 +40,7 @@ const EditProduct: React.FC = () => {
     }, [showSuccessAlert, navigate]);
 
     useEffect(() => {
+        document.title="Edit Product";
         const fetchProductData = async () => {
             if (!productId) return;
 
@@ -110,14 +111,14 @@ const EditProduct: React.FC = () => {
         }
     };
 
-    const resetForm = () => {
-        setFiles([]);
-        setPreviews([]);
-        setProductName('');
-        setRewardPoints('');
-        setProductDescription('');
-        setProductCategory('');
-    };
+    // const resetForm = () => {
+    //     setFiles([]);
+    //     setPreviews([]);
+    //     setProductName('');
+    //     setRewardPoints('');
+    //     setProductDescription('');
+    //     setProductCategory('');
+    // };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -155,7 +156,14 @@ const EditProduct: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Edit Product" activepage="Product Master" mainpage="Edit Product" />
+                <Pageheader
+                currentpage={"Edit Product"}
+                activepage={"/product-master"}
+                mainpage={"/edit-product"}
+                activepagename='Product Master'
+                mainpagename='Edit Product'
+            />
+            {/* <Pageheader currentpage="Edit Product" activepage="Product Master" mainpage="Edit Product" /> */}
             <div className="grid grid-cols-12 gap-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
                     <div className="box">
@@ -268,12 +276,17 @@ const EditProduct: React.FC = () => {
                             </form>
                             {showSuccessAlert && (
                                 <SuccessAlert 
-                                showButton={false}
-                                showCancleButton={false}
-                                showCollectButton={false}
-                                showAnotherButton={false}
-                                showMessagesecond={false}
-                                message="Product updated successfully!" />
+                                    showButton={false}
+                                    showCancleButton={false}
+                                    showCollectButton={false}
+                                    showAnotherButton={false}
+                                    showMessagesecond={false}
+                                    message="Product updated successfully!" 
+                                    onClose={function (): void {
+                                        throw new Error('Function not implemented.');
+                                    } } onCancel={function (): void {
+                                        throw new Error('Function not implemented.');
+                                    } } />
                             )}
                         </div>
                     </div>

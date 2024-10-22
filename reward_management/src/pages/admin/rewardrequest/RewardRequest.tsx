@@ -3,7 +3,7 @@ import '../../../assets/css/pages/admindashboard.css';
 import Pageheader from '@/components/common/pageheader/pageheader';
 import TableComponent from '@/components/ui/tables/tablecompnent';
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState,useEffect } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import { useNavigate } from 'react-router-dom';
 import EditModalComponent from '@/components/ui/models/RewardRequestEdit';
@@ -156,9 +156,20 @@ const CarpenterRewardRequest: React.FC = () => {
 
     const isApproved = selectedRewardRequest?.request_status === 'Approved';
 
+    useEffect(()=>{
+        document.title="Reward Request";
+    })
+
     return (
         <Fragment>
-            <Pageheader currentpage="Reward Request" activepage="Reward Request" mainpage="Reward Request" />
+            {/* <Pageheader currentpage="Reward Request" activepage="Reward Request" mainpage="Reward Request" /> */}
+            <Pageheader 
+                currentpage={"Reward Request"} 
+                activepage={"/redeemption-request"} 
+              
+                activepagename="Reward Request"
+               
+            />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">

@@ -7,7 +7,7 @@ import React, { Fragment, useState ,useEffect} from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import EditModalComponent from '@/components/ui/models/RewardRequestEdit';
 import axios from 'axios';
-import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
+import { BASE_URL } from "../../../utils/constants";
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import { PulseLoader } from 'react-spinners';
 
@@ -36,11 +36,12 @@ const CarpenterRegistration: React.FC = () => {
     });
 
     useEffect(() => {
+        document.title = "Carpenter Registration";
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                window.location.reload(); // Reload the page after hiding the alert
-            }, 3000); // Hide alert after 3 seconds
+                window.location.reload(); 
+            }, 3000);
             return () => clearTimeout(timer);
         }
     }, [showSuccessAlert]);
@@ -64,7 +65,7 @@ const CarpenterRegistration: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value); // Update search query
+        setSearchQuery(value); 
         setCurrentPage(1);
         console.log("Search value:", value);
     };
@@ -76,13 +77,13 @@ const CarpenterRegistration: React.FC = () => {
     };
 
     const handleEdit = (carpenter: CarpenterRegistrations) => {
-        console.log("Selected carpenter for editing:", carpenter); // Log selected carpenter
+        console.log("Selected carpenter for editing:", carpenter); 
         setSelectedCarpenter(carpenter);
         setIsEditModalOpen(true);
     };
 
     const handleCloseModal = () => {
-        console.log("Closing modal. Selected carpenter:", selectedCarpenter); // Log selected carpenter before closing
+        console.log("Closing modal. Selected carpenter:", selectedCarpenter); 
         setIsEditModalOpen(false);
         setSelectedCarpenter(null);
     };
@@ -95,11 +96,13 @@ const CarpenterRegistration: React.FC = () => {
             alert('Failed to update Registration Request: No carpenter name found.');
             return;
         }
-        setLoading(true); // Set loading to true
+        setLoading(true); 
     
         const now = new Date();
-        const currentDate = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
-        const currentTime = now.toLocaleTimeString('en-US', { hour12: false });  // Format: HH:MM:SS
+        // Format: YYYY-MM-DD
+        const currentDate = now.toISOString().split('T')[0]; 
+        // Format: HH:MM:SS
+        const currentTime = now.toLocaleTimeString('en-US', { hour12: false });  
         console.log("current date", currentDate);
         console.log("current Time", currentTime);
     
@@ -138,7 +141,7 @@ const CarpenterRegistration: React.FC = () => {
             alert('An error occurred while updating the Registration Request.');
         }
         finally {
-            setLoading(false); // Set loading to false
+            setLoading(false); 
         }
     };
     
@@ -174,11 +177,11 @@ const CarpenterRegistration: React.FC = () => {
         }
     };
 
-    const handleStatusUpdate = async (carpenter: CarpenterRegistrations) => {
-        if (carpenter.status?.toLowerCase() === 'approved') {
-            await updateRegistrationStatus(carpenter.name, carpenter.status);
-        }
-    };  
+    // const handleStatusUpdate = async (carpenter: CarpenterRegistrations) => {
+    //     if (carpenter.status?.toLowerCase() === 'approved') {
+    //         await updateRegistrationStatus(carpenter.name, carpenter.status);
+    //     }
+    // };  
     
     
 
@@ -220,7 +223,14 @@ const CarpenterRegistration: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Carpenter Registration" activepage="Carpenter Dashboard" mainpage="Carpenter Registration" />
+            {/* <Pageheader currentpage="Carpenter Registration" activepage="Carpenter Dashboard" mainpage="Carpenter Registration" /> */}
+            <Pageheader 
+                currentpage={"Carpenter Registration"} 
+                activepage={"/carpenter-registration"} 
+                
+                activepagename='Carpenter Registration' 
+               
+            />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
@@ -278,8 +288,12 @@ const CarpenterRegistration: React.FC = () => {
                     onCancel={handleCancel}
                     setQuestion={(value) => setSelectedCarpenter(prev => prev ? { ...prev, name: value } : null)}
                     setAnswer={(value) => setSelectedCarpenter(prev => prev ? { ...prev, carpainter_name: value } : null)}
-                    setStatus={(value) => setSelectedCarpenter(prev => prev ? { ...prev, status: value } : null)}
-                />
+                    setStatus={(value) => setSelectedCarpenter(prev => prev ? { ...prev, status: value } : null)} transactionIdLabel={''} amountLabel={''} transactionId={''} amount={''} setTransactionId={function (value: string): void {
+                        throw new Error('Function not implemented.');
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    } } setAmount={function (_value: string): void {
+                        throw new Error('Function not implemented.');
+                    } } showTransactionId={false} showAmount={false}                />
             )}
                {showSuccessAlert && (
                 <SuccessAlert
@@ -289,7 +303,11 @@ const CarpenterRegistration: React.FC = () => {
                     showAnotherButton={false}
                     showMessagesecond={false}
                     message="Customer Registration Approved successfully!"
-                />
+                    onClose={function (): void {
+                        throw new Error('Function not implemented.');
+                    } } onCancel={function (): void {
+                        throw new Error('Function not implemented.');
+                    } }                />
             )}
 
             {loading && (

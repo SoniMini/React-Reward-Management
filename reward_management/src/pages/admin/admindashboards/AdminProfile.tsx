@@ -61,11 +61,12 @@ const AdminProfile = () => {
     localStorage.setItem('username', username)
 
     useEffect(() => {
+        document.title="Profile Setting";
         if (showSuccessAlert) {
             const timer = setTimeout(() => setShowSuccessAlert(false), 3000);
             return () => clearTimeout(timer);
         }
-        console.log("birthdate--", birthdate);
+        // console.log("birthdate--", birthdate);
         const fetchUserEmailAndInitScanner = async () => {
             try {
                 const userResponse = await axios.get(`${BASE_URL}/api/method/frappe.auth.get_logged_user`,
@@ -138,7 +139,7 @@ const AdminProfile = () => {
 
     }, [showSuccessAlert]);
 
-    const handleImageChange = (e) => {
+    const handleImageChange = (e:any) => {
         const file = e.target.files[0];
         if (file) {
             setSelectedImage(URL.createObjectURL(file));
@@ -281,7 +282,7 @@ const AdminProfile = () => {
     
             // Delay the update of the profile picture to reflect the changes
             setTimeout(() => {
-                setProfilePic(face9); // Assuming setProfilePic is a state setter for the profile image
+                setSelectedImage(face9); // Assuming setProfilePic is a state setter for the profile image
             }, 2000); // 2000 milliseconds = 2 seconds
     
         } catch (error) {
@@ -297,7 +298,7 @@ const AdminProfile = () => {
         setShowConfirmPassword(!showConfirmPassword);
     };
 
-    const handlePasswordChange = (e) => {
+    const handlePasswordChange = (e:any) => {
         const { id, value } = e.target;
         if (id === 'new-password') {
             setNewPassword(value);
@@ -336,7 +337,14 @@ const AdminProfile = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Admin Profile" activepage="Admin Profile" mainpage="Admin Profile" />
+            {/* <Pageheader currentpage="Admin Profile" activepage="Admin Profile" mainpage="Admin Profile" /> */}
+            <Pageheader 
+                currentpage={"Admin Profile"} 
+                activepage={"/admin-profile"} 
+                
+                activepagename='Admin Profile' 
+               
+            />
             <div className='container sm:p-3 !p-0 mt-4'>
                 <div className="grid grid-cols-12 gap-6 mb-[3rem]">
                     <div className="xl:col-span-12 col-span-12">
@@ -568,14 +576,22 @@ const AdminProfile = () => {
             </div>
             {/* Success Alert */}
             {showSuccessAlert && <SuccessAlert 
-              showButton={false}
-              showCancleButton={false}
-              showCollectButton={false}
-              showAnotherButton={false}
-              showMessagesecond={false}
-              message="Profile Update successfully!" />}
+                showButton={false}
+                showCancleButton={false}
+                showCollectButton={false}
+                showAnotherButton={false}
+                showMessagesecond={false}
+                message="Profile Update successfully!" 
+                onClose={function (): void {
+                    throw new Error('Function not implemented.');
+                } } 
+                onCancel={function (): void {
+                    throw new Error('Function not implemented.');
+                } } />}
         </Fragment>
     );
 };
 
 export default AdminProfile;
+
+
