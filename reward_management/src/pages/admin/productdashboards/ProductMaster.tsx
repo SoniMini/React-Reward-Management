@@ -44,6 +44,7 @@ const ProductMaster: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        document.title="Product Dashboard";
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false); // Hide alert after 3 seconds
@@ -141,7 +142,14 @@ const ProductMaster: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Product Master" activepage="Product Dashboard" mainpage="Product Master" />
+            {/* <Pageheader currentpage="Product Master" activepage="Product Dashboard" mainpage="Product Master" /> */}
+            <Pageheader 
+                currentpage={"Product Master"} 
+                activepage={"/product-master"} 
+                
+                activepagename='Product Master' 
+              
+            />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">

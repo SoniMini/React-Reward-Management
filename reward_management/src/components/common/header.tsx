@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import '../../assets/css/header.css';
 import '../../assets/css/style.css';
-
+import { BASE_URL, API_KEY, API_SECRET } from "../../utils/constants";
 import ProfilePic from '/src/assets/images/reward_management/9.jpg';
 import { IconAlignLeft } from '@tabler/icons-react';
 import { IconX } from '@tabler/icons-react';
@@ -10,12 +10,11 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'boxicons/css/boxicons.min.css';
 import NotificationDropdown from '@/components/ui/notification';
 import Modalsearch from "./modalsearch/modalsearch";
-
+import axios from 'axios';
 
 const Header = ({ toggleSidebar, isSidebarActive }) => {
 
-    const Profilephoto = localStorage.getItem("uploadedFileUrl") || ProfilePic;
-    const username = localStorage.getItem("username");
+
     const carpenterrole = localStorage.getItem('carpenterrole');
     console.log(carpenterrole);
     const roles = JSON.parse(localStorage.getItem('user_roles')) || [];
@@ -42,23 +41,44 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
     const [notificationCount, setNotificationCount] = useState(5);
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     const [isDropdownVisible, setDropdownVisible] = useState(false);
+    
+   
+    const [UserImage, setUserImage] = useState(ProfilePic);
+
+    const [username, setUsername] = useState('');
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
+
     };
 
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         const newValue = localStorage.getItem("username");
-    //         if (newValue !== value) {
-    //             setValue(newValue);
-    //             // Perform your logic here when the value changes
-    //             console.log(`New value: ${newValue}`);
-    //         }
-    //     }, 1000); // Check every second
-
-    //     return () => clearInterval(interval); // Clear the interval when the component unmounts
-    // }, [value]);
+    useEffect(() => {
+        const fetchUserEmailAndInitScanner = async () => {
+            try {
+                const userResponse = await axios.get(`${BASE_URL}/api/method/frappe.auth.get_logged_user`, {
+                    headers: {
+                        Authorization: `token ${API_KEY}:${API_SECRET}`,
+                    },
+                });
+    
+                const userdata = await axios.get(`${BASE_URL}/api/resource/User/${userResponse.data.message}`, {
+                    headers: {
+                        Authorization: `token ${API_KEY}:${API_SECRET}`,
+                    },
+                });
+    
+                setUsername(userdata.data.data.username || "");
+                setUserImage(userdata.data.data.user_image || ProfilePic);
+    
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                // You might want to set an error state or show a notification here.
+            }
+        };
+    
+        fetchUserEmailAndInitScanner();
+    }, []);
+    
 
     const toggleFullScreen = () => {
         const elem = document.documentElement;
@@ -139,6 +159,7 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
     const handleDropdownToggle = () => {
         setDropdownVisible(prevState => !prevState);
     };
+    
 
 
 
@@ -219,12 +240,12 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
                             {/* end of fullscreen */}
 
                             {/* start of user profile */}
-                            <div className="header-element py-[1rem] md:px-[0.65rem] px-2">
+                            <div className="header-element py-[1rem] md:px-[0.65rem] px-2  transition-all ">
 
                                 <button id="dropdown-profile" type="button"
                                     className="hs-dropdown-toggle ti-dropdown-toggle !gap-2 !p-0 flex-shrink-0 sm:me-2 me-0 !rounded-full !shadow-none text-xs align-middle !border-0 !shadow-transparent "
                                     onClick={handleDropdownToggle}>
-                                    <img className="inline-block rounded-full w-[30px] h-[30px]" src={Profilephoto} width="32" height="32" alt="Image Description" />
+                                    <img className="inline-block rounded-full w-[30px] h-[30px]" src={UserImage} width="32" height="32" alt="Image Description" />
                                 </button>
                                 <div className="md:block hidden dropdown-profile cursor-pointer" onClick={handleDropdownToggle}>
                                     <p className="font-semibold mb-0 pt-3 leading-none text-[#536485] text-[0.813rem] ">{username}</p>

@@ -39,6 +39,7 @@ const AdminDashboard: React.FC = () => {
     });
 
     useEffect(() => {
+        document.title="Admin Dashboard";
         const fetchData = async () => {
             try {
                 const [productsRes, redemptionsRes, pendingRes, qrPointsRes, pointsRes, carpentersRes] = await Promise.all([

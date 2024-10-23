@@ -97,15 +97,16 @@ const AddProduct: React.FC = () => {
 
     
     useEffect(() => {
+        document.title="Add Product";
        
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                navigate('/product-master'); // Navigate after success alert is hidden
-            }, 3000); // Hide alert after 3 seconds
+                navigate('/product-master'); 
+            }, 3000);
             return () => clearTimeout(timer);
         }
-    }, [showSuccessAlert]);
+    }, [navigate, showSuccessAlert]);
 
 
 
@@ -128,7 +129,14 @@ const AddProduct: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Add Product" activepage="Product Master" mainpage="Add Product" />
+            {/* <Pageheader currentpage="Add Product" activepage="Product Master" mainpage="Add Product" /> */}
+            <Pageheader 
+                currentpage={"Add Product"} 
+                activepage={"/product-master"} 
+                mainpage={"/add-product"} 
+                activepagename='Product Master' 
+                mainpagename='Add Product' 
+            />
             <div className="grid grid-cols-12 gap-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
                     <div className="box">

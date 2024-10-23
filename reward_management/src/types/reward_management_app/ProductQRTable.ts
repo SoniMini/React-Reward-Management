@@ -18,6 +18,10 @@ export interface ProductQRTable{
 	product_qr_id?: number
 	/**	Carpenter ID : Link - Carpenter	*/
 	carpenter_id?: string
+	/**	Carpenter Name : Data	*/
+	carpenter_name?: string
+	/**	Mobile Number : Data	*/
+	mobile_number?: string
 	/**	Points : Int	*/
 	points?: number
 	/**	Generated Date : Date	*/

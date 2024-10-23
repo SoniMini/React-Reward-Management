@@ -8,7 +8,6 @@ import '../../../assets/css/header.css';
 import '../../../assets/css/style.css';
 import { BASE_URL } from "../../../utils/constants";
 
-
 const iconMap = {
     'ti-user': TiUser,
 };
@@ -36,7 +35,6 @@ interface Notification {
 const NotificationsDashboard = () => {
     const { data, error, isLoading } = useFrappeGetCall('reward_management_app.api.admin_notifications.get_notifications_log');
     const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [notificationCount, setNotificationCount] = useState<number>(0);
 
     useEffect(() => {
         const fetchUserEmailAndInitScanner = async () => {
@@ -52,6 +50,7 @@ const NotificationsDashboard = () => {
     }, []);
 
     useEffect(() => {
+        document.title = "Notifications";
         if (data && Array.isArray(data.message)) {
             console.log("Fetched notifications data:", data.message);
 
@@ -82,24 +81,15 @@ const NotificationsDashboard = () => {
             });
             
             setNotifications(notificationsData);
-            setNotificationCount(notificationsData.length);
         }
     }, [data]);
 
-    const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        const href = event.currentTarget.getAttribute('href');
-        if (href) {
-            event.preventDefault();
-            window.location.href = href;
-        }
-    };
-
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <div></div>;
     if (error) return <div>Error loading notifications</div>;
 
     return (
         <Fragment>
-            <Pageheader currentpage="Notifications" activepage="Pages" mainpage="Notifications" />
+            <Pageheader currentpage={"Notifications"} activepage={"/view-all-notifications"} activepagename='Notifications' />
             <div className="container">
                 <div className="grid grid-cols-12 !mx-auto">
                     <div className="xxl:col-span-2 col-span-12"></div>
@@ -142,7 +132,7 @@ const NotificationsDashboard = () => {
                                     );
                                 })
                             ) : (
-                                <div>No notifications available</div>
+                                <div className='text-center'>No notifications available</div>
                             )}
                         </div>
                     </div>

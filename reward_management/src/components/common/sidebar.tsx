@@ -2,17 +2,21 @@ import React, { useState, useEffect } from 'react';
 import '../../assets/css/style.css';
 import '../../assets/css/sidebar.css';
 
-import sidebarLogo from '../../assets/images/01.png';
+import sidebarLogo from '../../assets/images/flarelogo.gif';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SidebarData } from '@/components/common/sidebar/sidebardata';
 import SubMenu from '@/components/common/sidebar/submenu';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { BASE_URL } from "../../utils/constants";
 
 console.log(SidebarData);
 
 const Sidebar = ({ isSidebarActive }) => {
     // State to manage hover state
     const [isHover, setIsHover] = useState(false);
+    const [logo, setLogo] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     // Retrieve roles from localStorage
     const storedRoles = localStorage.getItem('user_roles');
@@ -45,6 +49,39 @@ const Sidebar = ({ isSidebarActive }) => {
     console.log("itemsToRender---------------------------------->",itemsToRender);
 
     useEffect(() => {
+
+        const fetchWebsiteSettings = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.website_settings.get_website_settings`);
+                console.log('API Image Response:', response.data);
+    
+                // Check if the response is successful and contains the expected structure
+                if (response && response.data && response.data.message && response.data.message.status === 'success') {
+                    const { banner_image } = response.data.message.data;
+    
+                    // If banner_image exists, set it as the logo
+                    if (banner_image) {
+                        const fullBannerImageURL = `${window.origin}${banner_image}`;
+                        setLogo(fullBannerImageURL); 
+                        console.log('Banner Image Set:', fullBannerImageURL);
+                    } else {
+                        // If no banner_image found, use the default logo
+                        console.log('No banner_image found, using default logo.');
+                        setLogo(sidebarLogo); // Corrected default logo
+                    }
+                } else {
+                    console.error('API response was not successful:', response.data.message);
+                    setLogo(sidebarLogo); // Corrected default logo
+                }
+            } catch (error) {
+                console.error('Error fetching website settings:', error);
+                setLogo(sidebarLogo); // Corrected default logo
+            } finally {
+                setLoading(false); 
+            }
+        };
+    
+        fetchWebsiteSettings();
         // Effect to handle cleanup of event listeners
         const sidebar = document.querySelector('.side-menu');
 
@@ -63,12 +100,18 @@ const Sidebar = ({ isSidebarActive }) => {
             }
         };
     }, []);
+    if (loading) {
+        const loadingClass = `${isSidebarActive ? (isHover ? 'wide' : 'narrow') : 'wide'} text-white`;
+        const loadingWidthClass = `${isSidebarActive ? (isHover ? 'w-32' : 'w-16') : 'w-32'}`;
+        
+        return <div className={`side-menu ${loadingClass} ${loadingWidthClass}`} ></div>; 
+    }
 
     return (
         <div className={`side-menu ${isSidebarActive ? (isHover ? 'wide' : 'narrow') : 'wide'} text-white`}>
             <div className="main-sidebar-header">
                 <img 
-                    src={sidebarLogo} 
+                    src={logo} 
                     alt="logo" 
                     className={`transition-all duration-300 ${isSidebarActive ?  (isHover ? 'w-32' : 'w-16') : 'w-32'}`} 
                 />

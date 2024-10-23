@@ -3,7 +3,7 @@ import '../../../assets/css/pages/admindashboard.css';
 import Pageheader from '@/components/common/pageheader/pageheader';
 import TableComponent from '@/components/ui/tables/tablecompnent';
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState,useEffect } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 
 interface Carpenter {
@@ -87,9 +87,20 @@ const CarpenterDetails: React.FC = () => {
         // Implement add product logic here
     };
 
+    useEffect(() => {
+    document.title="Carpenter Details";
+    });
+
     return (
         <Fragment>
-            <Pageheader currentpage="Carpenter Details" activepage="Carpenter Dashboard" mainpage="Carpenter Details" />
+            {/* <Pageheader currentpage="Carpenter Details" activepage="Carpenter Dashboard" mainpage="Carpenter Details" /> */}
+            <Pageheader 
+                currentpage={"Carpenter Details"} 
+                activepage={"/carpenter-details"} 
+                
+                activepagename='Carpenter Details' 
+               
+            />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">

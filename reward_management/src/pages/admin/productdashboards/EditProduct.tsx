@@ -40,6 +40,7 @@ const EditProduct: React.FC = () => {
     }, [showSuccessAlert, navigate]);
 
     useEffect(() => {
+        document.title="Edit Product";
         const fetchProductData = async () => {
             if (!productId) return;
 
@@ -110,14 +111,14 @@ const EditProduct: React.FC = () => {
         }
     };
 
-    const resetForm = () => {
-        setFiles([]);
-        setPreviews([]);
-        setProductName('');
-        setRewardPoints('');
-        setProductDescription('');
-        setProductCategory('');
-    };
+    // const resetForm = () => {
+    //     setFiles([]);
+    //     setPreviews([]);
+    //     setProductName('');
+    //     setRewardPoints('');
+    //     setProductDescription('');
+    //     setProductCategory('');
+    // };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -155,7 +156,14 @@ const EditProduct: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Edit Product" activepage="Product Master" mainpage="Edit Product" />
+                <Pageheader
+                currentpage={"Edit Product"}
+                activepage={"/product-master"}
+                mainpage={"/edit-product"}
+                activepagename='Product Master'
+                mainpagename='Edit Product'
+            />
+            {/* <Pageheader currentpage="Edit Product" activepage="Product Master" mainpage="Edit Product" /> */}
             <div className="grid grid-cols-12 gap-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
                     <div className="box">
@@ -214,23 +222,23 @@ const EditProduct: React.FC = () => {
                                         </div>
                                         <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12 gap-4">
                                             <div className="xl:col-span-12 col-span-12">
-                                                <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor">Category</label>
+                                                <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor pb-2">Category</label>
                                                 <input 
                                                     id="product-category-add" 
                                                     name="product-category-add" 
-                                                    className="w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] form-control" 
+                                                    className="w-full mt-2 border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] form-control" 
                                                     placeholder="Category" 
                                                     value={productCategory}
                                                     onChange={(e) => setProductCategory(e.target.value)}
                                                     required
                                                 />
                                             </div>
-                                            <div className="xl:col-span-12 col-span-12">
+                                            <div className="xl:col-span-12 col-span-12 mt-4">
                                                 <label htmlFor="product-images-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Image</label>
                                                 <input 
                                                     type="file" 
                                                     multiple 
-                                                    className="form-control w-full border border-defaultborder rounded-[0.5rem] mt-2" 
+                                                    className="form-control w-full border border-defaultborder rounded-[0.5rem] mt-2 p-2" 
                                                     id="product-images-add"
                                                     onChange={handleFileChange}
                                                 />
@@ -268,12 +276,17 @@ const EditProduct: React.FC = () => {
                             </form>
                             {showSuccessAlert && (
                                 <SuccessAlert 
-                                showButton={false}
-                                showCancleButton={false}
-                                showCollectButton={false}
-                                showAnotherButton={false}
-                                showMessagesecond={false}
-                                message="Product updated successfully!" />
+                                    showButton={false}
+                                    showCancleButton={false}
+                                    showCollectButton={false}
+                                    showAnotherButton={false}
+                                    showMessagesecond={false}
+                                    message="Product updated successfully!" 
+                                    onClose={function (): void {
+                                        throw new Error('Function not implemented.');
+                                    } } onCancel={function (): void {
+                                        throw new Error('Function not implemented.');
+                                    } } />
                             )}
                         </div>
                     </div>

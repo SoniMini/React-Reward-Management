@@ -7,7 +7,7 @@ import React, { Fragment, useState ,useEffect} from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import EditModalComponent from '@/components/ui/models/RewardRequestEdit';
 import axios from 'axios';
-import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
+import { BASE_URL } from "../../../utils/constants";
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import { PulseLoader } from 'react-spinners';
 
@@ -30,17 +30,20 @@ const CarpenterRegistration: React.FC = () => {
     const [selectedCarpenter, setSelectedCarpenter] = useState<CarpenterRegistrations | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const [loading, setLoading] = useState(false); // Loading state
+    const [loading, setLoading] = useState(false); 
+    const [fromDate, setFromDate] = useState<Date | null>(null);
+    const [toDate, setToDate] = useState<Date | null>(null);
     const { data: carpenterregisterData } = useFrappeGetDocList<CarpenterRegistrations>('Carpenter Registration', {
         fields: ['name', 'carpainter_id', 'carpainter_name', 'mobile_number', 'city', 'registration_date', 'status', 'approved_date']
     });
 
     useEffect(() => {
+        document.title = "Carpenter Registration";
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                window.location.reload(); // Reload the page after hiding the alert
-            }, 3000); // Hide alert after 3 seconds
+                window.location.reload(); 
+            }, 3000);
             return () => clearTimeout(timer);
         }
     }, [showSuccessAlert]);
@@ -64,11 +67,15 @@ const CarpenterRegistration: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value); // Update search query
+        setSearchQuery(value); 
         setCurrentPage(1);
         console.log("Search value:", value);
     };
-
+    const handleDateFilter = (from: Date | null, to: Date | null) => {
+        setFromDate(from);
+        setToDate(to);
+        setCurrentPage(1);
+    };
 
     const handleAddProductClick = () => {
         console.log("Add Product button clicked");
@@ -76,13 +83,13 @@ const CarpenterRegistration: React.FC = () => {
     };
 
     const handleEdit = (carpenter: CarpenterRegistrations) => {
-        console.log("Selected carpenter for editing:", carpenter); // Log selected carpenter
+        console.log("Selected carpenter for editing:", carpenter); 
         setSelectedCarpenter(carpenter);
         setIsEditModalOpen(true);
     };
 
     const handleCloseModal = () => {
-        console.log("Closing modal. Selected carpenter:", selectedCarpenter); // Log selected carpenter before closing
+        console.log("Closing modal. Selected carpenter:", selectedCarpenter); 
         setIsEditModalOpen(false);
         setSelectedCarpenter(null);
     };
@@ -95,11 +102,13 @@ const CarpenterRegistration: React.FC = () => {
             alert('Failed to update Registration Request: No carpenter name found.');
             return;
         }
-        setLoading(true); // Set loading to true
+        setLoading(true); 
     
         const now = new Date();
-        const currentDate = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
-        const currentTime = now.toLocaleTimeString('en-US', { hour12: false });  // Format: HH:MM:SS
+        // Format: YYYY-MM-DD
+        const currentDate = now.toISOString().split('T')[0]; 
+        // Format: HH:MM:SS
+        const currentTime = now.toLocaleTimeString('en-US', { hour12: false });  
         console.log("current date", currentDate);
         console.log("current Time", currentTime);
     
@@ -138,7 +147,7 @@ const CarpenterRegistration: React.FC = () => {
             alert('An error occurred while updating the Registration Request.');
         }
         finally {
-            setLoading(false); // Set loading to false
+            setLoading(false); 
         }
     };
     
@@ -174,11 +183,11 @@ const CarpenterRegistration: React.FC = () => {
         }
     };
 
-    const handleStatusUpdate = async (carpenter: CarpenterRegistrations) => {
-        if (carpenter.status?.toLowerCase() === 'approved') {
-            await updateRegistrationStatus(carpenter.name, carpenter.status);
-        }
-    };  
+    // const handleStatusUpdate = async (carpenter: CarpenterRegistrations) => {
+    //     if (carpenter.status?.toLowerCase() === 'approved') {
+    //         await updateRegistrationStatus(carpenter.name, carpenter.status);
+    //     }
+    // };  
     
     
 
@@ -191,27 +200,68 @@ const CarpenterRegistration: React.FC = () => {
         return `${day}-${month}-${year}`;
     };
 
+    const parseDateString = (dateString: string): Date | null => {
+        if (typeof dateString !== 'string') {
+            console.error("Expected a string, but received:", dateString);
+            return null;
+        }
+        const parts = dateString.split('-');
+        if (parts.length !== 3) {
+            console.error("Invalid date format:", dateString);
+            return null;
+        }
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; 
+        const year = parseInt(parts[2], 10);
+        return new Date(year, month, day);
+    };
+
+
     const formattedCarpenterRegistrationData = carpenterregisterData?.map(carpenterregistration => ({
         ...carpenterregistration,
         registration_date: formatDate(carpenterregistration.registration_date),
         approved_date: formatDate(carpenterregistration.approved_date),
     })) || [];
 
+    
+
      // Adjusted filtering logic to include all columns
      const filteredData = formattedCarpenterRegistrationData.filter(transaction => {
         const query = searchQuery.toLowerCase();
+    
+        // Parse registration_date for filtering
+        const registrationDateString = transaction.registration_date;
+        const registrationDate = parseDateString(registrationDateString);
+        
+        // Parse approved_date for filtering
+        const approvedDateString = transaction.approved_date;
+        const approvedDate = parseDateString(approvedDateString);
+        
+        // Check if the registration_date is within the selected date range
+        const isRegistrationDateInRange = 
+            (!fromDate || (registrationDate && registrationDate >= fromDate)) &&
+            (!toDate || (registrationDate && registrationDate <= toDate));
+    
+        // Check if the approved_date is within the selected date range
+        const isApprovedDateInRange = 
+            (!fromDate || (approvedDate && approvedDate >= fromDate)) &&
+            (!toDate || (approvedDate && approvedDate <= toDate));
+    
+        // Check if either date falls within the selected date range
+        const isWithinDateRange = isRegistrationDateInRange || isApprovedDateInRange;
+    
         return (
-            (transaction.name && transaction.name.toLowerCase().includes(query)) ||
-            (transaction.carpainter_id && transaction.carpainter_id.toLowerCase().includes(query)) ||
-            (transaction.carpainter_name && transaction.carpainter_name.toLowerCase().includes(query)) ||
-            (transaction.mobile_number && transaction.mobile_number.toLowerCase().includes(query)) ||
-            (transaction.city && transaction.city.toLowerCase().includes(query)) ||
-            (transaction.registration_date && transaction.registration_date.toLowerCase().includes(query)) ||
-            (transaction.status && transaction.status.toLowerCase().includes(query)) ||
-            (transaction.approved_date && transaction.approved_date.toLowerCase().includes(query))
+            isWithinDateRange &&
+            (
+                (transaction.name && transaction.name.toLowerCase().includes(query)) ||
+                (transaction.carpainter_id && transaction.carpainter_id.toLowerCase().includes(query)) ||
+                (transaction.carpainter_name && transaction.carpainter_name.toLowerCase().includes(query)) ||
+                (transaction.mobile_number && transaction.mobile_number.toLowerCase().includes(query)) ||
+                (transaction.city && transaction.city.toLowerCase().includes(query)) ||
+                (transaction.status && transaction.status.toLowerCase().includes(query))
+            )
         );
     });
-
 
     const handleCancel = () => {
         console.log("Edit cancelled");
@@ -220,7 +270,14 @@ const CarpenterRegistration: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Carpenter Registration" activepage="Carpenter Dashboard" mainpage="Carpenter Registration" />
+            {/* <Pageheader currentpage="Carpenter Registration" activepage="Carpenter Dashboard" mainpage="Carpenter Registration" /> */}
+            <Pageheader 
+                currentpage={"Carpenter Registration"} 
+                activepage={"/carpenter-registration"} 
+                
+                activepagename='Carpenter Registration' 
+               
+            />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
@@ -230,7 +287,10 @@ const CarpenterRegistration: React.FC = () => {
                             onSearch={handleSearch} 
                             onAddButtonClick={handleAddProductClick} 
                             buttonText="Add New Product" // Custom button text
-                            showButton={false} // Show the button
+                            showButton={false} 
+                            showFromDate={true}
+                            showToDate={true}
+                            onDateFilter={handleDateFilter}
                         />
 
                         <div className="box-body m-5">
@@ -278,8 +338,12 @@ const CarpenterRegistration: React.FC = () => {
                     onCancel={handleCancel}
                     setQuestion={(value) => setSelectedCarpenter(prev => prev ? { ...prev, name: value } : null)}
                     setAnswer={(value) => setSelectedCarpenter(prev => prev ? { ...prev, carpainter_name: value } : null)}
-                    setStatus={(value) => setSelectedCarpenter(prev => prev ? { ...prev, status: value } : null)}
-                />
+                    setStatus={(value) => setSelectedCarpenter(prev => prev ? { ...prev, status: value } : null)} transactionIdLabel={''} amountLabel={''} transactionId={''} amount={''} setTransactionId={function (value: string): void {
+                        throw new Error('Function not implemented.');
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    } } setAmount={function (_value: string): void {
+                        throw new Error('Function not implemented.');
+                    } } showTransactionId={false} showAmount={false}                />
             )}
                {showSuccessAlert && (
                 <SuccessAlert
@@ -289,7 +353,11 @@ const CarpenterRegistration: React.FC = () => {
                     showAnotherButton={false}
                     showMessagesecond={false}
                     message="Customer Registration Approved successfully!"
-                />
+                    onClose={function (): void {
+                        throw new Error('Function not implemented.');
+                    } } onCancel={function (): void {
+                        throw new Error('Function not implemented.');
+                    } }                />
             )}
 
             {loading && (

@@ -16,7 +16,7 @@ def print_qr_code():
     for qr_doc in qr_docs:
         qr_doc['qr_table_data'] = frappe.get_all("Product QR Table",
                                                  filters={"parent": qr_doc['name']},
-                                                 fields=["product_table_name", "qr_code_image", "product_qr_id", "points","generated_date","scanned","product_qr_name","carpenter_id","redeem_date"])
+                                                 fields=["product_table_name", "qr_code_image", "product_qr_id", "points","generated_date","scanned","product_qr_name","carpenter_id","carpenter_name","mobile_number","redeem_date"])
               # Format date fields as dd-MM-yyyy
         for qr_data in qr_doc['qr_table_data']:
             if qr_data.get('generated_date'):

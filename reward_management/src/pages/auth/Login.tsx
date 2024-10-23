@@ -14,20 +14,6 @@ import SuccessAlert from '../../components/ui/alerts/SuccessAlert';
 
 const Login = () => {
 
-    // const {
-    //     currentUser,
-    //     isValidating,
-    //     isLoading,
-    //     login,
-    //     logout,
-    //     error,
-    //     updateCurrentUser,
-    //     getUserCookie,
-    //   } = useFrappeAuth();
-
-   
-   
-
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [loginError, setLoginError] = useState<string>('');
@@ -38,6 +24,8 @@ const Login = () => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [alertTitle, setAlertTitle] = useState('');
+    const [logo, setLogo] = useState(null);
+    const [loading, setLoading] = useState(true); 
 
     const [data, setData] = useState({
         email: "",
@@ -185,6 +173,20 @@ const Login = () => {
                     setAlertTitle('Success');
                     setAlertMessage("Customer Registration Sent to the Admin Successfully.");
                     setShowSuccessAlert(true);
+                    setData({
+                        email: "",
+                        password: "",
+                        firstName: "",
+                        lastName: "",
+                        city: "",
+                        mobile: "",
+                        otp: "",
+                        mobilenumber: "",
+                        mobileotp: "",
+                    });
+
+                    // Optionally, reset OTP visibility state
+                    setIsOtpVisible(false);
                     // Redirect or reset form as needed
                 } else {
                     setLoginError('Failed to register. Please try again.');
@@ -361,6 +363,39 @@ const Login = () => {
 
    
     useEffect(() => {
+        const fetchWebsiteSettings = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.website_settings.get_website_settings`);
+                console.log('API Image Response:', response.data);
+    
+                // Check if the response is successful and contains the expected structure
+                if (response && response.data && response.data.message && response.data.message.status === 'success') {
+                    const { banner_image } = response.data.message.data;
+    
+                    // If banner_image exists, set it as the logo
+                    if (banner_image) {
+                        const fullBannerImageURL = `${window.origin}${banner_image}`;
+                        setLogo(fullBannerImageURL); 
+                        console.log('Banner Image Set:', fullBannerImageURL);
+                    } else {
+                        // If no banner_image found, use the default logo
+                        console.log('No banner_image found, using default logo.');
+                        setLogo(desktoplogo); // Corrected default logo
+                    }
+                } else {
+                    console.error('API response was not successful:', response.data.message);
+                    setLogo(desktoplogo); // Corrected default logo
+                }
+            } catch (error) {
+                console.error('Error fetching website settings:', error);
+                setLogo(desktoplogo); // Corrected default logo
+            } finally {
+                setLoading(false); 
+            }
+        };
+    
+        fetchWebsiteSettings();
+
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
@@ -369,6 +404,11 @@ const Login = () => {
             return () => clearTimeout(timer); // Cleanup timeout on component unmount
         }
     }, [showSuccessAlert]);
+
+
+    if (loading) {
+        return <div></div>; // Show loading message or spinner while fetching
+    }
 
     return (
         <Fragment>
@@ -381,7 +421,7 @@ const Login = () => {
                         </div> */}
                         <Card className="p-8 box-shadow-md border border-defaultborder shadow-md rounded-[10px] bg-white">
                             <div className="flex justify-center mb-8">
-                                <img src={desktoplogo} alt="logo" className="w-28" />
+                                <img src={logo} alt="logo" className="w-28" />
                             </div>
                             <div className="text-center mb-5">
                                 <p className="text-lg font-semibold">
