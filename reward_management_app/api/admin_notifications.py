@@ -153,7 +153,8 @@ def send_customer_reward_approved_notification(doc, method=None):
         # Create a new notification log entry for the user found via the mobile number
         notification = frappe.get_doc({
             'doctype': 'Notification Log',
-            'for_user': user,  # Send notification to the matched user
+             # Send notification to the matched user
+            'for_user': user, 
             'subject': 'Reward Request Approved',
             'type': 'Alert',
             'email_content': f"""
@@ -162,7 +163,7 @@ def send_customer_reward_approved_notification(doc, method=None):
                 <strong>{doc.redeemed_points}</strong> points redemption has been approved!</a></p>
             """,
             'document_type': 'Redeem Request',
-            'document_name': doc.name  # The name of the triggered document
+            'document_name': doc.name
         })
         notification.insert(ignore_permissions=True)
         frappe.db.commit()

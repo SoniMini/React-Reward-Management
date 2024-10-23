@@ -6,7 +6,7 @@
 // export const API_SECRET = "ef0926b15d5a4f6";
 
 export const API_KEY = "836954c0a79cc6d";
-export const API_SECRET = "39087311cd80c3c";
+export const API_SECRET = "8e341dc3acaf9c8";
 
 
 //? STATIC PATH 
@@ -14,6 +14,4 @@ export const API_SECRET = "39087311cd80c3c";
 
 export const BASE_URL = "http://127.0.0.1:8037/";
 
-// export const BASE_URL = "http://192.168.2.104:8028/";
-// export const BASE_URL = "http://192.168.2.104:8080/";
 
