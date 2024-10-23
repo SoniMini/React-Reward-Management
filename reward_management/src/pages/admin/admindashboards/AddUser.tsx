@@ -17,18 +17,9 @@ const schema = yup.object().shape({
     firstName: yup.string().required("First name is required"),
     lastName: yup.string().required("Last name is required"),
     username: yup.string().required("Username is required"),
-    email: yup
-        .string()
-        .email("Invalid email address")
-        .required("Email is required"),
-    mobileNumber: yup
-        .string()
-        .matches(/^\d+$/, "Mobile number must be digits")
-        .required("Mobile number is required"),
-    password: yup
-        .string()
-        .min(6, "Password must be at least 6 characters")
-        .required("Password is required"),
+    email: yup.string().email("Invalid email address").required("Email is required"),
+    mobileNumber: yup.string().matches(/^\d+$/, "Mobile number must be digits").required("Mobile number is required"),
+    password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
 });
 
 const AddUserDashboard: React.FC = () => {
@@ -37,7 +28,7 @@ const AddUserDashboard: React.FC = () => {
         handleSubmit,
         reset,
         formState: { errors },
-        setFocus, // use the correct setFocus from react-hook-form
+        setFocus, 
     } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
@@ -131,7 +122,7 @@ const AddUserDashboard: React.FC = () => {
                     last_name: data.lastName,
                     username: data.username,
                     email: data.email,
-                    mobile_number: data.mobileNumber,
+                    mobile_no: data.mobileNumber,
                     password: data.password,
                 }
             );
@@ -143,7 +134,7 @@ const AddUserDashboard: React.FC = () => {
                 notyf.error(response.data.message.message);
                 reset();
             }
-        } catch (error) {
+        } catch (error:any) {
             console.error("Error creating admin user:", error);
             if (error.response && error.response.data) {
                 const serverMessages = error.response.data._server_messages
