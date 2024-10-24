@@ -57,11 +57,11 @@ const NotificationsDashboard = () => {
             const notificationsData: Notification[] = data.message.map((notif: NotificationData) => {
                 const creationDate = new Date(notif.creation);
 
-                const date = creationDate.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                });
+                const day = String(creationDate.getDate()).padStart(2, '0');
+                const month = String(creationDate.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+                const year = creationDate.getFullYear();
+    
+                const date = `${day}/${month}/${year}`; 
 
                 const time = creationDate.toLocaleTimeString('en-US', {
                     hour: '2-digit',
