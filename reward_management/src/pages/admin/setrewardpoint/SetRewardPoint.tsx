@@ -1,10 +1,8 @@
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
-import Pageheader from '@/components/common/pageheader/pageheader';
+import Pageheader from '../../../components/common/pageheader/pageheader';
 import React, { Fragment, useState, useEffect } from "react";
 import axios from 'axios';
-import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
-
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 
 const SetRewardPointsDashboard: React.FC = () => {
@@ -15,7 +13,7 @@ const SetRewardPointsDashboard: React.FC = () => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
     useEffect(() => {
-        document.title="Set Reward Points";
+        document.title='Set Reward Points';
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
@@ -26,17 +24,11 @@ const SetRewardPointsDashboard: React.FC = () => {
         // Fetch API function
         const fetchAPI = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.points_setup.get_redeem_points`,
-                    {
-                        method: 'GET',
-                        headers: {
-                            Authorization: `token ${API_KEY}:${API_SECRET}`,
-                        },
-                    });
+                const response = await axios.get(`/api/method/reward_management.api.points_setup.get_redeem_points`);
 
                 // Check if the API returns data
                 if (response.data.message) {
-                    console.log("data",response);
+                    console.log("data", response);
                     const data = response.data.message; // Assuming the response is an array and we need the first item
                     setCurrentMinPoints(data.minimum_points);
                     setCurrentMaxPoints(data.maximum_points);
@@ -77,11 +69,8 @@ const SetRewardPointsDashboard: React.FC = () => {
                 throw new Error('Network response was not ok');
             }
 
-            // const result = await response.json();
-            // Handle the result here (e.g., show a success message)
-            // alert('Redeemption Points Setup created successfully!');
-             // Set the success alert and trigger page reload
-             setShowSuccessAlert(true);
+            // Set the success alert and trigger page reload
+            setShowSuccessAlert(true);
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to create Redeemption Points Setup.');
@@ -90,16 +79,18 @@ const SetRewardPointsDashboard: React.FC = () => {
 
     return (
         <Fragment>
-                <Pageheader 
+              <Pageheader 
                 currentpage={"Set Reward Points"} 
                 activepage={"/set-reward-points"} 
+                // mainpage={"/set-reward-points"} 
                 activepagename="Set Reward Points"
+                // mainpagename="Set Reward Points "
             />
             {/* <Pageheader currentpage="Set Reward Points" activepage="Set Reward Points" mainpage="Set Reward Points" /> */}
             <div className="grid grid-cols-12 gap-x-6 p-6">
                 <div className="col-span-12 flex justify-center items-center">
                     <div className="xl:col-span-3 col-span-12 bg-white mt-5 rounded-lg shadow-lg p-6">
-                        <div className="box">
+                        <div className="">
                             <div className="box-header">
                                 <div className="box-title text-center text-[var(--primaries)] text-sm font-semibold">
                                     Set Redeem Points
@@ -159,8 +150,11 @@ const SetRewardPointsDashboard: React.FC = () => {
                     showCollectButton={false}
                     showAnotherButton={false}
                     showMessagesecond={false}
-                    message="Redeemption Points Setup created successfully!"
-                />
+                    message="Redeemption Points Setup created successfully!" onClose={function (): void {
+                        throw new Error('Function not implemented.');
+                    } } onCancel={function (): void {
+                        throw new Error('Function not implemented.');
+                    } }                />
             )}
         </Fragment>
     );

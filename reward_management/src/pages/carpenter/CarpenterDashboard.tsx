@@ -1,7 +1,7 @@
 import '../../assets/css/style.css';
 import React, { Fragment, useState, useEffect } from "react";
 import axios from 'axios';
-import { BASE_URL } from "../../utils/constants";
+// import { BASE_URL } from "../../utils/constants";
 import { Link } from 'react-router-dom';
 
 const CarpenterDashboard: React.FC = () => {
@@ -14,7 +14,7 @@ const CarpenterDashboard: React.FC = () => {
     useEffect(() => {
         const fetchCarpenterData = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.carpenter_master.get_carpainter_data`);
+                const response = await axios.get(`/api/method/reward_management_app.api.carpenter_master.get_carpainter_data`);
                 console.log("API Response:", response);
     
                 // Access the data within the message field

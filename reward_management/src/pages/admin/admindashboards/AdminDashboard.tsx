@@ -3,7 +3,7 @@ import '../../../assets/css/pages/admindashboard.css';
 import React, { Fragment, useState, useEffect } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import axios from 'axios';
-import { BASE_URL } from "../../../utils/constants";
+// import { BASE_URL } from "../../../utils/constants";
 
 interface Carpenter {
     name: string;
@@ -43,12 +43,12 @@ const AdminDashboard: React.FC = () => {
         const fetchData = async () => {
             try {
                 const [productsRes, redemptionsRes, pendingRes, qrPointsRes, pointsRes, carpentersRes] = await Promise.all([
-                    axios.get(`${BASE_URL}/api/resource/Product?fields=["name"]`),
-                    axios.get(`${BASE_URL}/api/method/reward_management_app.api.admin_dashboards_cards.count_redemptions`),
-                    axios.get(`${BASE_URL}/api/method/reward_management_app.api.admin_dashboards_cards.count_redeem_request`),
-                    axios.get(`${BASE_URL}/api/method/reward_management_app.api.admin_dashboards_cards.total_points_of_qr_code`),
-                    axios.get(`${BASE_URL}/api/method/reward_management_app.api.admin_dashboards_cards.get_total_points_data`),
-                    axios.get(`${BASE_URL}/api/method/reward_management_app.api.admin_dashboards_cards.count_total_customers`)
+                    axios.get(`/api/resource/Product?fields=["name"]`),
+                    axios.get(`/api/method/reward_management_app.api.admin_dashboards_cards.count_redemptions`),
+                    axios.get(`/api/method/reward_management_app.api.admin_dashboards_cards.count_redeem_request`),
+                    axios.get(`/api/method/reward_management_app.api.admin_dashboards_cards.total_points_of_qr_code`),
+                    axios.get(`/api/method/reward_management_app.api.admin_dashboards_cards.get_total_points_data`),
+                    axios.get(`/api/method/reward_management_app.api.admin_dashboards_cards.count_total_customers`)
                 ]);
 
                 setProductCount(productsRes.data.data.length);

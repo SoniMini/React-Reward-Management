@@ -1,6 +1,6 @@
 import { Fragment, useState, useEffect } from 'react';
 import axios from 'axios';
-import { BASE_URL } from "../../utils/constants";
+// import { BASE_URL } from "../../utils/constants";
 import '../../assets/css/header.css';
 import '../../assets/css/style.css';
 import '../../assets/css/pages/carpenterproducts.css';
@@ -18,7 +18,7 @@ const CustomerProducts = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.product_master.get_all_products_data`);
+        const response = await axios.get(`/api/method/reward_management_app.api.product_master.get_all_products_data`);
         
         console.log("API Response:", response.data);
         

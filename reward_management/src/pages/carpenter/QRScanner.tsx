@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import '../../assets/css/pages/qrscanner.css';
-import { BASE_URL } from "../../utils/constants";
+// import { BASE_URL } from "../../utils/constants";
 import SuccessAlert from '@/components/ui/alerts/SuccessAlert';
 import PointCollectAlert from '@/components/ui/alerts/PointCollected';
 
@@ -23,7 +23,7 @@ const QRScanner = () => {
   useEffect(() => {
     const fetchUserEmailAndInitScanner = async () => {
       try {
-        const userResponse = await axios.get(`${BASE_URL}/api/method/frappe.auth.get_logged_user`);
+        const userResponse = await axios.get(`/api/method/frappe.auth.get_logged_user`);
         const userData = userResponse.data;
 
         if (userData.message) {
@@ -41,7 +41,7 @@ const QRScanner = () => {
 
     const fetchAndLogCarpenterData = async () => {
       try {
-        const carpenterResponse = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.carpenter_master.get_customer_details`);
+        const carpenterResponse = await axios.get(`/api/method/reward_management_app.api.carpenter_master.get_customer_details`);
         console.log("Carpenter data:", carpenterResponse.data);
         const customer_id = carpenterResponse.data.message.name || '';
         setCustomerId(customer_id);
@@ -61,7 +61,7 @@ const QRScanner = () => {
     const initQRScanner = () => {
       const onScanSuccess = async (decodedText: string) => {
         try {
-          const productResponse = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.qr_code_product_detail.get_product_details_from_qr`, {
+          const productResponse = await axios.get(`/api/method/reward_management_app.api.qr_code_product_detail.get_product_details_from_qr`, {
             params: { decode_text: decodedText }
           });
 
@@ -116,7 +116,7 @@ const handleCollectPoints = async () => {
     }
 
     // First API call to collect points
-    const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.carpenter_master.update_customer_points`, {
+    const response = await axios.post(`/api/method/reward_management_app.api.carpenter_master.update_customer_points`, {
       points: productQrPoints,
       carpenter_id: customerId // Use customerId instead of carpenterId
     });
@@ -125,7 +125,7 @@ const handleCollectPoints = async () => {
       console.log("Points collected successfully:", response);
 
       // Second API call to update scanned status
-      const updateResponse = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.qr_code_product_detail.update_scanned_status`, {
+      const updateResponse = await axios.post(`/api/method/reward_management_app.api.qr_code_product_detail.update_scanned_status`, {
         product_table_name: productTableName,
         product_qr_id: productQrId,
         carpenter_id: customerId // Ensure customerId is passed
@@ -159,7 +159,7 @@ const handleCollectPoints = async () => {
 const onPointCollect = async () => {
   try {
     // Call the API to update carpenter points
-    const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.carpenter_master.update_carpainter_points`, {
+    const response = await axios.post(`/api/method/reward_management_app.api.carpenter_master.update_carpainter_points`, {
       product_name: productTableName,
       points:productQrPoints
     });
@@ -195,20 +195,23 @@ const onPointCollect = async () => {
             buttonLabel="Close"
             onClose={() => setShowAlert(false)}
             showButton={true}
-            showMessage={false}
-          />
+            showMessage={false} onCancel={function (): void {
+              throw new Error('Function not implemented.');
+            } }          />
         ) : (
           <SuccessAlert
-            message={alertMessage}
-            title="QR Code Successfully Scanned"
-            collectButtonLabel="Collect"
-            showMessage={true}
-            showMessagesecond={false}
-            onClose={() => setShowAlert(false)} // You might want to set showAlert to false here to close the alert
-            showCollectButton={true}
-            onCollect={handleCollectPoints}
-            showButton={true} // Set this to true to show the close button
-          />
+              message={alertMessage}
+              title="QR Code Successfully Scanned"
+              collectButtonLabel="Collect"
+              showMessage={true}
+              showMessagesecond={false}
+              onClose={() => setShowAlert(false)} // You might want to set showAlert to false here to close the alert
+              showCollectButton={true}
+              onCollect={handleCollectPoints}
+              showButton={true} // Set this to true to show the close button
+              onCancel={function (): void {
+                throw new Error('Function not implemented.');
+              } }          />
         )
       )}
 

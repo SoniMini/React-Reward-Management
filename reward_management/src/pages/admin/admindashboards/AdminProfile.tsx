@@ -2,7 +2,7 @@ import { Fragment, useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Pageheader from '@/components/common/pageheader/pageheader';
-import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
+// import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
 import face9 from '../../../assets/images/reward_management/9.jpg';
 import SuccessAlert from '@/components/ui/alerts/SuccessAlert';
 
@@ -69,23 +69,19 @@ const AdminProfile = () => {
         // console.log("birthdate--", birthdate);
         const fetchUserEmailAndInitScanner = async () => {
             try {
-                const userResponse = await axios.get(`${BASE_URL}/api/method/frappe.auth.get_logged_user`,
+                const userResponse = await axios.get(`/api/method/frappe.auth.get_logged_user`,
                     {
                         method: "GET",
-                        headers: {
-                            Authorization: `token ${API_KEY}:${API_SECRET}`,
-                        },
+                       
                     }
                 );
                 console.log("userData----->", userResponse.data.message);
                 //   const userData = userResponse.data;
 
-                const userdata = await axios.get(`${BASE_URL}api/resource/User/${userResponse.data.message}`,
+                const userdata = await axios.get(`api/resource/User/${userResponse.data.message}`,
                     {
                         method: "GET",
-                        headers: {
-                            Authorization: `token ${API_KEY}:${API_SECRET}`,
-                        },
+                        
                     }
                 );
                 console.log("userData----->", userdata.data.data);
@@ -117,12 +113,10 @@ const AdminProfile = () => {
         // Fetch total pending redemptions count
         const fetchallgenders = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.admin_profile.get_all_gender`,
+                const response = await axios.get(`/api/method/reward_management_app.api.admin_profile.get_all_gender`,
                     {
                         method: "GET",
-                        headers: {
-                            Authorization: `token ${API_KEY}:${API_SECRET}`,
-                        },
+                        
                     }
                 );
                 setGenders(response.data.message); // 
@@ -152,7 +146,7 @@ const AdminProfile = () => {
 
         try {
             // Use either "Administrator" or the provided name/email
-            const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.admin_profile.update_user_details`, {
+            const response = await axios.post(`/api/method/reward_management_app.api.admin_profile.update_user_details`, {
                 name: userNameOrEmail === "administrator" ? "Administrator" : userNameOrEmail, // Special case for Administrator
                 first_name: firstName,
                 last_name: lastName,
@@ -203,11 +197,10 @@ const AdminProfile = () => {
         formData.append("file_name", file.name);
 
         try {
-            const response = await axios.post(`${BASE_URL}/api/method/upload_file`, formData, {
+            const response = await axios.post(`/api/method/upload_file`, formData, {
                 headers: {
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${API_KEY}`,
-                    'X-API-SECRET': API_SECRET,
+                   
                     'Content-Type': 'multipart/form-data'
                 }
             });
@@ -235,15 +228,10 @@ const AdminProfile = () => {
 
         if (uploadedFileUrl) {
             try {
-                const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.admin_profile.update_user_image`, {
+                const response = await axios.post(`/api/method/reward_management_app.api.admin_profile.update_user_image`, {
                     new_image_url: uploadedFileUrl,
                     name: email,
-                }, {
-                    headers: {
-                        'Authorization': `Bearer ${API_KEY}`,
-                        'X-API-SECRET': API_SECRET,
-                    }
-                });
+                }, );
 
                 if (response.data.message.status === "success") {
                     // setShowSuccessAlert(true);
@@ -266,7 +254,7 @@ const AdminProfile = () => {
             setSelectedImage(face9); // Assuming face9 is the default image you want to set
 
             // Call the API to remove the user image
-            await axios.post(`${BASE_URL}/api/method/reward_management_app.api.admin_profile.remove_user_image`, {
+            await axios.post(`/api/method/reward_management_app.api.admin_profile.remove_user_image`, {
                 name: email,
             });
 
@@ -312,17 +300,13 @@ const AdminProfile = () => {
 
     const savePassword = async () => {
         try {
-            const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.admin_profile.update_password_without_current`,
+            const response = await axios.post(`/api/method/reward_management_app.api.admin_profile.update_password_without_current`,
                 {
                     email: email,
                     new_password: newPassword
 
                 },
-                {
-                    headers: {
-                        Authorization: `token ${API_KEY}:${API_SECRET}`,
-                    },
-                }
+                
             );
 
             if (response.data.message.status === "success") {
