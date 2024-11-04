@@ -16,7 +16,8 @@
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
-   "label": "Naming Series"
+   "label": "Naming Series",
+   "options": "ANN.-.YYYY.-.MM.-."
   },
   {
    "fieldname": "title",
@@ -51,7 +52,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-06 14:43:23.510541",
+ "modified": "2024-11-04 15:06:58.820674",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Announcements",

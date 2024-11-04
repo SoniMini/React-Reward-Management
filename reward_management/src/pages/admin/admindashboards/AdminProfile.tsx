@@ -1,10 +1,10 @@
 import { Fragment, useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import Pageheader from '@/components/common/pageheader/pageheader';
-// import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
+import Pageheader from '../../../components/common/pageheader/pageheader';
+// import {, API_KEY, API_SECRET } from "../../../utils/constants";
 import face9 from '../../../assets/images/reward_management/9.jpg';
-import SuccessAlert from '@/components/ui/alerts/SuccessAlert';
+import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 
 const AdminProfile = () => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -30,7 +30,7 @@ const AdminProfile = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to track show and hide confirm password
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordsMatch, setPasswordsMatch] = useState(true);
+    const [passwordsMatch, setPasswordsMatch] = useState(false);
 
 
     // Reset form fields to their initial values
@@ -43,7 +43,7 @@ const AdminProfile = () => {
 
     const numberRegex = /^\d{10}$/;
 
-    const handleMobileNumberChange = (e) => {
+    const handleMobileNumberChange = (e: any) => {
         const value = e.target.value;
 
         // Validate the input value against the regex
@@ -61,27 +61,27 @@ const AdminProfile = () => {
     localStorage.setItem('username', username)
 
     useEffect(() => {
-        document.title = "Profile Setting";
+        document.title = 'Profile Setting';
         if (showSuccessAlert) {
             const timer = setTimeout(() => setShowSuccessAlert(false), 3000);
             return () => clearTimeout(timer);
         }
-        // console.log("birthdate--", birthdate);
+        console.log("birthdate--", birthdate);
         const fetchUserEmailAndInitScanner = async () => {
             try {
                 const userResponse = await axios.get(`/api/method/frappe.auth.get_logged_user`,
                     {
                         method: "GET",
-                       
+
                     }
                 );
                 console.log("userData----->", userResponse.data.message);
                 //   const userData = userResponse.data;
 
-                const userdata = await axios.get(`api/resource/User/${userResponse.data.message}`,
+                const userdata = await axios.get(`/api/resource/User/${userResponse.data.message}`,
                     {
                         method: "GET",
-                        
+
                     }
                 );
                 console.log("userData----->", userdata.data.data);
@@ -90,8 +90,6 @@ const AdminProfile = () => {
                 setLastName(userdata.data.data.last_name || "");
                 setUsername(userdata.data.data.username || "");
                 setFullname(userdata.data.data.full_name || "");
-
-
                 setEmail(userdata.data.data.email || "");
                 setPhone(userdata.data.data.phone || "");
                 setMobileno(userdata.data.data.mobile_no || "");
@@ -116,7 +114,7 @@ const AdminProfile = () => {
                 const response = await axios.get(`/api/method/reward_management_app.api.admin_profile.get_all_gender`,
                     {
                         method: "GET",
-                        
+
                     }
                 );
                 setGenders(response.data.message); // 
@@ -146,7 +144,7 @@ const AdminProfile = () => {
 
         try {
             // Use either "Administrator" or the provided name/email
-            const response = await axios.post(`/api/method/reward_management_app.api.admin_profile.update_user_details`, {
+            const response = await axios.post('/api/method/reward_management_app.api.admin_profile.update_user_details', {
                 name: userNameOrEmail === "administrator" ? "Administrator" : userNameOrEmail, // Special case for Administrator
                 first_name: firstName,
                 last_name: lastName,
@@ -174,6 +172,7 @@ const AdminProfile = () => {
         }
     };
 
+
     const openFileInput = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
@@ -182,14 +181,14 @@ const AdminProfile = () => {
 
 
 
-    const handleTabClick = (tabId) => {
+    const handleTabClick = (tabId: any) => {
         setActiveTab(tabId); // Set the active tab when clicked
     };
 
 
 
 
-    const uploadFile = async (file) => {
+    const uploadFile = async (file: any) => {
         const formData = new FormData();
         formData.append("file", file, file.name);  // Ensure the correct File object is appended
         formData.append("is_private", "0");
@@ -200,7 +199,7 @@ const AdminProfile = () => {
             const response = await axios.post(`/api/method/upload_file`, formData, {
                 headers: {
                     'Accept': 'application/json',
-                   
+
                     'Content-Type': 'multipart/form-data'
                 }
             });
@@ -231,7 +230,9 @@ const AdminProfile = () => {
                 const response = await axios.post(`/api/method/reward_management_app.api.admin_profile.update_user_image`, {
                     new_image_url: uploadedFileUrl,
                     name: email,
-                }, );
+                }, {
+
+                });
 
                 if (response.data.message.status === "success") {
                     // setShowSuccessAlert(true);
@@ -251,7 +252,7 @@ const AdminProfile = () => {
     const removeUserImage = async () => {
         try {
             // Set the default image
-            setSelectedImage(face9); // Assuming face9 is the default image you want to set
+            setSelectedImage(face9);
 
             // Call the API to remove the user image
             await axios.post(`/api/method/reward_management_app.api.admin_profile.remove_user_image`, {
@@ -266,38 +267,36 @@ const AdminProfile = () => {
 
             // Delay the update of the profile picture to reflect the changes
             setTimeout(() => {
-                setUserImage(face9);
-                (face9);
-            }, 2000);
+                setUserImage(face9); // Assuming setProfilePic is a state setter for the profile image
+            }, 2000); // 2000 milliseconds = 2 seconds
 
         } catch (error) {
             console.error('Error removing user image:', error);
         }
     };
 
-        // Toggle visibility of new password
-        const toggleNewPasswordVisibility = () => {
-            setShowNewPassword(!showNewPassword);
-        };
-    
-        // Toggle visibility of confirm password
-        const toggleConfirmPasswordVisibility = () => {
-            setShowConfirmPassword(!showConfirmPassword);
-        };
-    
-        // Handle password change
-        const handlePasswordChange = (e) => {
-            const { id, value } = e.target;
-            if (id === 'new-password') {
-                setNewPassword(value);
-            } else if (id === 'confirm-password') {
-                setConfirmPassword(value);
-            }
-    
-            // Check if passwords match after both values are set
-            setPasswordsMatch(newPassword === value || confirmPassword === value);
-        };
+    // Toggle visibility of new password
+    const toggleNewPasswordVisibility = () => {
+        setShowNewPassword(!showNewPassword);
+    };
 
+    // Toggle visibility of confirm password
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
+
+    // Handle password change
+    const handlePasswordChange = (e: any) => {
+        const { id, value } = e.target;
+        if (id === 'new-password') {
+            setNewPassword(value);
+        } else if (id === 'confirm-password') {
+            setConfirmPassword(value);
+        }
+
+        // Check if passwords match after both values are set
+        setPasswordsMatch(newPassword === value || confirmPassword === value);
+    };
     const savePassword = async () => {
         try {
             const response = await axios.post(`/api/method/reward_management_app.api.admin_profile.update_password_without_current`,
@@ -306,7 +305,7 @@ const AdminProfile = () => {
                     new_password: newPassword
 
                 },
-                
+
             );
 
             if (response.data.message.status === "success") {
@@ -325,14 +324,16 @@ const AdminProfile = () => {
             <Pageheader
                 currentpage={"Admin Profile"}
                 activepage={"/admin-profile"}
-
-                activepagename='Admin Profile'
-
+                // mainpage={"/admin-profile"} 
+                activepagename="Admin Profile"
+            // mainpagename="Admin Profile"
             />
+            
             <div className='container sm:p-3 !p-0 mt-4'>
                 <div className="grid grid-cols-12 gap-6 mb-[3rem]">
                     <div className="xl:col-span-12 col-span-12">
                         <div className="box ">
+                            {/* tab buttons----- */}
                             <div className="box-header sm:flex block !justify-start m-4">
                                 <nav aria-label="Tabs" className="md:flex block !justify-start whitespace-nowrap">
                                     <Link to="#" className={`m-1 block w-full cursor-pointer text-defaulttextcolor dark:text-defaulttextcolor/70 py-2 px-3 flex-grow text-[0.75rem] font-medium rounded-[5px] hover:text-primary ${activeTab === 'personal-info' ? 'bg-primary/10 text-primary' : ''}`} id="Personal-item" onClick={() => handleTabClick('personal-info')}>
@@ -343,12 +344,13 @@ const AdminProfile = () => {
                                     </Link>
                                 </nav>
                             </div>
+                            {/* end of tab buttons---- */}
                             <div className="box-body border">
                                 <div className="tab-content">
                                     <div className={`tab-pane ${activeTab === 'personal-info' ? 'show active' : 'hidden'}`} id="personal-info" aria-labelledby="Personal-item">
                                         {/* Personal Information Content */}
                                         <div className="sm:p-4 p-0">
-                                            <h6 className="font-semibold mb-4 text-[1rem]">Photo :</h6>
+                                            <h6 className="font-semibold mb-4 text-[1rem]">Photo </h6>
                                             <div className="mb-6 sm:flex items-center">
                                                 <div className="mb-0 me-[3rem] relative">
                                                     <span className="avatar avatar-xxl avatar-rounded relative inline-block">
@@ -365,7 +367,7 @@ const AdminProfile = () => {
                                                     <button type="button" className="bg-light ti-btn text-defaulttextcolor" onClick={removeUserImage}>Remove</button>
                                                 </div>
                                             </div>
-                                            <h6 className="font-semibold mb-4 text-[1rem]">Profile :</h6>
+                                            <h6 className="font-semibold mb-4 text-[1rem]">Profile </h6>
                                             <div className="sm:grid grid-cols-12 gap-6 mb-6">
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="first-name" className="form-label text-sm text-defaulttextcolor font-semibold">First Name</label>
@@ -374,25 +376,24 @@ const AdminProfile = () => {
                                                         className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                                         id="first-name"
                                                         placeholder="First Name"
-                                                        value={firstName}
-                                                        onChange={(e) => setFirstName(e.target.value)}
+                                                        value={firstName} // Set the value from the state
+                                                        onChange={(e) => setFirstName(e.target.value)} // Allow user to change the value
                                                     />
                                                 </div>
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="last-name" className="form-label text-sm text-defaulttextcolor font-semibold">Last Name</label>
                                                     <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="last-name" placeholder="Last Name"
-                                                        value={lastName}
+                                                        value={lastName} // Set the value from the state
                                                         onChange={(e) => setLastName(e.target.value)} />
                                                 </div>
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="full-name" className="form-label text-sm text-defaulttextcolor font-semibold">Full Name</label>
                                                     <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="full-name" placeholder="Full Name"
-                                                        value={fullname}
+                                                        value={fullname} // Set the value from the state
                                                         onChange={(e) =>
 
 
                                                             setFullname(e.target.value)
-
 
 
                                                         }
@@ -402,18 +403,18 @@ const AdminProfile = () => {
                                                     <label className="form-label text-sm text-defaulttextcolor font-semibold">User Name</label>
                                                     <div className="input-group mb-3">
                                                         <input
-                                                            value={username}
+                                                            value={username} // Set the value from the state
                                                             onChange={(e) => setUsername(e.target.value)}
                                                             type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="basic-url" aria-describedby="basic-addon3" placeholder='username' />
                                                     </div>
                                                 </div>
                                             </div>
-                                            <h6 className="font-semibold mb-4 text-[1rem]">Personal information :</h6>
+                                            <h6 className="font-semibold mb-4 text-[1rem]">Personal information </h6>
                                             <div className="sm:grid grid-cols-12 gap-6 mb-6">
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="email-address" className="form-label text-sm text-defaulttextcolor font-semibold">Email Address</label>
                                                     <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="email-address" placeholder="xyz@gmail.com"
-                                                        value={email}
+                                                        value={email} // Set the value from the state
                                                         onChange={(e) => setEmail(e.target.value)}
                                                         readOnly
                                                     />
@@ -421,7 +422,7 @@ const AdminProfile = () => {
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="phone" className="form-label text-sm text-defaulttextcolor font-semibold">Phone</label>
                                                     <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="phone" placeholder="contact details"
-                                                        value={phone}
+                                                        value={phone} // Set the value from the state
                                                         onChange={(e) => setPhone(e.target.value)}
                                                     />
                                                 </div>
@@ -432,19 +433,19 @@ const AdminProfile = () => {
                                                         className={`form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm ${isValid ? '' : 'border-red-500'}`}
                                                         id="mobile-number"
                                                         placeholder="contact details"
-                                                        value={mobileno}
-                                                        onChange={handleMobileNumberChange}
+                                                        value={mobileno} // Set the value from the state
+                                                        onChange={handleMobileNumberChange} // Handle validation on change
                                                     />
                                                     {!isValid && <p className="text-[#FF0000] text-sm mt-1">Please enter a valid 10-digit mobile number.</p>}
                                                 </div>
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="dob" className="form-label text-sm text-defaulttextcolor font-semibold">Date of Birth</label>
                                                     <input type="date" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="dob" placeholder="contact details"
-                                                        value={birthdate}
+                                                        value={birthdate} // Set the value from the state
                                                         onChange={(e) => {
                                                             const selectedDate = e.target.value;
-                                                            setBirthdate(selectedDate);
-                                                            console.log("Selected Date:", selectedDate);
+                                                            setBirthdate(selectedDate); // Update the state with the selected date
+                                                            console.log("Selected Date:", selectedDate); // Log the selected date to the console
                                                         }}
                                                     />
                                                 </div>
@@ -453,14 +454,14 @@ const AdminProfile = () => {
                                                     <select
                                                         className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                                         id="gender"
-                                                        value={gender}
+                                                        value={gender} // Bind the selected value to the state
                                                         onChange={(e) => {
                                                             const selectedGender = e.target.value;
-                                                            setGender(selectedGender);
-                                                            console.log("Selected Gender:", selectedGender);
+                                                            setGender(selectedGender); // Update the state with the selected gender
+                                                            console.log("Selected Gender:", selectedGender); // Log the selected gender to the console
                                                         }}
                                                     >
-                                                        <option value="">Select Gender</option>
+                                                        <option value="">Select Gender</option> {/* Default option */}
                                                         {genders.map((g, index) => (
                                                             <option key={index} value={g.name}>{g.name}</option>
                                                         ))}
@@ -470,15 +471,15 @@ const AdminProfile = () => {
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="location" className="form-label text-sm text-defaulttextcolor font-semibold">Location</label>
                                                     <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="location" placeholder="Location"
-                                                        value={location}
+                                                        value={location} // Set the value from the state
                                                         onChange={(e) => setLocation(e.target.value)}
                                                     />
                                                 </div>
                                             </div>
-                                            <div className='border-t border-defaultborder p-4 flex justify-end'>
+                                            <div className='p-4 flex justify-end'>
                                                 <button
                                                     className="ti-btn ti-btn-primary bg-primary me-3"
-                                                    onClick={update_user_details}
+                                                    onClick={update_user_details} // Call the update_user_details function on button click
                                                 >
                                                     Update profile
                                                 </button>
@@ -495,7 +496,7 @@ const AdminProfile = () => {
                                     <div className={`tab-pane ${activeTab === 'security' ? 'show active' : 'hidden'}`} id="security" aria-labelledby="security-item">
                                         {/* Security (Password) Content */}
                                         <div className="sm:p-4 p-0">
-                                            <h6 className="font-semibold mb-6 text-[1rem]">Update Password :</h6>
+                                            <h6 className="font-semibold mb-6 text-[1rem]">Update Password </h6>
                                             <div className="sm:grid grid-cols-12 gap-6 mb-6">
                                                 <div className="xl:col-span-6 col-span-12 relative">
                                                     <label htmlFor="new-password" className="form-label text-sm text-defaulttextcolor font-semibold">New Password</label>
@@ -504,7 +505,7 @@ const AdminProfile = () => {
                                                         className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                                         id="new-password"
                                                         value={newPassword}
-                                                        onChange={handlePasswordChange}
+                                                        onChange={handlePasswordChange} // Attach onChange handler here
                                                         placeholder="Enter new password"
                                                     />
                                                     <button
@@ -523,7 +524,7 @@ const AdminProfile = () => {
                                                         className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                                         id="confirm-password"
                                                         value={confirmPassword}
-                                                        onChange={handlePasswordChange}
+                                                        onChange={handlePasswordChange} // Attach onChange handler here
                                                         placeholder="Confirm password"
                                                     />
                                                     <button
@@ -535,10 +536,11 @@ const AdminProfile = () => {
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div className='border-t border-defaultborder p-4 flex justify-end'>
+                                            <div className=' p-4 flex justify-end'>
                                                 <button className={`ti-btn ti-btn-primary bg-primary me-3 ${!passwordsMatch ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                     onClick={savePassword}
-                                                disabled={!passwordsMatch}
+                                                    disabled={!passwordsMatch}
+                                                // disabled={!passwordsMatch}
                                                 >
                                                     Save Password
                                                 </button>
@@ -559,23 +561,9 @@ const AdminProfile = () => {
                 </div>
             </div>
             {/* Success Alert */}
-            {showSuccessAlert && <SuccessAlert
-                showButton={false}
-                showCancleButton={false}
-                showCollectButton={false}
-                showAnotherButton={false}
-                showMessagesecond={false}
-                message="Profile Update successfully!"
-                onClose={function (): void {
-                    throw new Error('Function not implemented.');
-                }}
-                onCancel={function (): void {
-                    throw new Error('Function not implemented.');
-                }} />}
+            {showSuccessAlert && <SuccessAlert message="Profile Update successfully!" />}
         </Fragment>
     );
 };
 
 export default AdminProfile;
-
-
