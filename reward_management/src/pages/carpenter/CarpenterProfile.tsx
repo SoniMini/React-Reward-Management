@@ -4,7 +4,7 @@ import Pageheader from '../../components/common/pageheader/pageheader';
 // import {, API_KEY, API_SECRET } from "../../../utils/constants";
 import face9 from '../../assets/images/reward_management/9.jpg';
 import SuccessAlert from '../../components/ui/alerts/SuccessAlert';
-import { BASE_URL } from "../../utils/constants";
+// import { BASE_URL } from "../../utils/constants";
 
 
 
@@ -61,7 +61,7 @@ const AdminProfile = () => {
                 console.log("userData----->", userResponse.data.message);
                 //   const userData = userResponse.data;
 
-                const userdata = await axios.get(`${BASE_URL}/api/resource/User/${userResponse.data.message}`,
+                const userdata = await axios.get(`/api/resource/User/${userResponse.data.message}`,
                     {
                         method: "GET",
 
@@ -93,7 +93,7 @@ const AdminProfile = () => {
         // Fetch total pending redemptions count
         const fetchallgenders = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.carpenter_profile.get_all_gender`,
+                const response = await axios.get(`/api/method/reward_management_app.api.carpenter_profile.get_all_gender`,
                     {
                         method: "GET",
 
@@ -123,7 +123,7 @@ const AdminProfile = () => {
 
     const update_user_details = async () => {
         try {
-            const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.carpenter_profile.update_user_details`, {
+            const response = await axios.post(`/api/method/reward_management_app.api.carpenter_profile.update_user_details`, {
                 name: email,  // New email
                 old_email: oldEmail,  // Old email
                 first_name: firstName,
@@ -170,7 +170,7 @@ const AdminProfile = () => {
         formData.append("file_name", file.name);
 
         try {
-            const response = await axios.post(`${BASE_URL}/api/method/upload_file`, formData, {
+            const response = await axios.post(`/api/method/upload_file`, formData, {
                 headers: {
                     'Accept': 'application/json',
 
@@ -201,7 +201,7 @@ const AdminProfile = () => {
 
         if (uploadedFileUrl) {
             try {
-                const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.carpenter_profile.update_user_image`, {
+                const response = await axios.post(`/api/method/reward_management_app.api.carpenter_profile.update_user_image`, {
                     new_image_url: uploadedFileUrl,
                     name: email,
                 }, {
@@ -229,7 +229,7 @@ const AdminProfile = () => {
             setSelectedImage(face9); // Assuming face9 is the default image you want to set
 
             // Call the API to remove the user image
-            await axios.post(`${BASE_URL}/api/method/reward_management_app.api.carpenter_profile.remove_user_image`, {
+            await axios.post(`/api/method/reward_management_app.api.carpenter_profile.remove_user_image`, {
                 name: email,
             });
 

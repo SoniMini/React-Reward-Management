@@ -8,7 +8,8 @@ import CreateQRCode from '@/components/ui/models/CreateQRModel.tsx';
 import SuccessAlert from '@/components/ui/alerts/SuccessAlert';
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
 import axios from 'axios';
-import { BASE_URL} from "../../../utils/constants";
+import { PulseLoader } from 'react-spinners';
+// import { BASE_URL} from "../../../utils/constants";
 
 interface Product {
     name: string,
@@ -24,6 +25,7 @@ const ProductMaster: React.FC = () => {
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // State for search query
+    const [loading, setLoading] = useState(false);
     
     const [itemsPerPage] = useState(5); // Number of items per page
     const { data: productsData } = useFrappeGetDocList<Product>('Product', {
@@ -105,8 +107,9 @@ const ProductMaster: React.FC = () => {
 
     const handleConfirm = async (quantity: number) => {
         if (selectedProduct) {
+            setLoading(true);
             try {
-                const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.print_qr_code.create_product_qr`, {
+                const response = await axios.post(`/api/method/reward_management_app.api.print_qr_code.create_product_qr`, {
                     product_name: selectedProduct.name,
                     quantity: quantity
                 });
@@ -118,6 +121,9 @@ const ProductMaster: React.FC = () => {
             } catch (error) {
                 console.error('Error creating QR codes:', error);
                 // Handle error, e.g., show an error message to the user
+            }
+            finally {
+                setLoading(false);
             }
         } else {
             console.error('No product selected');
@@ -266,18 +272,28 @@ const ProductMaster: React.FC = () => {
                     onClose={closeModal}
                     onCancel={closeModal}
                     onConfirm={handleConfirm}
-                    title={`Create QR Code for ${selectedProduct.name}`}
-                />
+                    title={`Create QR Code for ${selectedProduct.name}`} onSubmit={function (): void {
+                        throw new Error('Function not implemented.');
+                    } }                />
+            )}
+             {loading && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-75 z-50">
+                    <PulseLoader color="#845ADF" loading={loading} size={15} />
+                </div>
             )}
 
             {/* Success Alert */}
             {showSuccessAlert && <SuccessAlert 
-              showButton={false}
-              showCancleButton={false}
-              showCollectButton={false}
-              showAnotherButton={false}
-              showMessagesecond={false}
-            message="QR Codes created successfully!" />}
+                showButton={false}
+                showCancleButton={false}
+                showCollectButton={false}
+                showAnotherButton={false}
+                showMessagesecond={false}
+                message="QR Codes created successfully!" onClose={function (): void {
+                    throw new Error('Function not implemented.');
+                } } onCancel={function (): void {
+                    throw new Error('Function not implemented.');
+                } } />}
         </Fragment>
     );
 };

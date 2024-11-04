@@ -7,7 +7,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import RedeemPointAlert from '@/components/ui/models/RedeemPoints';
 import SuccessAlert from '@/components/ui/alerts/SuccessAlert';
 import axios from 'axios';
-import { BASE_URL } from "../../utils/constants";
+// import { BASE_URL } from "../../utils/constants";
 
 interface Transaction {
     name: string;
@@ -50,7 +50,7 @@ const RedeemRequest: React.FC = () => {
 
     const fetchUserData = async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/api/method/frappe.auth.get_logged_user`);
+            const response = await axios.get(`/api/method/frappe.auth.get_logged_user`);
             console.log("Logged user data:", response);
             setUserData(response.data.message);
         } catch (error) {
@@ -60,7 +60,7 @@ const RedeemRequest: React.FC = () => {
 
     const fetchCarpenterDetails = async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.carpenter_master.get_customer_details`);
+            const response = await axios.get(`/api/method/reward_management_app.api.carpenter_master.get_customer_details`);
             console.log("Carpenter details:", response);
             const points = response.data.message.current_points || '0';
             const customer_id = response.data.message.name || '';
@@ -73,7 +73,7 @@ const RedeemRequest: React.FC = () => {
 
     const fetchMinMaxPoints = async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.points_setup.get_redeem_points`);
+            const response = await axios.get(`/api/method/reward_management_app.api.points_setup.get_redeem_points`);
             console.log("Min and Max points:", response);
             const { minimum_points, maximum_points } = response.data.message;
             setMinPoints(minimum_points || 0);
@@ -85,7 +85,7 @@ const RedeemRequest: React.FC = () => {
 
     const fetchTransactionData = async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.redeem_request_data.get_redeem_request_details`);
+            const response = await axios.get(`/api/method/reward_management_app.api.redeem_request_data.get_redeem_request_details`);
             console.log("Redeem Request table data:", response);
             const RedeemRequestData = response.data.message.message;
 
@@ -182,7 +182,7 @@ const RedeemRequest: React.FC = () => {
         });
     
         try {
-            const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.redeem_request.create_redeem_request`, {
+            const response = await axios.post(`/api/method/reward_management_app.api.redeem_request.create_redeem_request`, {
                 customer_id: customerId,
                 redeemed_points: redeemedPoints,
             });

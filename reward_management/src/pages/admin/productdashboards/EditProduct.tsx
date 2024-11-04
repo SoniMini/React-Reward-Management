@@ -6,7 +6,7 @@ import 'suneditor/dist/css/suneditor.min.css';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 import axios from 'axios';
-import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
+// import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
 import SuccessAlert from '@/components/ui/alerts/SuccessAlert';
 
 interface EditProduct {
@@ -45,7 +45,7 @@ const EditProduct: React.FC = () => {
             if (!productId) return;
 
             try {
-                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.product_master.get_tableproduct_detail`, {
+                const response = await axios.get(`/api/method/reward_management_app.api.product_master.get_tableproduct_detail`, {
                     params: { product_id: productId }
                 });
 
@@ -91,11 +91,10 @@ const EditProduct: React.FC = () => {
         formData.append("file_name", file.name);
 
         try {
-            const response = await axios.post(`${BASE_URL}/api/method/upload_file`, formData, {
+            const response = await axios.post(`/api/method/upload_file`, formData, {
                 headers: {
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${API_KEY}`,
-                    'X-API-SECRET': API_SECRET,
+                    
                     'Content-Type': 'multipart/form-data'
                 }
             });
@@ -142,7 +141,7 @@ const EditProduct: React.FC = () => {
         };
 
         try {
-            await axios.put(`${BASE_URL}/api/resource/Product/${productId}`, data, {
+            await axios.put(`/api/resource/Product/${productId}`, data, {
                 headers: {
                     'Content-Type': 'application/json',
                 }

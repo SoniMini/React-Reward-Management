@@ -8,7 +8,7 @@ import { useFrappeGetDocList } from 'frappe-react-sdk';
 import { useNavigate } from 'react-router-dom';
 import EditModalComponent from '@/components/ui/models/RewardRequestEdit';
 import axios from 'axios';
-import { BASE_URL } from "../../../utils/constants";
+// import { BASE_URL } from "../../../utils/constants";
 import SuccessAlert from '@/components/ui/alerts/SuccessAlert';
 
 interface RewardRequest {
@@ -171,7 +171,7 @@ const CarpenterRewardRequest: React.FC = () => {
         };
     
         try {
-            const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.admin_redeem_request.update_redeem_request_status`, data);
+            const response = await axios.post(`/api/method/reward_management_app.api.admin_redeem_request.update_redeem_request_status`, data);
     
             if (response.status === 200) {
                 console.log("Redeem Request updated successfully");
@@ -302,7 +302,9 @@ const CarpenterRewardRequest: React.FC = () => {
                     showMessagesecond={false}
                     message="Redeem Request Update Successfully!!"
                     onClose={() => setShowSuccessAlert(false)} // Close the alert properly
-                />
+                    onCancel={function (): void {
+                        throw new Error('Function not implemented.');
+                    } }                />
             )}
         </Fragment>
     );

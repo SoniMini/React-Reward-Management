@@ -8,7 +8,7 @@ import { SidebarData } from '@/components/common/sidebar/sidebardata';
 import SubMenu from '@/components/common/sidebar/submenu';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { BASE_URL } from "../../utils/constants";
+// import { BASE_URL } from "../../utils/constants";
 
 console.log(SidebarData);
 
@@ -52,7 +52,7 @@ const Sidebar = ({ isSidebarActive }) => {
 
         const fetchWebsiteSettings = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.website_settings.get_website_settings`);
+                const response = await axios.get(`/api/method/reward_management_app.api.website_settings.get_website_settings`);
                 console.log('API Image Response:', response.data);
     
                 // Check if the response is successful and contains the expected structure

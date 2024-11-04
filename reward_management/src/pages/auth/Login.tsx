@@ -1,18 +1,26 @@
 import React, { useState, Fragment, useEffect } from 'react';
-import desktoplogo from "@/assets/images/01.png";
+
 import { Box, Button, Callout, Card, Text } from '@radix-ui/themes';
-// import { useFrappeAuth } from 'frappe-react-sdk';
+
 import { useNavigate } from 'react-router-dom';
+
+import desktoplogo from "@/assets/images/01.png";
+
 import axios from 'axios';
-import { BASE_URL, API_KEY, API_SECRET } from "../../utils/constants";
+import { useFrappeAuth } from "frappe-react-sdk";
+
 import '../../assets/css/style.css';
 import SuccessAlert from '../../components/ui/alerts/SuccessAlert';
 
 
-
-
-
 const Login = () => {
+
+    const {
+
+        login,
+
+    } = useFrappeAuth();
+
 
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -45,27 +53,18 @@ const Login = () => {
 
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setData({ ...data, [e.target.name]: e.target.value });
-        // if (name === 'mobile') {
-        //     setLoginError('');
-        //     if (value.length !== 10) {
-        //         setLoginError('Mobile number must be exactly 10 digits');
-        //     } else if (!/^\d+$/.test(value)) {
-        //         setLoginError('Mobile number can only contain digits');
-        //     }
-        // }
+
         setLoginError("");
     };
 
     // show logged use roles---------------------
     const fetchUserRoles = async (username: string) => {
         try {
-            const response = await axios.get(`${BASE_URL}api/method/frappe.core.doctype.user.user.get_roles`, {
+            const response = await axios.get(`/api/method/frappe.core.doctype.user.user.get_roles`, {
                 params: {
-                    uid: username  // Replace with correct parameter if needed
+                    uid: username  
                 },
-                headers: {
-                    'Authorization': `token ${API_KEY}:${API_SECRET}`
-                }
+
             });
             return response.data;
         } catch (error) {
@@ -74,9 +73,6 @@ const Login = () => {
         }
     };
 
-    
-
-
 
     // Handle Admin Login Form--------
 
@@ -84,26 +80,30 @@ const Login = () => {
         e.preventDefault();
         try {
             // Perform login
-            const response = await axios.post(`${BASE_URL}api/method/login`, {
+            const response = await axios.post(`/api/method/login`, {
                 usr: username,
                 pwd: password
             });
+            console.log(username, password);
             console.log('Login successful:', response.data.full_name);
 
             // Fetch roles
             const rolesResponse = await fetchUserRoles(username);
-            console.log("rolesResponse----",rolesResponse);
-            
+            console.log("rolesResponse----", rolesResponse);
+
             // Extract roles from the response
             const roles = rolesResponse.message || []; // Assuming `message` contains the array of roles
             localStorage.setItem('user_roles', JSON.stringify(roles));
 
             console.log('User roles:', roles);
 
+            login({ username: username, password: password });
+
             // Check if roles is an array
             if (!Array.isArray(roles)) {
                 throw new Error('Roles data is not in the expected format.');
             }
+
 
             // Redirect based on role
             if (roles.includes('Admin')) {
@@ -112,18 +112,19 @@ const Login = () => {
                 navigate('/admin-dashboard');
             }
            
-      
+
+
         } catch (err) {
             console.error('Login error:', err);
-            setLoginError('An error occurred during login.');
+            setLoginError('Invalid Username or Password.');
         }
     };
 
 
     // Send Carpenter Registration Request---------------------
-    const registerCarpainter = async (firstName: string, lastName: string, mobile: string, city: string) => {
+    const registerCarpainter = async (firstName: any, lastName: any, mobile: any, city: any) => {
         try {
-            const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.create_new_carpenter.create_new_carpainters`, {
+            const response = await axios.post(`/api/method/reward_management_app.api.create_new_carpenter.create_new_carpainters`, {
                 firstname: firstName,
                 lastname: lastName,
                 mobile: mobile,
@@ -139,9 +140,8 @@ const Login = () => {
         }
     };
 
-
     //    Handle Carpenter Registration Form---------------------
-    const handleRegister = async (e: { preventDefault: () => void; }) => {
+    const handleRegister = async (e: any) => {
         e.preventDefault();
         if (mobile.length !== 10 || !/^\d+$/.test(mobile)) {
             setLoginError('Mobile number must be exactly 10 digits and only contain digits');
@@ -150,9 +150,9 @@ const Login = () => {
 
         try {
             // Verify OTP
-            const otpResponse = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.mobile_number.verify_otp`, {
+            const otpResponse = await axios.get(`/api/method/reward_management_app.api.mobile_number.verify_otp`, {
                 params: { mobile_number: mobile, otp: otp },
-                headers: { 'Content-Type': 'application/json' }
+
             });
 
             if (otpResponse.data.message.status === "success") {
@@ -165,14 +165,16 @@ const Login = () => {
                 // Call the function to register a new Carpainter
                 const registerResponse = await registerCarpainter(firstName, lastName, mobile, city);
 
-                console.log("registerResponse",registerResponse);
+                console.log("registerResponse", registerResponse);
 
                 if (registerResponse.message.status === "success") {
                     console.log("Carpainter registered successfully:", registerResponse);
-                    // alert("Carpainter Registered Successfully.");
+                    // alert("Customer Registered Successfully.");
                     setAlertTitle('Success');
                     setAlertMessage("Customer Registration Sent to the Admin Successfully.");
                     setShowSuccessAlert(true);
+
+                    // Clear all input fields
                     setData({
                         email: "",
                         password: "",
@@ -187,15 +189,11 @@ const Login = () => {
 
                     // Optionally, reset OTP visibility state
                     setIsOtpVisible(false);
-                    // Redirect or reset form as needed
                 } else {
                     setLoginError('Failed to register. Please try again.');
                 }
             } else {
-                // alert("OTP Not Matched.");
-                setAlertTitle('Error');
-                setAlertMessage("OTP Not Matched.");
-                setShowSuccessAlert(true);
+                alert("OTP Not Matched.");
                 setLoginError('Failed to match OTP. Please try again.');
             }
         } catch (error) {
@@ -221,7 +219,7 @@ const Login = () => {
     const handleGetOtp = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
+            const response = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
                 mobile_number: mobile
             }, {
                 headers: {
@@ -236,6 +234,7 @@ const Login = () => {
                 setAlertTitle('Success');
                 setAlertMessage("Otp has been sent to you mobile number !!!");
                 setShowSuccessAlert(true);
+
                 setIsOtpVisible(true);
             } else {
                 setLoginError('Failed to send OTP. Please try again.');
@@ -250,34 +249,34 @@ const Login = () => {
     // handdle carpenter login otp form--------
     const handleloginGetOtp = async (e: React.FormEvent) => {
         e.preventDefault();
-    
+
         if (mobilenumber.length !== 10 || !/^\d+$/.test(mobilenumber)) {
             alert("Mobile number must be exactly 10 digits.");
             return;
         }
-    
+
         try {
             // First, check if the user is registered
-            const checkResponse = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.create_new_user.check_user_registration`, {
+            const checkResponse = await axios.get(`/api/method/reward_management_app.api.create_new_user.check_user_registration`, {
                 params: { mobile_number: mobilenumber },
-                headers: { 'Content-Type': 'application/json' }
+
             });
 
             localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
-    
+
             console.log('Check Response Data:', checkResponse.data.message.role_profile_name); // Log the response to inspect its structure
             // var carpenterrole = checkResponse.data.role_profile_name;
-    
+
             if (checkResponse.data.message && checkResponse.data.message.registered) {
                 // If registered, call the OTP generation API
-                const otpResponse = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
+                const otpResponse = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
                     mobile_number: mobilenumber
                 }, {
                     headers: { 'Content-Type': 'application/json' }
                 });
-    
+
                 console.log('OTP Response Data:', otpResponse.data); // Log the OTP response data
-    
+
                 if (otpResponse.data.message.status === "success") {
                     // alert("OTP has been sent to your mobile number!");
                     setAlertTitle('Success');
@@ -295,37 +294,33 @@ const Login = () => {
             setLoginError('An error occurred while processing your request.');
         }
     };
-    
 
-    const handlelogincarpenter = async (e: React.FocusEvent) => {
+
+    const handlelogincarpenter: any = async (e: React.FocusEvent) => {
         e.preventDefault();
-    
+
         // Assuming you have an OTP input field in your form
         const otp = mobileotp; // Replace `otpInput` with your actual OTP input state or value
-    
+
         if (!otp) {
             setLoginError('Please enter the OTP.');
             return;
         }
-    
+
         try {
             // Verify the OTP
-            const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.mobile_number.verify_otp`, {
+            const response = await axios.get(`/api/method/reward_management_app.api.mobile_number.verify_otp`, {
                 params: { mobile_number: mobilenumber, otp: mobileotp }, // Pass necessary parameters
-                headers: { 'Content-Type': 'application/json' }
             });
-    
+
             console.log('OTP Verification Response Data:', response.data); // Log the response for debugging
-    
+
             // Check if the OTP verification was successful
             if (response.data.message.status === "success") {
                 // Save login status in localStorage
                 localStorage.setItem('login', 'true');
 
-            
 
-            
-    
                 // Save user data in localStorage
                 const credentials = {
                     mobile_number: mobilenumber,
@@ -334,23 +329,12 @@ const Login = () => {
                     // Add more user data as needed
                 };
                 localStorage.setItem('credentials', JSON.stringify(credentials));
-    
+
                 console.log('Login Status:', localStorage.getItem('login'));
-                // console.log('User Credentials:', JSON.parse(localStorage.getItem('credentials')));
-               
-                // const rolesResponse = await fetchUserRoles(firstName);
-                // console.log("rolesResponse----",rolesResponse);
-                
-                // // Extract roles from the response
-                // const roles = rolesResponse.message || []; // Assuming `message` contains the array of roles
-                // localStorage.setItem('user_roles', JSON.stringify(roles));
-    
-    
+
+
                 navigate('/carpenter-dashboard');
-                // // Redirect to the carpenter dashboard
-                // if (roles.includes('Carpenter')) {
-                // }
-                // Replace with the correct path to your carpenter dashboard
+
             } else {
                 setLoginError('Invalid OTP. Please try again.');
             }
@@ -359,13 +343,13 @@ const Login = () => {
             setLoginError('An error occurred while verifying the OTP.');
         }
     };
-    
 
-   
+
     useEffect(() => {
+
         const fetchWebsiteSettings = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.website_settings.get_website_settings`);
+                const response = await axios.get(`/api/method/reward_management_app.api.website_settings.get_website_settings`);
                 console.log('API Image Response:', response.data);
     
                 // Check if the response is successful and contains the expected structure
@@ -396,16 +380,15 @@ const Login = () => {
     
         fetchWebsiteSettings();
 
+        // Optional: Handle success alert display logic
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                // window.location.reload();
+                // window.location.reload(); // Optional: Reload the page if needed
             }, 3000); // Hide alert after 3 seconds
             return () => clearTimeout(timer); // Cleanup timeout on component unmount
         }
     }, [showSuccessAlert]);
-
-
     if (loading) {
         return <div></div>; // Show loading message or spinner while fetching
     }
@@ -416,32 +399,31 @@ const Login = () => {
                 <div className="grid grid-cols-12 gap-4 b">
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-3 sm:col-span-2"></div>
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12 ">
-                        {/* <div className="my-[1.5rem] flex justify-center">
-                            <img src={desktoplogo} alt="logo" className="w-28" />
-                        </div> */}
+
                         <Card className="p-8 box-shadow-md border border-defaultborder shadow-md rounded-[10px] bg-white">
                             <div className="flex justify-center mb-8">
-                                <img src={logo} alt="logo" className="w-28" />
+                                {/* <img src={desktoplogo} alt="logo" className="w-28" /> */}
+                                <img src={logo } alt="logo" className="w-20" />
                             </div>
                             <div className="text-center mb-5">
                                 <p className="text-lg font-semibold">
                                     {currentForm === "login" && "Login"}
                                     {currentForm === "register" && "Registration"}
-                                    {currentForm === "carpenterLogin" && "Carpenter Login"}
+                                    {currentForm === "carpenterLogin" && "Customer Login"}
                                 </p>
                                 <p className='text-[#8c9097] text-center font-normal'>
                                     {currentForm === "login" && "Please Login to Your Account"}
                                     {currentForm === "register" && "Please enter details to register"}
-                                    {currentForm === "carpenterLogin" && "Please login as a Carpenter"}
+                                    {currentForm === "carpenterLogin" && "Please login as a Customer"}
                                 </p>
                             </div>
 
                             <div className="flex justify-evenly border-b mb-6 gap-4 font-semibold text-sm">
-                                <Button onClick={() => setCurrentForm('login')} className={`flex-1 ${currentForm === 'login' ? 'border-b-2 border-primary text-primary' : ''}`}>
+                                <Button onClick={() => setCurrentForm('login')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'login' ? 'border-b-2 border-primary text-primary' : ''}`}>
                                     Admin
                                 </Button>
-                                <Button onClick={() => setCurrentForm('register')} className={`flex-1 ${currentForm === 'register' ? 'border-b-2 border-primary text-primary' : ''}`}>
-                                    Carpenter
+                                <Button onClick={() => setCurrentForm('register')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'register' ? 'border-b-2 border-primary text-primary' : ''}`}>
+                                    Customer
                                 </Button>
                             </div>
 
@@ -549,7 +531,7 @@ const Login = () => {
                                                 {mobile.length !== 10 && mobile.length > 0 && (
                                                     <Text className="text-danger">Mobile number must be exactly 10 digits</Text>
                                                 )}
-                                              
+
                                             </Box>
 
                                             {isOtpVisible ? (
@@ -590,7 +572,7 @@ const Login = () => {
                                         </Box>
 
                                         <Box className="mt-4 text-center">
-                                            <Text className="text-default">Login as a <a href="/customer-product" className="text-primary">Customer?</a></Text>
+                                            <Text className="text-default">View as a <a href="/customer-product" className="text-primary">Customer?</a></Text>
                                         </Box>
                                     </form>
                                 )}
@@ -609,9 +591,9 @@ const Login = () => {
                                                 className={`border rounded-[5px] p-2 mt-2 text-xs w-full  ${mobilenumber.length !== 10 || !/^\d+$/.test(mobile) ? 'border-red-500' : ''}`}
                                                 required
                                             />
-                                              {mobilenumber.length !== 10 && mobilenumber.length > 0 && (
-                                                    <Text className="text-danger">Mobile number must be exactly 10 digits</Text>
-                                                )}
+                                            {mobilenumber.length !== 10 && mobilenumber.length > 0 && (
+                                                <Text className="text-danger">Mobile number must be exactly 10 digits</Text>
+                                            )}
                                         </Box>
                                         {isloginOtpVisible ? (
                                             <>
@@ -627,7 +609,7 @@ const Login = () => {
                                                         className="border rounded-[5px] p-2 mt-2 text-xs w-full"
                                                     />
                                                 </Box>
-                                                <Button type="submit" onClick={handlelogincarpenter} id='logincarpenter'  className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium ">
+                                                <Button type="submit" onClick={handlelogincarpenter} id='logincarpenter' className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium ">
                                                     Login
                                                 </Button>
                                             </>
@@ -643,7 +625,7 @@ const Login = () => {
                                             <Text>OR</Text>
                                         </Box>
                                         <Box className="mt-4 text-center">
-                                            <Text className="text-default">Login as a <a href="" className="text-primary" onClick={() => setCurrentForm("carpenterLogin")}>Customer?</a></Text>
+                                            <Text className="text-default">View as a <a href="/customer-product" className="text-primary" onClick={() => setCurrentForm("carpenterLogin")}>Customer?</a></Text>
                                         </Box>
                                     </form>
                                 )}
@@ -657,7 +639,7 @@ const Login = () => {
                 <SuccessAlert
                     title={alertTitle}
                     showButton={false}
-                    
+
                     message={alertMessage}
                 />
             )}
