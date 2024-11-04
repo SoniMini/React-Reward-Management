@@ -3,7 +3,6 @@ import '../../../assets/css/pages/admindashboard.css';
 import React, { Fragment, useState, useEffect } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import axios from 'axios';
-// import { BASE_URL } from "../../../utils/constants";
 
 interface Carpenter {
     name: string;
