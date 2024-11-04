@@ -5,7 +5,7 @@ import TableComponent from '@/components/ui/tables/tablecompnent'; // Corrected 
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
 import React, { Fragment, useState, useEffect } from "react";
 import axios from 'axios';
-import { BASE_URL } from "../../utils/constants";
+// import { BASE_URL } from "../../utils/constants";
 
 interface PointHistoryItem {
     earned_points: number;
@@ -43,7 +43,7 @@ const PointHistory: React.FC = () => {
     useEffect(() => {
         const fetchCarpenterData = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.carpenter_master.get_carpainter_data`);
+                const response = await axios.get(`/api/method/reward_management_app.api.carpenter_master.get_carpainter_data`);
                 console.log("Carpenter data:", response);
 
                 const data = response.data.message;
@@ -71,7 +71,7 @@ const PointHistory: React.FC = () => {
         // Show Total points and Redeemed points in card
         const fetchUserPoints = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.carpenter_master.show_total_points`);
+                const response = await axios.get(`/api/method/reward_management_app.api.carpenter_master.show_total_points`);
                 const { redeem_points, current_points } = response.data.message; 
                 console.log("card data", response);
                 setRedeemPoints(redeem_points);

@@ -1,22 +1,26 @@
-import React, { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import '../../assets/css/header.css';
 import '../../assets/css/style.css';
-import { BASE_URL, API_KEY, API_SECRET } from "../../utils/constants";
+
 import ProfilePic from '/src/assets/images/reward_management/9.jpg';
 import { IconAlignLeft } from '@tabler/icons-react';
 import { IconX } from '@tabler/icons-react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'boxicons/css/boxicons.min.css';
-import NotificationDropdown from '@/components/ui/notification';
+import NotificationDropdown from '../ui/notification';
 import Modalsearch from "./modalsearch/modalsearch";
+import { useFrappeAuth } from "frappe-react-sdk";
 import axios from 'axios';
 
-const Header = ({ toggleSidebar, isSidebarActive }) => {
 
 
+const Header = ({ toggleSidebar, isSidebarActive }: any) => {
+
+    const { logout } = useFrappeAuth();
     const carpenterrole = localStorage.getItem('carpenterrole');
     console.log(carpenterrole);
+
     const roles = JSON.parse(localStorage.getItem('user_roles')) || [];
     console.log("admin role-----", roles);
 
@@ -38,33 +42,24 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
 
     // const [value, setValue] = useState(localStorage.getItem("username"));
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [notificationCount, setNotificationCount] = useState(5);
+    const [notificationCount, setNotificationCount] = useState(0);
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     const [isDropdownVisible, setDropdownVisible] = useState(false);
-    
-   
     const [UserImage, setUserImage] = useState(ProfilePic);
-
     const [username, setUsername] = useState('');
-
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
-
     };
 
     useEffect(() => {
         const fetchUserEmailAndInitScanner = async () => {
             try {
-                const userResponse = await axios.get(`${BASE_URL}/api/method/frappe.auth.get_logged_user`, {
-                    headers: {
-                        Authorization: `token ${API_KEY}:${API_SECRET}`,
-                    },
+                const userResponse = await axios.get(`/api/method/frappe.auth.get_logged_user`, {
+                   
                 });
     
-                const userdata = await axios.get(`${BASE_URL}/api/resource/User/${userResponse.data.message}`, {
-                    headers: {
-                        Authorization: `token ${API_KEY}:${API_SECRET}`,
-                    },
+                const userdata = await axios.get(`/api/resource/User/${userResponse.data.message}`, {
+                   
                 });
     
                 setUsername(userdata.data.data.username || "");
@@ -78,7 +73,6 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
     
         fetchUserEmailAndInitScanner();
     }, []);
-    
 
     const toggleFullScreen = () => {
         const elem = document.documentElement;
@@ -123,7 +117,7 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
         localStorage.removeItem("ynexHeader");
     };
 
-    const applyTheme = (theme) => {
+    const applyTheme = (theme: any) => {
         const root = document.documentElement;
         root.style.setProperty('--data-nav-layout', theme.dataNavLayout);
         root.style.setProperty('--data-vertical-style', theme.dataVerticalStyle);
@@ -131,9 +125,9 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
         root.style.setProperty('--data-toggled', theme.toggled);
         root.style.setProperty('--data-class', theme.class);
 
-        const sidemenu = document.querySelector(".side-menu");
+        const sidemenu: any = document.querySelector(".side-menu");
         // console.log("sidemenu------",sidemenu);
-        const appHeader = document.querySelector(".app-header");
+        const appHeader: any = document.querySelector(".app-header");
         if (sidemenu) {
             const sidebarWidth = isSidebarActive ? '5rem' : '15rem'; // Width changes based on icon
             sidemenu.style.width = sidebarWidth;
@@ -159,7 +153,6 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
     const handleDropdownToggle = () => {
         setDropdownVisible(prevState => !prevState);
     };
-    
 
 
 
@@ -240,7 +233,7 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
                             {/* end of fullscreen */}
 
                             {/* start of user profile */}
-                            <div className="header-element py-[1rem] md:px-[0.65rem] px-2  transition-all ">
+                            <div className="header-element py-[1rem] md:px-[0.65rem] px-2">
 
                                 <button id="dropdown-profile" type="button"
                                     className="hs-dropdown-toggle ti-dropdown-toggle !gap-2 !p-0 flex-shrink-0 sm:me-2 me-0 !rounded-full !shadow-none text-xs align-middle !border-0 !shadow-transparent "
@@ -249,30 +242,28 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
                                 </button>
                                 <div className="md:block hidden dropdown-profile cursor-pointer" onClick={handleDropdownToggle}>
                                     <p className="font-semibold mb-0 pt-3 leading-none text-[#536485] text-[0.813rem] ">{username}</p>
-
                                 </div>
-
                                 <div
                                     className={`hs-dropdown-menu main-header-dropdown ti-dropdown-menu bg-white mt-3 fixed top-12 right-4 border-0 w-[10rem] p-0 border-defaultborder ${isDropdownVisible ? '' : 'hidden'}  pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end`}
                                     aria-labelledby="dropdown-profile"
                                 >
                                     <ul className="text-defaulttextcolor font-medium dark:text-[#8c9097] dark:text-white/50">
 
-                                        {(isAdmin || isAdministrator) && (
-                                            <li className="user-profile-list hover:bg-[var(--bg-primary)] hover:text-[var(--primaries)]">
+                                        <li className="user-profile-list hover:bg-[var(--bg-primary)] hover:text-[var(--primaries)]">
+                                            {(isAdmin || isAdministrator) && (
                                                 <a className="w-full ti-dropdown-item !text-[0.8125rem] !gap-x-0 !p-[0.65rem] !inline-flex" href={`/admin-profile`}>
                                                     <i className="ti ti-user-circle text-[1.125rem] me-2 opacity-[0.7]"></i>Profile
                                                 </a>
-                                            </li>
-                                        )}
+                                            )}
 
-                                        {(carpenterrole === "Carpenter") && (
-                                            <li className="user-profile-list hover:bg-[var(--bg-primary)] hover:text-[var(--primaries)]">
+                                            {(carpenterrole === "Carpenter") && (
+
                                                 <a className="w-full ti-dropdown-item !text-[0.8125rem] !gap-x-0 !p-[0.65rem] !inline-flex" href={`/profile-setting`}>
                                                     <i className="ti ti-user-circle text-[1.125rem] me-2 opacity-[0.7]"></i>Profile
                                                 </a>
-                                            </li>
-                                        )}
+
+                                            )}
+                                        </li>
 
 
                                         <li className="user-profile-list hover:bg-[var(--bg-primary)] hover:text-[var(--primaries)]">
@@ -283,7 +274,7 @@ const Header = ({ toggleSidebar, isSidebarActive }) => {
                                                     localStorage.removeItem('user_roles');
                                                     localStorage.removeItem('carpenterrole');
                                                     localStorage.removeItem("username");
-
+                                                    logout;
                                                 }}
                                             >
                                                 <i className="ti ti-logout text-[1.125rem] me-2 opacity-[0.7]"></i>Log Out

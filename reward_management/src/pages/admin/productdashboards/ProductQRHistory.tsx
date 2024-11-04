@@ -6,7 +6,7 @@ import TableBoxComponent from '@/components/ui/tables/tableboxheader';
 import React, { Fragment, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { BASE_URL } from "../../../utils/constants";
+// import { BASE_URL } from "../../../utils/constants";
 
 interface ProductQRHistory {
     name: string,
@@ -37,14 +37,14 @@ const ProductQRHistory: React.FC = () => {
         document.title="Product QR History";
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.print_qr_code.print_qr_code`);
+                const response = await axios.get(`/api/method/reward_management_app.api.print_qr_code.print_qr_code`);
                 console.log('Fetched Product QR History data:', response);
 
                 if (response.data && response.data.message && Array.isArray(response.data.message)) {
                     const qrTableData = response.data.message.flatMap(item => item.qr_table_data || []);
                     const formattedData = qrTableData.map(item => ({
                         ...item,
-                        scanned: item.scanned === '1' ? 'Redeemed' : 'Not Redeemed',
+                        scanned: item.scanned == '1' ? 'Redeemed' : 'Not Redeemed',
                     }));
                     setData(formattedData);
                 } else {

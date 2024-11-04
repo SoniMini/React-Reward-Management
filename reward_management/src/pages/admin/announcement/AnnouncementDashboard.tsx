@@ -8,7 +8,7 @@ import React, { Fragment, useState } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import DangerAlert from '../../../components/ui/alerts/DangerAlert';
-import { BASE_URL } from "../../../utils/constants";
+// import { BASE_URL } from "../../../utils/constants";
 
 interface Announcements {
     name: string,
@@ -115,7 +115,7 @@ const AnnouncementDashboard: React.FC = () => {
         };
 
         try {
-            const response = await fetch(`${BASE_URL}/api/resource/Announcements`, {
+            const response = await fetch(`/api/resource/Announcements`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -153,7 +153,7 @@ const AnnouncementDashboard: React.FC = () => {
         };
 
         try {
-            const response = await fetch(`${BASE_URL}/api/resource/Announcements/${selectedAnnouncement.name}`, {
+            const response = await fetch(`/api/resource/Announcements/${selectedAnnouncement.name}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -188,7 +188,7 @@ const AnnouncementDashboard: React.FC = () => {
         if (!announcementToDelete) return;
 
         try {
-            const response = await fetch(`${BASE_URL}/api/resource/Announcements/${announcementToDelete.name}`, {
+            const response = await fetch(`/api/resource/Announcements/${announcementToDelete.name}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -401,8 +401,11 @@ const AnnouncementDashboard: React.FC = () => {
                     showCollectButton={false}
                     showAnotherButton={false}
                     showMessagesecond={false}
-                    message={alertMessage}
-                />
+                    message={alertMessage} onClose={function (): void {
+                        throw new Error('Function not implemented.');
+                    } } onCancel={function (): void {
+                        throw new Error('Function not implemented.');
+                    } }                />
             )}
         </Fragment>
     );

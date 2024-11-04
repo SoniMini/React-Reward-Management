@@ -8,7 +8,7 @@ import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 
 import axios from 'axios';
-import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
+// import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
 
 const AddProduct: React.FC = () => {
     const [files, setFiles] = useState<File[]>([]);
@@ -41,11 +41,9 @@ const AddProduct: React.FC = () => {
         formData.append("file_name", file.name);
       
         try {
-            const response = await axios.post(`${BASE_URL}/api/method/upload_file`, formData, {
+            const response = await axios.post(`/api/method/upload_file`, formData, {
                 headers: {
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${API_KEY}`,
-                    'X-API-SECRET': API_SECRET,
                     'Content-Type': 'multipart/form-data'
                 }
             });
@@ -73,7 +71,7 @@ const AddProduct: React.FC = () => {
         };
     
         try {
-            const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.product_master.add_product`, data);
+            const response = await axios.post(`/api/method/reward_management_app.api.product_master.add_product`, data);
             console.log("Product added successfully:", response.data);
             // alert("Product added successfully!!!");
            // Navigate after showing the success alert

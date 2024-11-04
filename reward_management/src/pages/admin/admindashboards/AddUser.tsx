@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-import { BASE_URL } from "../../../utils/constants";
+// import { BASE_URL } from "../../../utils/constants";
 import Pageheader from "@/components/common/pageheader/pageheader";
 import TableComponent from "@/components/ui/tables/tablecompnent";
 import TableBoxComponent from "@/components/ui/tables/tableboxheader";
@@ -64,7 +64,7 @@ const AddUserDashboard: React.FC = () => {
         const fetchAdminUsers = async () => {
             try {
                 const response = await axios.get(
-                    `${BASE_URL}/api/method/reward_management_app.api.add_admin_user.get_users`
+                    `/api/method/reward_management_app.api.add_admin_user.get_users`
                 );
                 setUsersData(response.data.message);
             } catch (error) {
@@ -116,7 +116,7 @@ const AddUserDashboard: React.FC = () => {
     const onSubmit = async (data: any) => {
         try {
             const response = await axios.post(
-                `${BASE_URL}/api/method/reward_management_app.api.add_admin_user.create_admin_user`,
+                `/api/method/reward_management_app.api.add_admin_user.create_admin_user`,
                 {
                     first_name: data.firstName,
                     last_name: data.lastName,

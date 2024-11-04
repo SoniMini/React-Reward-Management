@@ -6,7 +6,7 @@ import { useFrappeGetCall } from 'frappe-react-sdk';
 import axios from 'axios';
 import '../../../assets/css/header.css';
 import '../../../assets/css/style.css';
-import { BASE_URL } from "../../../utils/constants";
+// import { BASE_URL } from "../../../utils/constants";
 
 const iconMap = {
     'ti-user': TiUser,
@@ -39,7 +39,7 @@ const NotificationsDashboard = () => {
     useEffect(() => {
         const fetchUserEmailAndInitScanner = async () => {
             try {
-                const userResponse = await axios.get(`${BASE_URL}/api/method/frappe.auth.get_logged_user`);
+                const userResponse = await axios.get(`/api/method/frappe.auth.get_logged_user`);
                 console.log("userData:", userResponse.data.message);
             } catch (err) {
                 console.error("Error fetching user data:", err);

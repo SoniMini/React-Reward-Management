@@ -3,7 +3,7 @@ import sidebarLogo from '../../assets/images/01.png';
 import Modalsearch from "@/components/common/modalsearch/modalsearch";
 
 import axios from 'axios';
-import { BASE_URL } from "../../utils/constants";
+// import { BASE_URL } from "../../utils/constants";
 
 const Productdetails = () => {
   const [fullScreen, setFullScreen] = useState(false);
@@ -22,7 +22,7 @@ const Productdetails = () => {
 
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.product_master.get_product_details?product_id=${productId}`);
+        const response = await axios.get(`/api/method/reward_management_app.api.product_master.get_product_details?product_id=${productId}`);
         console.log("data product card",response);
         setProductDetails(response.data.message.message);
       } catch (error) {
@@ -93,7 +93,7 @@ const Productdetails = () => {
                     {productDetails?.product_images ? (
                       <img
                         className="object-cover w-full"
-                        src={`${BASE_URL}${productDetails.product_images}`} // Concatenate with base URL if needed
+                        src={`${productDetails.product_images}`} // Concatenate with base URL if needed
                         alt={productDetails.product_name}
                       />
                     ) : (

@@ -1,12 +1,12 @@
 import '../../assets/css/style.css';
 import '../../assets/css/pages/admindashboard.css';
-import Pageheader from '@/components/common/pageheader/pageheader';
-import TableComponent from '@/components/ui/tables/tablecompnent';
-import TableBoxComponent from '@/components/ui/tables/tableboxheader';
+import Pageheader from '../../components/common/pageheader/pageheader';
+import TableComponent from '../../components/ui/tables/tablecompnent';
+import TableBoxComponent from '../../components/ui/tables/tableboxheader';
 import React, { Fragment, useState, useEffect } from "react";
 
 import axios from 'axios';
-import { BASE_URL } from "../../utils/constants";
+// import { API_KEY, API_SECRET, BASE_URL } from "../../utils/constants";
 
 interface Transaction {
     name: string,
@@ -32,9 +32,12 @@ const BankingHistory: React.FC = () => {
     const [toDate, setToDate] = useState<Date | null>(null);
 
     useEffect(() => {
+        document.title='Banking History';
         const fetchUserData = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/method/frappe.auth.get_logged_user`);
+                const response = await axios.get(`/api/method/frappe.auth.get_logged_user`,{
+                    
+                });
                 console.log("Logged user data:", response);
                 setUserData(response.data.message);
             } catch (error) {
@@ -44,7 +47,9 @@ const BankingHistory: React.FC = () => {
 
         const fetchTransactionData = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/method/reward_management_app.api.bank_history.get_bank_history_details`);
+                const response = await axios.get(`/api/method/reward_management_app.api.bank_history.get_bank_history_details`,{
+                   
+                });
                 console.log("Bank table data:", response);
 
                 // Access the nested array within the response
@@ -91,13 +96,12 @@ const BankingHistory: React.FC = () => {
         setCurrentPage(1);
         console.log("Search value:", value);
     };
-     // date filter---
-     const handleDateFilter = (from: Date | null, to: Date | null) => {
+
+    const handleDateFilter = (from: Date | null, to: Date | null) => {
         setFromDate(from);
         setToDate(to);
         setCurrentPage(1);
     };
-
 
     const handleAddProductClick = () => {
         console.log("Add Product button clicked");
@@ -108,6 +112,7 @@ const BankingHistory: React.FC = () => {
         const [day, month, year] = dateString.split('-');
         return `${day}-${month}-${year}`;
     };
+
     const parseDateString = (dateString: string): Date | null => {
         if (typeof dateString !== 'string') {
             console.error("Expected a string, but received:", dateString);
@@ -156,30 +161,30 @@ const BankingHistory: React.FC = () => {
         // Return true if the transaction matches the date range and the query
         return isTransferDateInRange && matchesQuery;
     });
+    
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
         <Fragment>
-               <Pageheader 
+              <Pageheader 
                 currentpage={"Banking History"} 
                 activepage={"/banking-history"} 
-        
                 activepagename="Banking History"
-             
+              
             />
-            {/* <Pageheader currentpage="Banking History" activepage="Transaction History" mainpage="Banking History" /> */}
+           
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
-                    <div className="box">
+                    <div className="">
                         <TableBoxComponent 
                             title="Bank History" 
                             onSearch={handleSearch} 
                             onAddButtonClick={handleAddProductClick} 
-                            buttonText="Add Announcement" // Custom button text
-                            showButton={false} 
+                            buttonText="Add Announcement"
+                            showButton={false}
                             showFromDate={true}
                             showToDate={true}
                             onDateFilter={handleDateFilter}
@@ -208,7 +213,6 @@ const BankingHistory: React.FC = () => {
                                 showEdit={false} 
                                 showDelete={false}
                                 editHeader='Action'
-                                 
                                 columnStyles={{
                                     'Bank History ID': 'text-[var(--primaries)] font-semibold', // Example style for QR ID column
                                 }}

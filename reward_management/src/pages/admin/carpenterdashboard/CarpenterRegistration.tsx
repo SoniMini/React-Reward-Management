@@ -7,7 +7,7 @@ import React, { Fragment, useState ,useEffect} from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import EditModalComponent from '@/components/ui/models/RewardRequestEdit';
 import axios from 'axios';
-import { BASE_URL } from "../../../utils/constants";
+// import { BASE_URL } from "../../../utils/constants";
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import { PulseLoader } from 'react-spinners';
 
@@ -119,7 +119,7 @@ const CarpenterRegistration: React.FC = () => {
         };
     
         try {
-            const response = await axios.put(`${BASE_URL}/api/resource/Carpenter%20Registration/${selectedCarpenter.name}`, data, {
+            const response = await axios.put(`/api/resource/Carpenter%20Registration/${selectedCarpenter.name}`, data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -155,7 +155,7 @@ const CarpenterRegistration: React.FC = () => {
     // Function to call the API for creating a new user
     const updateRegistrationStatus = async (registrationId: string, status: string) => {
         try {
-            const response = await axios.post(`${BASE_URL}/api/method/reward_management_app.api.carpenter_registration.update_registration_request_status`, {
+            const response = await axios.post(`/api/method/reward_management_app.api.carpenter_registration.update_registration_request_status`, {
                 registration_id: registrationId,
                 status: status
             }, {
