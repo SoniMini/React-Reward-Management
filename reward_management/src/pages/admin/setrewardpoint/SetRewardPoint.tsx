@@ -24,7 +24,7 @@ const SetRewardPointsDashboard: React.FC = () => {
         // Fetch API function
         const fetchAPI = async () => {
             try {
-                const response = await axios.get(`/api/method/reward_management.api.points_setup.get_redeem_points`);
+                const response = await axios.get(`/api/method/reward_management_app.api.points_setup.get_redeem_points`);
 
                 // Check if the API returns data
                 if (response.data.message) {
