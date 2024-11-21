@@ -26,12 +26,6 @@
    "options": "Carpenter-Registration.-.YYYY.-.MM.-.#####"
   },
   {
-   "fieldname": "carpainter_id",
-   "fieldtype": "Link",
-   "label": "Carpainter ID",
-   "options": "Carpenter"
-  },
-  {
    "fetch_from": "carpainter_id.full_name",
    "fieldname": "carpainter_name",
    "fieldtype": "Data",
@@ -87,11 +81,17 @@
    "fieldname": "approved_time",
    "fieldtype": "Time",
    "label": "Approved Time"
+  },
+  {
+   "fieldname": "carpainter_id",
+   "fieldtype": "Link",
+   "label": "Carpainter ID",
+   "options": "Carpenter"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-10 13:36:39.628752",
+ "modified": "2024-11-21 14:30:26.473358",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Carpenter Registration",

@@ -80,7 +80,7 @@ const Login = () => {
         e.preventDefault();
         try {
             // Perform login
-            const response = await axios.post(`/api/method/reward_management_app.api.auth.login`, {
+            const response = await axios.post(`api/method/login`, {
                 usr: username,
                 pwd: password
             });
