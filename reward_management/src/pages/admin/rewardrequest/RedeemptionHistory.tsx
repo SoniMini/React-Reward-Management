@@ -31,7 +31,7 @@ const formatDate = (dateStr: string | undefined): string => {
     if (!dateStr) return '';
     const date = new Date(dateStr);
     const day = ('0' + date.getDate()).slice(-2);
-    const month = ('0' + (date.getMonth() + 1)).slice(-2); // Months are 0-based
+    const month = ('0' + (date.getMonth() + 1)).slice(-2); 
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
 };
@@ -39,9 +39,9 @@ const formatDate = (dateStr: string | undefined): string => {
 
 const RedeemptionHistory: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Number of items per page
+    const [itemsPerPage] = useState(5); 
     const navigate = useNavigate(); 
-    const [searchQuery, setSearchQuery] = useState(''); // State for search query
+    const [searchQuery, setSearchQuery] = useState('');
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
 
@@ -116,7 +116,7 @@ const RedeemptionHistory: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value); // Update search query
+        setSearchQuery(value);
         setCurrentPage(1);
         console.log("Search value:", value);
         // Implement search logic here

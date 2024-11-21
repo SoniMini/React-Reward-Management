@@ -55,7 +55,7 @@ const AnnouncementDashboard: React.FC = () => {
                 setShowSuccessAlert(false);
                 // window.location.reload();
             }, 3000); 
-            return () => clearTimeout(timer); // Cleanup timeout on component unmount
+            return () => clearTimeout(timer); 
         }
     }, [showSuccessAlert]);
 
@@ -123,7 +123,7 @@ const AnnouncementDashboard: React.FC = () => {
                 body: JSON.stringify(data),
             });
 
-            const responseData = await response.json(); // Add this line
+            const responseData = await response.json(); 
             if (response.ok) {
                 console.log("Announcement added successfully");
                 // alert('Announcement added successfully!');
@@ -131,7 +131,8 @@ const AnnouncementDashboard: React.FC = () => {
                 setAlertMessage('Announcement added successfully!');
                 setShowSuccessAlert(true);
                 handleCloseModal();
-                mutateAnnouncements(); // Refresh the announcements data
+                // Refresh the announcements data
+                mutateAnnouncements();
             } else {
                 console.error("Failed to add announcement:", responseData); 
             }

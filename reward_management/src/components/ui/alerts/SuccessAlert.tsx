@@ -6,15 +6,18 @@ interface SuccessAlertProps {
     onClose: () => void;
     onCancel: () => void;
     onCollect?: () => void;
-    onAnotherAction?: () => void; // Another action callback
+    // Another action callback
+    onAnotherAction?: () => void; 
     title?: string;
     buttonLabel?: string;
     collectButtonLabel?: string;
-    anotherActionLabel?: string; // Label for another button
+    // Label for another button
+    anotherActionLabel?: string; 
     showButton?: boolean;
     showCancleButton?:boolean;
     showCollectButton?: boolean;
-    showAnotherButton?: boolean; // Control visibility of the additional button
+    // Control visibility of the additional button
+    showAnotherButton?: boolean; 
     showMessage?: boolean;
     showMessagesecond?: boolean;
 }
@@ -29,11 +32,13 @@ const SuccessAlert: React.FC<SuccessAlertProps> = ({
     title = "Success!",
     buttonLabel = "Close",
     collectButtonLabel = "Collect",
-    anotherActionLabel = "Another Action", // Default label for the additional button
+     // Default label for the additional button
+    anotherActionLabel = "Another Action",
     showButton = true,
     showCancleButton=false,
     showCollectButton = false,
-    showAnotherButton = false, // Default to false
+    // Default to false
+    showAnotherButton = false, 
     showMessage = true,
     showMessagesecond = false,
 }) => {

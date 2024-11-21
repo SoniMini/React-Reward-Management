@@ -13,8 +13,8 @@ interface ViewModalProps {
     onClose: () => void;
     onSubmit: () => void;
     onCancel: () => void;
-    control: any; // React Hook Form control
-    errors: any; // React Hook Form errors
+    control: any; 
+    errors: any; 
 }
 
 const AddAdminModel: React.FC<ViewModalProps> = ({

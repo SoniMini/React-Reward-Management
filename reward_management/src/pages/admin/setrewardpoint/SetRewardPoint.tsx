@@ -17,8 +17,8 @@ const SetRewardPointsDashboard: React.FC = () => {
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                window.location.reload(); // Reload the page after hiding the alert
-            }, 3000); // Hide alert after 3 seconds
+                window.location.reload(); 
+            }, 3000); 
             return () => clearTimeout(timer);
         }
         // Fetch API function
@@ -29,7 +29,7 @@ const SetRewardPointsDashboard: React.FC = () => {
                 // Check if the API returns data
                 if (response.data.message) {
                     console.log("data", response);
-                    const data = response.data.message; // Assuming the response is an array and we need the first item
+                    const data = response.data.message;
                     setCurrentMinPoints(data.minimum_points);
                     setCurrentMaxPoints(data.maximum_points);
                 }
@@ -131,7 +131,7 @@ const SetRewardPointsDashboard: React.FC = () => {
                                             <button
                                                 id='submitpoints'
                                                 type="submit"
-                                                className="ti-btn ti-btn-primary-full w-full"
+                                                className="ti-btn bg-primary text-white w-full"
                                             >
                                                 Submit
                                             </button>

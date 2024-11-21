@@ -80,7 +80,7 @@ const Login = () => {
         e.preventDefault();
         try {
             // Perform login
-            const response = await axios.post(`/api/method/login`, {
+            const response = await axios.post(`/api/method/reward_management_app.api.auth.login`, {
                 usr: username,
                 pwd: password
             });
@@ -92,7 +92,7 @@ const Login = () => {
             console.log("rolesResponse----", rolesResponse);
 
             // Extract roles from the response
-            const roles = rolesResponse.message || []; // Assuming `message` contains the array of roles
+            const roles = rolesResponse.message || []; 
             localStorage.setItem('user_roles', JSON.stringify(roles));
 
             console.log('User roles:', roles);
@@ -215,35 +215,79 @@ const Login = () => {
     };
 
 
-    // Handle or Generate Registration OTP Logic---------
+    // User Registration Handle or Generate Registration OTP Logic---------
     const handleGetOtp = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
-                mobile_number: mobile
-            }, {
-                headers: {
-
-                    'Content-Type': 'application/json'
-                }
+            // First, check if the user is registered
+            const checkResponse = await axios.get(`/api/method/reward_management_app.api.create_new_user.check_registered_user`, {
+                params: { mobile_number: mobile },
             });
-
-            if (response.data.message.status === "success") {
-                console.log("otp data", response);
-                // alert("Otp has been sent to you mobile number !!!");
-                setAlertTitle('Success');
-                setAlertMessage("Otp has been sent to you mobile number !!!");
-                setShowSuccessAlert(true);
-
-                setIsOtpVisible(true);
+    
+            // Log the response to inspect its structure
+            console.log('Check Response Data:', checkResponse.data);
+    
+            // If the mobile number is not registered, show OTP input field
+            if (checkResponse.data.message.registered === false) {
+                // Generate OTP for unregistered user
+                const response = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
+                    mobile_number: mobile 
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                if (response.data.message.status === "success") {
+                    console.log("OTP sent successfully:", response);
+                    // Show success alert
+                    setAlertTitle('Success');
+                    setAlertMessage("OTP has been sent to your mobile number!");
+                    setShowSuccessAlert(true);
+                    setIsOtpVisible(true); 
+                } else {
+                    setLoginError('Failed to send OTP. Please try again.');
+                }
             } else {
-                setLoginError('Failed to send OTP. Please try again.');
+                // If user is already registered, show error message
+                setLoginError(checkResponse.data.message.message); 
             }
         } catch (error) {
             console.error('Error generating OTP:', error);
             setLoginError('An error occurred while generating OTP.');
         }
     };
+    
+
+    // // Handle or Generate Registration OTP Logic---------
+    // const handleGetOtp = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     try {
+    //         const response = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
+    //             mobile_number: mobile
+    //         }, {
+    //             headers: {
+
+    //                 'Content-Type': 'application/json'
+    //             }
+    //         });
+
+    //         if (response.data.message.status === "success") {
+    //             console.log("otp data", response);
+    //             // alert("Otp has been sent to you mobile number !!!");
+    //             setAlertTitle('Success');
+    //             setAlertMessage("Otp has been sent to you mobile number !!!");
+    //             setShowSuccessAlert(true);
+
+    //             setIsOtpVisible(true);
+    //         } else {
+    //             setLoginError('Failed to send OTP. Please try again.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error generating OTP:', error);
+    //         setLoginError('An error occurred while generating OTP.');
+    //     }
+    // };
 
 
     // handdle carpenter login otp form--------
@@ -300,7 +344,7 @@ const Login = () => {
         e.preventDefault();
 
         // Assuming you have an OTP input field in your form
-        const otp = mobileotp; // Replace `otpInput` with your actual OTP input state or value
+        const otp = mobileotp; 
 
         if (!otp) {
             setLoginError('Please enter the OTP.');
@@ -310,10 +354,10 @@ const Login = () => {
         try {
             // Verify the OTP
             const response = await axios.get(`/api/method/reward_management_app.api.mobile_number.verify_otp`, {
-                params: { mobile_number: mobilenumber, otp: mobileotp }, // Pass necessary parameters
+                params: { mobile_number: mobilenumber, otp: mobileotp }, 
             });
 
-            console.log('OTP Verification Response Data:', response.data); // Log the response for debugging
+            console.log('OTP Verification Response Data:', response.data); 
 
             // Check if the OTP verification was successful
             if (response.data.message.status === "success") {
@@ -324,8 +368,8 @@ const Login = () => {
                 // Save user data in localStorage
                 const credentials = {
                     mobile_number: mobilenumber,
-                    user_name: response.data.message.user_name, // Adjust based on your API response
-                    email: response.data.message.email, // If email is returned in the response
+                    user_name: response.data.message.user_name, 
+                    email: response.data.message.email, 
                     // Add more user data as needed
                 };
                 localStorage.setItem('credentials', JSON.stringify(credentials));
@@ -364,15 +408,18 @@ const Login = () => {
                     } else {
                         // If no banner_image found, use the default logo
                         console.log('No banner_image found, using default logo.');
-                        setLogo(desktoplogo); // Corrected default logo
+                         // Corrected default logo
+                        setLogo(desktoplogo);
                     }
                 } else {
                     console.error('API response was not successful:', response.data.message);
-                    setLogo(desktoplogo); // Corrected default logo
+                     // Corrected default logo
+                    setLogo(desktoplogo);
                 }
             } catch (error) {
                 console.error('Error fetching website settings:', error);
-                setLogo(desktoplogo); // Corrected default logo
+                // Corrected default logo
+                setLogo(desktoplogo); 
             } finally {
                 setLoading(false); 
             }
@@ -386,11 +433,12 @@ const Login = () => {
                 setShowSuccessAlert(false);
                 // window.location.reload(); // Optional: Reload the page if needed
             }, 3000); // Hide alert after 3 seconds
-            return () => clearTimeout(timer); // Cleanup timeout on component unmount
+            return () => clearTimeout(timer); 
         }
     }, [showSuccessAlert]);
     if (loading) {
-        return <div></div>; // Show loading message or spinner while fetching
+        // Show loading message or spinner while fetching
+        return <div></div>; 
     }
 
     return (
@@ -423,7 +471,7 @@ const Login = () => {
                                     Admin
                                 </Button>
                                 <Button onClick={() => setCurrentForm('register')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'register' ? 'border-b-2 border-primary text-primary' : ''}`}>
-                                    Customer
+                                    Carpenter
                                 </Button>
                             </div>
 

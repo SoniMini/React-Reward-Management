@@ -5,7 +5,7 @@ import '../../assets/css/style.css';
 import { Link } from 'react-router-dom';
 import { useFrappeGetCall } from 'frappe-react-sdk';
 import axios from "axios";
-import { BASE_URL } from "../../utils/constants";
+// import { BASE_URL } from "../../utils/constants";
 
 // Define the Notification type
 interface Notification {
@@ -40,7 +40,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, tog
     useEffect(() => {
         const fetchUserEmailAndInitScanner = async () => {
             try {
-                const userResponse = await axios.get(`${BASE_URL}/api/method/frappe.auth.get_logged_user`);
+                const userResponse = await axios.get(`/api/method/frappe.auth.get_logged_user`);
                 console.log("userData:", userResponse.data.message);
             } catch (err) {
                 console.error("Error fetching user data:", err);

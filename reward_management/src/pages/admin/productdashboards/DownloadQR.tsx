@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 // import { BASE_URL } from "../../../utils/constants";
 import Pageheader from '@/components/common/pageheader/pageheader';
-import TableComponent from '@/components/ui/tables/tablecompnent'; // Ensure correct path
+import TableComponent from '@/components/ui/tables/tablecompnent'; 
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
@@ -51,7 +51,7 @@ const DownloadQRCode: React.FC = () => {
                         generated_date: item.generated_date,
                         total_product: item.total_product,
                         points: item.qr_code_images.reduce((acc: number, img: any) => acc + img.points, 0),
-                        qr_code_images: item.qr_code_images, // Include qr_code_images here
+                        qr_code_images: item.qr_code_images, 
                     }));
                     
                     setData(aggregatedData);
@@ -108,7 +108,13 @@ const DownloadQRCode: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Download QR" activepage="Product Master" mainpage="Download QR" />
+          <Pageheader 
+                currentpage={"Download QR"} 
+                activepage={"/product-master"} 
+                mainpage={"/download-qr-code"} 
+                activepagename='Product Master' 
+                mainpagename='Download QR' 
+            />
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
                     <div className="box">
@@ -137,11 +143,12 @@ const DownloadQRCode: React.FC = () => {
                                 handlePageChange={handlePageChange}
                                 showProductQR={false} 
                                 editHeader='Download QR'
-                                showEdit={true} // Adjust based on your needs
+                                showEdit={true} 
                                 iconsConfig={{
                                     editIcon: "bi bi-download",
                                 }}
-                                onEdit={handleDownloadQR} // Pass the entire row to handleDownloadQR
+                                // Pass the entire row to handleDownloadQR
+                                onEdit={handleDownloadQR} 
                                 columnStyles={{
                                     'Product Name': 'text-[var(--primaries)] font-semibold',
                                 }}
