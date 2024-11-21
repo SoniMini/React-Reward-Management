@@ -33,8 +33,8 @@ const EditProduct: React.FC = () => {
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                navigate('/product-master'); // Navigate after success alert is hidden
-            }, 3000); // Hide alert after 3 seconds
+                navigate('/product-master'); 
+            }, 3000); 
             return () => clearTimeout(timer);
         }
     }, [showSuccessAlert, navigate]);

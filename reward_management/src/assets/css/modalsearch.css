@@ -68,7 +68,8 @@
 }
 .ti-btn-primary {
     background-color: rgb(234, 225, 255);
-    color: rgb(132 90 223);
+    /* color: rgb(132 90 223); */
+    color: rgb(1 70 77);
   }
 
 @media (min-width: 768px)

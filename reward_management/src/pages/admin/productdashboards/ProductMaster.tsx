@@ -24,10 +24,10 @@ const ProductMaster: React.FC = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const [searchQuery, setSearchQuery] = useState(''); // State for search query
+    const [searchQuery, setSearchQuery] = useState(''); 
     const [loading, setLoading] = useState(false);
     
-    const [itemsPerPage] = useState(5); // Number of items per page
+    const [itemsPerPage] = useState(5);
     const { data: productsData } = useFrappeGetDocList<Product>('Product', {
         fields: ['name', 'product_name', 'category', 'reward_points']
     });
@@ -40,7 +40,7 @@ const ProductMaster: React.FC = () => {
         const qrData = productQRData?.find(qr => qr.product_name === product.name);
         return {
             ...product,
-            quantity: qrData?.quantity || 0  // Add the quantity from Product QR data
+            quantity: qrData?.quantity || 0 
         };
     });
     const navigate = useNavigate();
@@ -49,8 +49,8 @@ const ProductMaster: React.FC = () => {
         document.title="Product Dashboard";
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
-                setShowSuccessAlert(false); // Hide alert after 3 seconds
-                window.location.reload(); // Reload the page
+                setShowSuccessAlert(false); 
+                window.location.reload(); 
             }, 3000);
             return () => clearTimeout(timer);
         }
@@ -159,16 +159,16 @@ const ProductMaster: React.FC = () => {
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
-                    <div className="box">
+                    <div className="">
                       
                         <TableBoxComponent
                             title="Products"
                             onSearch={handleSearch}
                             onAddButtonClick={handleAddProductClick}
-                            buttonText="Add Product" // Custom button text
-                            showButton={true} // Show the button
+                            buttonText="Add Product" 
+                            showButton={true} 
                             icon="" // Empty icon
-                            buttonOnClick={handleAddProductClick} // Handle button click
+                            buttonOnClick={handleAddProductClick} 
                         />
                         <div className="box-body m-5">
                             <div className="table-responsive pt-2">
@@ -224,7 +224,7 @@ const ProductMaster: React.FC = () => {
                                     <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 font-normal text-defaultsize">
                                         Showing {currentItems.length} Entries <i className="bi bi-arrow-right ms-2 font-semibold"></i>
                                     </div>
-                                    <div className="ms-auto">
+                                    {/* <div className="ms-auto">
                                         <nav aria-label="Page navigation" className="pagination-style-4">
                                             <ul className="ti-pagination flex items-center px-3 mb-0">
                                                 <li className="page-item px-2">
@@ -257,7 +257,67 @@ const ProductMaster: React.FC = () => {
                                                 </li>
                                             </ul>
                                         </nav>
+                                    </div> */}
+                                    <div className="ms-auto">
+                                        <nav aria-label="Page navigation" className="pagination-style-4">
+                                            <ul className="ti-pagination flex items-center px-3 mb-0">
+                                                <li className="page-item px-2">
+                                                    <button
+                                                        className="page-link"
+                                                        onClick={() => handlePageChange(1)}
+                                                        disabled={currentPage === 1}
+                                                    >
+                                                        «
+                                                    </button>
+                                                </li>
+                                                <li className="page-item px-2">
+                                                    <button
+                                                        className="page-link"
+                                                        onClick={handlePrevPage}
+                                                        disabled={currentPage === 1}
+                                                    >
+                                                        Prev
+                                                    </button>
+                                                </li>
+                                                {Array.from({ length: Math.min(5, totalPages) }, (_, idx) => {
+                                                    const startPage = Math.max(1, currentPage - 2);
+                                                    const pageNumber = startPage + idx;
+
+                                                    return (
+                                                        pageNumber <= totalPages && (
+                                                            <li className="page-item px-2" key={pageNumber}>
+                                                                <button
+                                                                    className={`page-link px-2 rounded-md ${currentPage === pageNumber ? 'text-white bg-blue-800' : 'bg-gray-200'}`}
+                                                                    onClick={() => handlePageChange(pageNumber)}
+                                                                >
+                                                                    {pageNumber}
+                                                                </button>
+                                                            </li>
+                                                        )
+                                                    );
+                                                })}
+                                                <li className="page-item px-2">
+                                                    <button
+                                                        className="page-link"
+                                                        onClick={handleNextPage}
+                                                        disabled={currentPage === totalPages}
+                                                    >
+                                                        Next
+                                                    </button>
+                                                </li>
+                                                <li className="page-item px-2">
+                                                    <button
+                                                        className="page-link"
+                                                        onClick={() => handlePageChange(totalPages)}
+                                                        disabled={currentPage === totalPages}
+                                                    >
+                                                        »
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </nav>
                                     </div>
+
                                 </div>
                             </div>
                         </div>

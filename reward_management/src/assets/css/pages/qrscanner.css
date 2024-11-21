@@ -10,6 +10,7 @@
  #html5-qrcode-button-camera-start{
     background-color: #eae1ff !important;
     color: #845adf !important;
+    /* color: #01464D !important; */
     font-weight: 500 !important;
     margin-bottom: 0.25rem;
     margin-inline-start: 0px;
@@ -34,6 +35,7 @@
  #html5-qrcode-button-camera-stop{
     background-color: #eae1ff !important;
     color: #845adf !important;
+    /* color: #01464D !important; */
     font-weight: 500 !important;
     margin-bottom: 0.25rem;
     margin-inline-start: 0px;

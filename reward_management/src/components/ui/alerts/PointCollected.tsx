@@ -3,11 +3,14 @@ import React from 'react';
 interface PointCollectedAlertProps {
     pointmessage: string;
     onPointClose: () => void;
-    onPointCollect?: () => void; // Callback function for "Collect" button
+    // Callback function for "Collect" button
+    onPointCollect?: () => void; 
     pointtitle?: string;
-    collectButtonLabel?: string; // Label for the "Collect" button
+    // Label for the "Collect" button
+    collectButtonLabel?: string; 
     showPointButton?: boolean;
-    showPointCollectButton?: boolean; // New prop to control the visibility of the "Collect" button
+     // New prop to control the visibility of the "Collect" button
+    showPointCollectButton?: boolean;
     showMessage?: boolean;
 }
 
@@ -16,9 +19,11 @@ const PointCollectedAlert: React.FC<PointCollectedAlertProps> = ({
     onPointClose,
     onPointCollect,
     pointtitle = "Success!",
-    collectButtonLabel = "Collect", // Default label for the "Collect" button
+    // Default label for the "Collect" button
+    collectButtonLabel = "Collect", 
     showPointButton = true,
-    showPointCollectButton = false, // Default to false, so "Collect" button is hidden
+    // Default to false, so "Collect" button is hidden
+    showPointCollectButton = false, 
     showMessage = true,
 }) => {
     return (
@@ -57,7 +62,7 @@ const PointCollectedAlert: React.FC<PointCollectedAlertProps> = ({
                                 className="ti-btn ti-btn-primary bg-primary text-white font-medium py-2 px-4 rounded transition-all duration-300"
                                 onClick={onPointCollect}
                             >
-                                {collectButtonLabel} {/* Use collectButtonLabel here */}
+                                {collectButtonLabel} 
                             </button>
                         )}
                     </div>

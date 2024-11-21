@@ -2,11 +2,11 @@ import React, { Fragment, useState,useEffect } from 'react';
 import Pageheader from '@/components/common/pageheader/pageheader';
 import SunEditor from 'suneditor-react';
 import { useNavigate } from 'react-router-dom';
-import 'suneditor/dist/css/suneditor.min.css'; // Import SunEditor styles
+// Import SunEditor styles
+import 'suneditor/dist/css/suneditor.min.css'; 
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
-
 import axios from 'axios';
 // import { BASE_URL, API_KEY, API_SECRET } from "../../../utils/constants";
 
@@ -18,7 +18,7 @@ const AddProduct: React.FC = () => {
     const [productDescription, setProductDescription] = useState('');
     const [productCategory, setProductCategory] = useState('');
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const navigate = useNavigate(); // Initialize navigate
+    const navigate = useNavigate(); 
 
     // Handle file input change
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,19 +65,20 @@ const AddProduct: React.FC = () => {
         const data = {
             productName: productName,
             rewardPoints: rewardPoints,
-            discription: productDescription, // Ensure this is correctly mapped
+            discription: productDescription, 
             productCategory: productCategory,
-            productImage: fileUrls.length > 0 ? fileUrls[0] : null // Assuming you use the first image if available
+            productImage: fileUrls.length > 0 ? fileUrls[0] : null 
         };
     
         try {
             const response = await axios.post(`/api/method/reward_management_app.api.product_master.add_product`, data);
             console.log("Product added successfully:", response.data);
             // alert("Product added successfully!!!");
+            setShowSuccessAlert(true);
            // Navigate after showing the success alert
-           setTimeout(() => {
-            navigate('/product-master');
-        }, 3000); // Delay for 3 seconds
+        //    setTimeout(() => {
+        //     navigate('/product-master');
+        // }, 3000); 
         } catch (error) {
             console.error("Error submitting form", error);
         }
@@ -101,7 +102,7 @@ const AddProduct: React.FC = () => {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
                 navigate('/product-master'); 
-            }, 3000);
+            }, 3000); 
             return () => clearTimeout(timer);
         }
     }, [navigate, showSuccessAlert]);
@@ -232,7 +233,7 @@ const AddProduct: React.FC = () => {
                                     <button 
                                         type="button" 
                                         className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"
-                                        onClick={resetForm} // Add the onClick event to reset the form
+                                        onClick={resetForm} 
                                     >
                                         Cancel
                                     </button>
@@ -243,13 +244,15 @@ const AddProduct: React.FC = () => {
                 </div>
             </div>
             {showSuccessAlert && (
-                                <SuccessAlert 
-                                showButton={false}
-                                showCancleButton={false}
-                                showCollectButton={false}
-                                showAnotherButton={false}
-                                showMessagesecond={false}
-                                message="New Product Added successfully!" />
+                                <SuccessAlert showButton={false}
+                                    showCancleButton={false}
+                                    showCollectButton={false}
+                                    showAnotherButton={false}
+                                    showMessagesecond={false} message="New Product Added successfully!" onClose={function (): void {
+                                        throw new Error('Function not implemented.');
+                                    }} onCancel={function (): void {
+                                        throw new Error('Function not implemented.');
+                                    }} />
                             )}
         </Fragment>
     );

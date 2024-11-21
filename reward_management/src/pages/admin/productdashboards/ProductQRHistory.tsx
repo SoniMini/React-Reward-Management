@@ -61,18 +61,18 @@ const ProductQRHistory: React.FC = () => {
     }, []);
 
     const parseDateString = (dateString: string): Date | null => {
-        console.log("Input dateString:", dateString); // Log the value
+        console.log("Input dateString:", dateString);
         if (typeof dateString !== 'string') {
             console.error("Expected a string, but received:", dateString);
-            return null; // or some default value
+            return null; 
         }
-        const parts = dateString.split('-'); // Assuming you're splitting by '-'
+        const parts = dateString.split('-'); 
         if (parts.length !== 3) {
             console.error("Invalid date format:", dateString);
-            return null; // or some default value
+            return null; 
         }
         const day = parseInt(parts[0], 10);
-        const month = parseInt(parts[1], 10) - 1; // Months are 0-based in JavaScript
+        const month = parseInt(parts[1], 10) - 1; 
         const year = parseInt(parts[2], 10);
         return new Date(year, month, day);
     };
@@ -121,7 +121,7 @@ const ProductQRHistory: React.FC = () => {
     const handleDateFilter = (from: Date | null, to: Date | null) => {
         setFromDate(from);
         setToDate(to);
-        setCurrentPage(1); // Reset to the first page
+        setCurrentPage(1); 
     };
 
 
@@ -146,7 +146,7 @@ const ProductQRHistory: React.FC = () => {
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
-                    <div className="box">
+                    <div className="">
                         <TableBoxComponent
                             title="Product QR History"
                             onSearch={handleSearch}

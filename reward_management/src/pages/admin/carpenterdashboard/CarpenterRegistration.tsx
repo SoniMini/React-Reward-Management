@@ -25,7 +25,7 @@ interface CarpenterRegistrations {
 
 const CarpenterRegistration: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Number of items per page
+    const [itemsPerPage] = useState(5);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedCarpenter, setSelectedCarpenter] = useState<CarpenterRegistrations | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
