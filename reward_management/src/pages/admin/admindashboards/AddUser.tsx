@@ -231,7 +231,10 @@ const AddUserDashboard: React.FC = () => {
                     showMessagesecond={false}
                     message="New Admin User Created Successfully!"
                     onClose={() => setShowSuccessAlert(false)} // Close the alert properly
-                />
+                    onCancel={function (): void {
+                        throw new Error("Function not implemented.");
+                    } }               
+                     />
             )}
         </Fragment>
     );

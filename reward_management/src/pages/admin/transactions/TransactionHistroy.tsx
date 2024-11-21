@@ -20,7 +20,7 @@ interface Transaction {
 
 const TransactionHistory: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Number of items per page
+    const [itemsPerPage] = useState(5);
     const [searchQuery, setSearchQuery] = useState(''); 
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
@@ -52,7 +52,7 @@ const TransactionHistory: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value); // Update search query
+        setSearchQuery(value); 
         setCurrentPage(1);
         console.log("Search value:", value);
     };

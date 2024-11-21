@@ -17,11 +17,11 @@ interface TableProps<T> {
     showDelete?: boolean;
     showView?: boolean;
     editHeader?: string;
-    columnStyles?: { [key: string]: string }; // Custom styles for columns
-    onEdit?: (item: T) => void; // Handler for edit action
-    onDelete?: (item: T) => void; // Handler for delete action
-    onView?: (item: T) => void; // Handler for view action
-    iconsConfig?: { // New prop for icon configuration
+    columnStyles?: { [key: string]: string }; 
+    onEdit?: (item: T) => void; 
+    onDelete?: (item: T) => void;
+    onView?: (item: T) => void; 
+    iconsConfig?: { 
         editIcon?: string;
         deleteIcon?: string;
         viewIcon?: string;
@@ -51,7 +51,7 @@ const TableComponent = <T,>({
     onEdit,
     onDelete,
     onView,
-    iconsConfig = {} // Destructure iconsConfig
+    iconsConfig = {} 
 }: TableProps<T>) => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -59,6 +59,7 @@ const TableComponent = <T,>({
     const totalPages = Math.ceil(data.length / itemsPerPage);
 
     return (
+        <div>
         <div className="table-responsive pt-2 overflow-y-auto ">
             <table className="table whitespace-nowrap min-w-full">
                 <thead>
@@ -127,13 +128,14 @@ const TableComponent = <T,>({
                     ))}
                 </tbody>
             </table>
+            </div>
 
-            <div className="box-footer p-4 border-t">
+            <div className="box-footer p-4   ">
                 <div className="sm:flex items-center">
                     <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 font-normal text-defaultsize">
                         Showing {currentItems.length} Entries <i className="bi bi-arrow-right ms-2 font-semibold"></i>
                     </div>
-                    <div className="ms-auto">
+                    {/* <div className="ms-auto">
                         <nav aria-label="Page navigation" className="pagination-style-4">
                             <ul className="ti-pagination flex items-center px-3 mb-0">
                                 <li className="page-item px-2">
@@ -166,9 +168,72 @@ const TableComponent = <T,>({
                                 </li>
                             </ul>
                         </nav>
+                    </div> */}
+                    <div className="ms-auto">
+                        <nav aria-label="Page navigation" className="pagination-style-4">
+                            <ul className="ti-pagination flex items-center px-3 mb-0">
+                                <li className="page-item px-2">
+                                    <button
+                                        className="page-link"
+                                        onClick={() => handlePageChange(1)}
+                                        disabled={currentPage === 1}
+                                    >
+                                        «
+                                    </button>
+                                </li>
+                                <li className="page-item px-2">
+                                    <button
+                                        className="page-link"
+                                        onClick={handlePrevPage}
+                                        disabled={currentPage === 1}
+                                    >
+                                        Prev
+                                    </button>
+                                </li>
+                                {Array.from({ length: Math.min(5, totalPages) }, (_, idx) => {
+                                    const startPage = Math.max(1, currentPage - 2);
+                                    const pageNumber = startPage + idx;
+
+                                    return (
+                                        pageNumber <= totalPages && (
+                                            <li className="page-item px-2" key={pageNumber}>
+                                                <button
+                                                    className={`page-link px-2 rounded-md ${currentPage === pageNumber
+                                                            ? "text-white bg-blue-800"
+                                                            : "bg-gray-200"
+                                                        }`}
+                                                    onClick={() => handlePageChange(pageNumber)}
+                                                >
+                                                    {pageNumber}
+                                                </button>
+                                            </li>
+                                        )
+                                    );
+                                })}
+                                <li className="page-item px-2">
+                                    <button
+                                        className="page-link"
+                                        onClick={handleNextPage}
+                                        disabled={currentPage === totalPages}
+                                    >
+                                        Next
+                                    </button>
+                                </li>
+                                <li className="page-item px-2">
+                                    <button
+                                        className="page-link"
+                                        onClick={() => handlePageChange(totalPages)}
+                                        disabled={currentPage === totalPages}
+                                    >
+                                        »
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
+        
         </div>
     );
 };

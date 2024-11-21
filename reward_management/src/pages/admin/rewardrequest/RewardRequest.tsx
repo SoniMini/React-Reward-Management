@@ -122,7 +122,7 @@ const CarpenterRewardRequest: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value); // Update search query
+        setSearchQuery(value); 
         setCurrentPage(1);
         console.log("Search value:", value);
         // Implement search logic here
@@ -143,8 +143,8 @@ const CarpenterRewardRequest: React.FC = () => {
 
     // handle edit modal----
     const handleEdit = (rewardRequest: RewardRequest) => {
-        setSelectedRewardRequest(rewardRequest); // Set the selected request
-        setIsModalOpen(true); // Show the modal
+        setSelectedRewardRequest(rewardRequest);
+        setIsModalOpen(true); 
     }
 
     const handleCloseModal = () => {
@@ -158,8 +158,8 @@ const CarpenterRewardRequest: React.FC = () => {
     
         // Get current date and time
         const now = new Date();
-        const currentDate = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
-        const currentTime = now.toISOString().split('T')[1].split('.')[0]; // Format: HH:MM:SS
+        const currentDate = now.toISOString().split('T')[0]; 
+        const currentTime = now.toISOString().split('T')[1].split('.')[0]; 
     
         const data = {
             approved_on: currentDate,
@@ -191,7 +191,7 @@ const CarpenterRewardRequest: React.FC = () => {
     
     const handleCancel = () => {
         console.log('Cancel clicked');
-        setIsModalOpen(false); // Close the modal on cancel
+        setIsModalOpen(false); 
     }
 
     const isApproved = selectedRewardRequest?.request_status === 'Approved';
@@ -225,9 +225,9 @@ const CarpenterRewardRequest: React.FC = () => {
                             title="Redeemption Requests"
                             onSearch={handleSearch}
                             onAddButtonClick={handleAddProductClick}
-                            buttonText="View Redeemption History" // Custom button text
-                            showButton={true} // Show the button
-                            icon="" // Empty icon
+                            buttonText="View Redeemption History" 
+                            showButton={true} 
+                            icon="" 
                             buttonOnClick={handleAddProductClick}
                             showFromDate={true}
                             showToDate={true}
@@ -276,11 +276,11 @@ const CarpenterRewardRequest: React.FC = () => {
                     statusLabel="Action"
                     transactionIdLabel="Transaction ID"
                     amountLabel="Amount"
-                    question={selectedRewardRequest.name} // Adjust according to your data
-                    answer={selectedRewardRequest.redeemed_points || ''} // Adjust according to your data
-                    status={selectedRewardRequest.request_status || ''} // Adjust according to your data
-                    transactionId={isApproved ? selectedRewardRequest.transection_id || '' : ''} // Conditionally show transactionId
-                    amount={isApproved ? selectedRewardRequest.amount || '' : ''} // Conditionally show amount
+                    question={selectedRewardRequest.name} 
+                    answer={selectedRewardRequest.redeemed_points || ''} 
+                    status={selectedRewardRequest.request_status || ''} 
+                    transactionId={isApproved ? selectedRewardRequest.transection_id || '' : ''} 
+                    amount={isApproved ? selectedRewardRequest.amount || '' : ''} 
                     onClose={handleCloseModal}
                     onSubmit={handleSubmit}
                     onCancel={handleCancel}
@@ -289,8 +289,8 @@ const CarpenterRewardRequest: React.FC = () => {
                     setStatus={(value) => setSelectedRewardRequest(prev => ({ ...prev, request_status: value }))}
                     setTransactionId={(value) => setSelectedRewardRequest(prev => ({ ...prev, transection_id: value }))}
                     setAmount={(value) => setSelectedRewardRequest(prev => ({ ...prev, amount: value }))}
-                    showTransactionId={isApproved} // Pass the condition to modal
-                    showAmount={isApproved} // Pass the condition to modal
+                    showTransactionId={isApproved} 
+                    showAmount={isApproved} 
                 />
             )}
              {showSuccessAlert && (
@@ -301,7 +301,7 @@ const CarpenterRewardRequest: React.FC = () => {
                     showAnotherButton={false}
                     showMessagesecond={false}
                     message="Redeem Request Update Successfully!!"
-                    onClose={() => setShowSuccessAlert(false)} // Close the alert properly
+                    onClose={() => setShowSuccessAlert(false)} 
                     onCancel={function (): void {
                         throw new Error('Function not implemented.');
                     } }                />

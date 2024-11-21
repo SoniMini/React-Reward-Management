@@ -13,7 +13,7 @@
  "is_standard": 1,
  "message": "<p><a href=\"../../reward_management/carpenter-registration\"><strong>{{doc.carpainter_name}}</strong> has sent a request for a new account.</a></p>\n\n",
  "message_type": "HTML",
- "modified": "2024-09-13 10:21:42.254280",
+ "modified": "2024-11-05 10:50:06.000738",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Customer Registration",

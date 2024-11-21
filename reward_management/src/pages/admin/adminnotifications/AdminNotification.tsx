@@ -28,8 +28,8 @@ interface Notification {
     icon: keyof typeof iconMap; 
     subjectHTML: string;
     email_contentHTML: string;
-    timestamp: string;  // Time part of the creation date
-    date: string;       // Date part of the creation date
+    timestamp: string;  
+    date: string;       
 }
 
 const NotificationsDashboard = () => {
@@ -58,7 +58,7 @@ const NotificationsDashboard = () => {
                 const creationDate = new Date(notif.creation);
 
                 const day = String(creationDate.getDate()).padStart(2, '0');
-                const month = String(creationDate.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+                const month = String(creationDate.getMonth() + 1).padStart(2, '0'); 
                 const year = creationDate.getFullYear();
     
                 const date = `${day}/${month}/${year}`; 
@@ -75,8 +75,8 @@ const NotificationsDashboard = () => {
                     icon: 'ti-user',
                     subjectHTML: notif.subject,
                     email_contentHTML: notif.email_content,
-                    timestamp: time,  // Time part of the creation date
-                    date: date,       // Date part of the creation date
+                    timestamp: time,  
+                    date: date,      
                 };
             });
             
