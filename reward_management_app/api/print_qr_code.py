@@ -30,6 +30,7 @@ def print_qr_code():
 @frappe.whitelist(allow_guest=True)
 def create_product_qr(product_name, quantity):
     try:
+        quantity = int(quantity)
         # Check if a Product QR document already exists for the given product_name
         existing_product_qr = frappe.db.exists("Product QR", {"product_name": product_name})
 

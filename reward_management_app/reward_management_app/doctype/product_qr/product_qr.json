@@ -32,7 +32,8 @@
    "fieldtype": "Int",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Quantity"
+   "label": "Quantity",
+   "non_negative": 1
   },
   {
    "fieldname": "qr_table",
@@ -43,7 +44,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-30 17:51:28.289333",
+ "modified": "2024-11-22 12:02:54.919500",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Product QR",

@@ -76,7 +76,7 @@ const AdminDashboard: React.FC = () => {
    // Filter Carpenters Data
    const filteredCarpenters = carpentersData?.filter(carpenter => validMobileNumbers.includes(carpenter.mobile_number)) || [];
 
-   // Sort by total_points in descending order and get the top 10
+   // Sort by total_points in descending order and get the top 10 carpenters
    const top10Carpenters = filteredCarpenters
        .sort((a, b) => (b.total_points || 0) - (a.total_points || 0))
        .slice(0, 10);
