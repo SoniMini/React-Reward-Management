@@ -86,11 +86,16 @@ const AddUserDashboard: React.FC = () => {
     const filteredData = usersData.filter((item) => {
         const query = searchQuery.toLowerCase();
         return (
-            item.first_name.toLowerCase().includes(query) ||
-            item.last_name.toLowerCase().includes(query) ||
-            item.username.toLowerCase().includes(query) ||
-            item.email.toLowerCase().includes(query) ||
-            item.mobile_no.toLowerCase().includes(query)
+            // item.first_name.toLowerCase().includes(query) ||
+            (item.first_name && item.first_name.toLowerCase().includes(query))||
+            // item.last_name.toLowerCase().includes(query) ||
+            (item.last_name && item.last_name.toLowerCase().includes(query))||
+            // item.username.toLowerCase().includes(query) ||
+            (item.username && item.username.toLowerCase().includes(query))||
+            (item.email && item.email.toLowerCase().includes(query))||
+            // item.email.toLowerCase().includes(query) ||
+            // item.mobile_no.toLowerCase().includes(query)
+            (item.mobile_no && item.mobile_no.toLowerCase().includes(query))
         );
     });
 

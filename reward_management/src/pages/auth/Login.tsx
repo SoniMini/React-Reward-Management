@@ -308,7 +308,7 @@ const Login = () => {
 
             localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
 
-            console.log('Check Response Data:', checkResponse.data.message.role_profile_name); // Log the response to inspect its structure
+            console.log('Check Response Data:', checkResponse.data.message.role_profile_name); 
             // var carpenterrole = checkResponse.data.role_profile_name;
 
             if (checkResponse.data.message && checkResponse.data.message.registered) {
@@ -318,6 +318,9 @@ const Login = () => {
                 }, {
                     headers: { 'Content-Type': 'application/json' }
                 });
+
+
+                // localStorage.setItem('verfied carpenter role', checkResponse.data.message.role_profile_name);
 
                 console.log('OTP Response Data:', otpResponse.data); // Log the OTP response data
 

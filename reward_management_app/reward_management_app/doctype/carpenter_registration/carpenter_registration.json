@@ -13,6 +13,8 @@
   "city",
   "status",
   "column_break_ppg8",
+  "first_name",
+  "last_name",
   "registration_date",
   "registration_time",
   "approved_date",
@@ -26,7 +28,6 @@
    "options": "Carpenter-Registration.-.YYYY.-.MM.-.#####"
   },
   {
-   "fetch_from": "carpainter_id.full_name",
    "fieldname": "carpainter_name",
    "fieldtype": "Data",
    "in_filter": 1,
@@ -35,7 +36,6 @@
    "label": "Carpainter Name"
   },
   {
-   "fetch_from": "carpainter_id.mobile_number",
    "fieldname": "mobile_number",
    "fieldtype": "Data",
    "in_filter": 1,
@@ -44,7 +44,6 @@
    "label": "Mobile Number"
   },
   {
-   "fetch_from": "carpainter_id.city",
    "fieldname": "city",
    "fieldtype": "Data",
    "label": "City"
@@ -85,13 +84,24 @@
   {
    "fieldname": "carpainter_id",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Carpainter ID",
    "options": "Carpenter"
+  },
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "label": "First Name"
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "Last Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-21 14:30:26.473358",
+ "modified": "2024-11-21 17:17:48.330564",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Carpenter Registration",

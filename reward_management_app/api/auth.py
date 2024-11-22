@@ -4,11 +4,11 @@ import frappe
 # ? API FOR LOGIN WITH AUTH TOKEN AND ALL
 # ! /pdt.api.auth.login
 @frappe.whitelist(allow_guest=1)
-def login(email, password):
+def login(usr, pwd):
     try:
         # ? SETUP THE LOGIN MANAGER
         login_manager = frappe.auth.LoginManager()
-        login_manager.authenticate(user=email, pwd=password)
+        login_manager.authenticate(user=usr, pwd=pwd)
         login_manager.post_login()
 
         # ? GET USER DETAILS AND GENERATE API KEY AND SECRET IF NEEDED

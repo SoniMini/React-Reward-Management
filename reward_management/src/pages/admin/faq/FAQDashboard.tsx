@@ -214,6 +214,7 @@ const FAQDashboard: React.FC = () => {
         setModalTitle('View FAQ');
         setQuestion(item.question || '');
         setAnswer(item.answer || '');
+        
         setIsReadOnly(true);
         setIsModalOpen(true);
     };
@@ -391,7 +392,7 @@ const FAQDashboard: React.FC = () => {
                                         <input
                                             type="text"
                                             className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
-                                            value={formatDate(selectedFAQ.created_date || '')}
+                                            value={selectedFAQ.created_date || ""}
                                             readOnly
                                         />
                                     </div>

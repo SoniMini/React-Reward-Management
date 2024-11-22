@@ -45,7 +45,7 @@ const AddProduct: React.FC = () => {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'multipart/form-data'
-                }
+                }   
             });
     
             if (response.data.message && response.data.message.file_url) {
