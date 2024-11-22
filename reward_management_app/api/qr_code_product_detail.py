@@ -68,6 +68,8 @@ def update_scanned_status(product_table_name, product_qr_id, carpenter_id):
                                                         "product_table_name": product_table_name,
                                                         "product_qr_id": product_qr_id},
                                                fields=["name", "scanned", "carpenter_id", "redeem_date"])
+                
+               
 
                 if qr_table_data:
                     # Assuming there's only one matching row, but you should handle multiple rows if needed
@@ -77,6 +79,18 @@ def update_scanned_status(product_table_name, product_qr_id, carpenter_id):
                     if row.get('scanned'):
                         return {"error": "This QR code has already been scanned."}
                     
+                    
+                    carpenter_data = frappe.get_all(
+                        "Carpenter",
+                        filters={"name": carpenter_id},
+                        fields=["mobile_number", "full_name"]
+                    )
+                    if not carpenter_data:
+                        return {"error": "Carpenter not found."}
+                    
+                    carpenter = carpenter_data[0]
+
+                    
                     # Update scanned status, carpenter_id, and redeem_date
                     current_date = frappe.utils.nowdate()
 
@@ -84,6 +98,8 @@ def update_scanned_status(product_table_name, product_qr_id, carpenter_id):
                     frappe.db.set_value("Product QR Table", row['name'], "scanned", 1)
                     frappe.db.set_value("Product QR Table", row['name'], "carpenter_id", carpenter_id)
                     frappe.db.set_value("Product QR Table", row['name'], "redeem_date", current_date)
+                    frappe.db.set_value("Product QR Table", row["name"], "mobile_number", carpenter["mobile_number"])
+                    frappe.db.set_value("Product QR Table", row["name"], "carpenter_name", carpenter["full_name"])
                     frappe.db.commit()
 
                     return {"message": "Scanned status and carpenter id updated successfully", "success": True}

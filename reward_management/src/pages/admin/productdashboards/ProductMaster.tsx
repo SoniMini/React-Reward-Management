@@ -105,7 +105,7 @@ const ProductMaster: React.FC = () => {
         setSelectedProduct(null);
     };
 
-    const handleConfirm = async (quantity: number) => {
+    const handleConfirm = async (quantity:number) => {
         if (selectedProduct) {
             setLoading(true);
             try {

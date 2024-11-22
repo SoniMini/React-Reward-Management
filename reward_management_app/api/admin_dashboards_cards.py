@@ -10,7 +10,7 @@ def count_redemptions():
     return total_redemptions
 
 #total redeem request count 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=False)
 def count_redeem_request():
     # Fetch count of customers from database
     total_redeem_request = frappe.db.count("Redeem Request", filters={"request_status": "Pending"})

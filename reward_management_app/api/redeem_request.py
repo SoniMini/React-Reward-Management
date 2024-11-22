@@ -67,6 +67,7 @@ def create_redeem_request(customer_id, redeemed_points):
         current_datetime = now_datetime()
         redeem_request.received_date = current_datetime.date()
         redeem_request.received_time = current_datetime.time().strftime('%H:%M:%S')
+        redeem_request.approve_time = ""
 
         # Set request status to Pending
         redeem_request.request_status = "Pending"

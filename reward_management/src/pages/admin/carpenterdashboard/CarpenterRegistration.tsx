@@ -132,7 +132,7 @@ const CarpenterRegistration: React.FC = () => {
                     await updateRegistrationStatus(updatedCarpenter.name, updatedCarpenter.status);
                 }
     
-                alert('Registration Request updated successfully!');
+                // alert('Registration Request updated successfully!');
                 handleCloseModal();
             } else {
                 console.error("Failed to update Registration Request:", response.data);
@@ -286,7 +286,7 @@ const CarpenterRegistration: React.FC = () => {
                             title="Registration Requests" 
                             onSearch={handleSearch} 
                             onAddButtonClick={handleAddProductClick} 
-                            buttonText="Add New Product" // Custom button text
+                            buttonText="Add New Product" 
                             showButton={false} 
                             showFromDate={true}
                             showToDate={true}
@@ -297,7 +297,7 @@ const CarpenterRegistration: React.FC = () => {
                             <TableComponent<CarpenterRegistrations>
                                 columns={[
                                     { header: 'Registration ID', accessor: 'name' },
-                                    { header: 'Carpenter ID', accessor: 'carpainter_id' },
+                                    // { header: 'Carpenter ID', accessor: 'carpainter_id' },
                                     { header: 'Carpenter Name', accessor: 'carpainter_name' },
                                     { header: 'Mobile Number', accessor: 'mobile_number' },
                                     { header: 'City', accessor: 'city' },
