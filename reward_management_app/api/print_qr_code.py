@@ -30,7 +30,6 @@ def print_qr_code():
 @frappe.whitelist(allow_guest=True)
 def create_product_qr(product_name, quantity):
     try:
-        quantity = int(quantity)
         # Check if a Product QR document already exists for the given product_name
         existing_product_qr = frappe.db.exists("Product QR", {"product_name": product_name})
 
@@ -65,7 +64,7 @@ def create_product_qr(product_name, quantity):
 
             # Generate QR code using the API with product_name and product_qr_id concatenated
             qr_content = f"{product_qr_doc.name}_{product_name}_{formatted_product_qr_id}"
-            qr_api_url = f"https://api.qrserver.com/v1/create-qr-code/?data={qr_content}&size=100x100"
+            qr_api_url = f"https://api.qrserver.com/v1/create-qr-code/?data={qr_content}&size=33x33"
             response = requests.get(qr_api_url)
 
             if response.status_code == 200:
@@ -224,10 +223,12 @@ def get_product_by_name(productName):
     # Prepare formatted data with unique dates, total counts, and QR code images
     formatted_data = []
     for generated_date, qr_data_list in qr_data_by_date.items():
+        total_points = sum(qr_data.get("points", 0) for qr_data in qr_data_list)
         total_count = counts_by_date.get(generated_date, 0)
         formatted_data.append({
             "generated_date": generated_date,
             "total_product": total_count,
+            "total_points": total_points,
             "qr_code_images": qr_data_list
         })
 
