@@ -29,11 +29,13 @@ const ProductMaster: React.FC = () => {
     
     const [itemsPerPage] = useState(5);
     const { data: productsData } = useFrappeGetDocList<Product>('Product', {
-        fields: ['name', 'product_name', 'category', 'reward_points']
+        fields: ['name', 'product_name', 'category', 'reward_points'],
+        limit: 0
     });
      // Fetch Product QR Data
      const { data: productQRData } = useFrappeGetDocList<Product>('Product QR', {
-        fields: ['name', 'product_name', 'quantity']
+        fields: ['name', 'product_name', 'quantity'],
+        limit: 0,
     });
       // Combine Product and Product QR Data
       const combinedData = productsData?.map(product => {
