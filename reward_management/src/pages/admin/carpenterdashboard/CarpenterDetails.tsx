@@ -33,7 +33,8 @@ const CarpenterDetails: React.FC = () => {
     });
 
     const { data: carpenterData } = useFrappeGetDocList<Carpenter>('Carpenter', {
-        fields: ['name', 'full_name', 'city', 'mobile_number', 'total_points', 'current_points', 'redeem_points']
+        fields: ['name', 'full_name', 'city', 'mobile_number', 'total_points', 'current_points', 'redeem_points'],
+        limit: 0
     });
     
 

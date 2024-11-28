@@ -33,8 +33,26 @@ const CarpenterRegistration: React.FC = () => {
     const [loading, setLoading] = useState(false); 
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
-    const { data: carpenterregisterData } = useFrappeGetDocList<CarpenterRegistrations>('Carpenter Registration', {
-        fields: ['name', 'carpainter_id', 'carpainter_name', 'mobile_number', 'city', 'registration_date', 'status', 'approved_date']
+    // const { data: carpenterregisterData } = useFrappeGetDocList<CarpenterRegistrations>('Carpenter Registration', {
+    //     fields: ['name', 'carpainter_id', 'carpainter_name', 'mobile_number', 'city', 'registration_date', 'status', 'approved_date'],
+    // });
+    const { data: carpenterregisterData, isLoading, error } = useFrappeGetDocList<CarpenterRegistrations>('Carpenter Registration', {
+        fields: [
+            'name', 
+            'carpainter_id', 
+            'carpainter_name', 
+            'mobile_number', 
+            'city', 
+            'registration_date', 
+            'status', 
+            'approved_date'
+        ],
+        // limit_start: pageIndex * 10,
+        limit: 0,
+        orderBy: {
+            field: 'creation',
+            order: 'desc',
+        }
     });
 
     useEffect(() => {

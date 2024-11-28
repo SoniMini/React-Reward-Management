@@ -46,7 +46,8 @@ const RedeemptionHistory: React.FC = () => {
     const [toDate, setToDate] = useState<Date | null>(null);
 
     const { data: rewardrequesthistoryData } = useFrappeGetDocList<RewardRequestHistory>('Redeem Request', {
-        fields: ['name', 'customer_id', 'total_points', 'current_point_status','full_name', 'redeemed_points','mobile_number' ,'received_date', 'received_time', 'request_status', 'approved_on', 'approve_time', 'transection_id', 'amount']
+        fields: ['name', 'customer_id', 'total_points', 'current_point_status','full_name', 'redeemed_points','mobile_number' ,'received_date', 'received_time', 'request_status', 'approved_on', 'approve_time', 'transection_id', 'amount'],
+        limit: 0,
     });
     const formattedData = rewardrequesthistoryData?.map(request => ({
         ...request,

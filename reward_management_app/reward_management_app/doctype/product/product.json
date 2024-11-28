@@ -23,6 +23,7 @@
    "label": "Product "
   },
   {
+   "default": "Product.-.{product_name}.-.YYYY.-.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "hidden": 1,
@@ -70,7 +71,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-30 17:00:13.348211",
+ "modified": "2024-11-22 15:24:45.748610",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Product",

@@ -82,7 +82,7 @@ def update_user_details():
             user.first_name = user_data.get('first_name', user.first_name)
             user.last_name = user_data.get('last_name', user.last_name)
             user.full_name = user_data.get('full_name', user.full_name)
-            user.phone = user_data.get('phone', user.phone)
+            user.mobile_no = user_data.get('mobile_no', user.mobile_no)
             user.gender = user_data.get('gender', user.gender)
             user.birth_date = user_data.get('birth_date', user.birth_date)
             user.location = user_data.get('location', user.location)
@@ -115,8 +115,8 @@ def update_user_details():
             frappe.rename_doc("User", old_email, new_email)
             user.email = new_email
             
-            
             login_user(new_email)
+            login_token = login_user(new_email)
             
 
             user.save()
@@ -126,7 +126,8 @@ def update_user_details():
                 "status": "success", 
                 "message": "Email changed, reload required.", 
                 "reload_required": False,
-                "username": user.name
+                "username": user.name,
+                "login_token": login_token,
                
             }
         
@@ -134,7 +135,7 @@ def update_user_details():
         user.first_name = user_data.get('first_name', user.first_name)
         user.last_name = user_data.get('last_name', user.last_name)
         user.full_name = user_data.get('full_name', user.full_name)
-        user.phone = user_data.get('phone', user.phone)
+        user.mobile_no = user_data.get('phone', user.mobile_no)
         user.gender = user_data.get('gender', user.gender)
         user.birth_date = user_data.get('birth_date', user.birth_date)
         user.location = user_data.get('location', user.location)
@@ -166,7 +167,7 @@ def update_user_details():
 
     except frappe.DoesNotExistError:
         frappe.log_error(frappe.get_traceback(), _("User Not Found Error"))
-        return {"status": "error", "message": "User not found."}
+        return {"status": "error", "message": "User not found.","user":user.name,"new_user":new_email}
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), _("API Error"))
@@ -175,7 +176,7 @@ def update_user_details():
 
 # login with new user email--
 def login_user(user):
-    number = frappe.db.get_value("User", user, ['phone'])
+    number = frappe.db.get_value("User", user, ['mobile_no'])
     frappe.local.login_manager.user = user
     frappe.local.login_manager.post_login()
     frappe.db.commit()
