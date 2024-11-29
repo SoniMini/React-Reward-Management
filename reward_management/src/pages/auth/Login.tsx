@@ -376,6 +376,7 @@ const Login = () => {
                     // Add more user data as needed
                 };
                 localStorage.setItem('credentials', JSON.stringify(credentials));
+                console.log("testing----", localStorage.setItem('credentials', JSON.stringify(credentials)))
 
                 console.log('Login Status:', localStorage.getItem('login'));
 
