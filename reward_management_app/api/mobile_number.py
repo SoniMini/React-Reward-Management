@@ -3,6 +3,8 @@ import random
 from frappe.model.document import Document
 from datetime import datetime, timedelta
 
+from reward_management_app.api.auth import generate_keys
+
 @frappe.whitelist(allow_guest=True)
 def get_mobile_verification_fields():
     try:
@@ -105,7 +107,7 @@ def verify_otp(mobile_number, otp):
 
 
 # get session details of verfied mobile number and otp use---
-# @frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=True)
 def check_user_registration(mobile_number):
     try:
         # Check if the mobile number exists in the User document

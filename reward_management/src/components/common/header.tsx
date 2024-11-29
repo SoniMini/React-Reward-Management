@@ -62,7 +62,8 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
                    
                 });
     
-                setUsername(userdata.data.data.username || "");
+                // setUsername(userdata.data.data.username || "");
+                setUsername(userdata.data.data.first_name || "");
                 setUserImage(userdata.data.data.user_image || ProfilePic);
     
             } catch (error) {
