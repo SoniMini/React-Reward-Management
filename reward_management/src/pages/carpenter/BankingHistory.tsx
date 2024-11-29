@@ -36,6 +36,11 @@ const BankingHistory: React.FC = () => {
         const fetchUserData = async () => {
             try {
                 const response = await axios.get(`/api/method/frappe.auth.get_logged_user`,{
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0',
+                    },
                     
                 });
                 console.log("Logged user data:", response);
