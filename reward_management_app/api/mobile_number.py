@@ -2,6 +2,7 @@ import frappe
 import random
 from frappe.model.document import Document
 from datetime import datetime, timedelta
+import requests
 
 from reward_management_app.api.auth import generate_keys
 
@@ -169,3 +170,26 @@ def check_user_registration(mobile_number):
             "message": str(e)  
         }
 
+
+# send otp to a mobile number----------
+@frappe.whitelist(allow_guest=True)
+def send_sms_otp(mobile_number, otp):
+
+    url = "https://login.raidbulksms.com/unified.php"
+    params = {
+        "key": "1n4812wh341u41U1NWH34812",
+        "ph": mobile_number,
+        "sndr": "KRIINA",
+        "text": f"{otp} is your OTP for Flare Overseas Mobile App\n-Developed by Krina Web"
+    }
+
+    try:
+        response = requests.get(url, params=params)
+        frappe.logger().info(f"SMS API Response: {response.status_code}, {response.text}")
+        if response.status_code == 200:
+            return {"status": "success", "response": response.text}
+        else:
+            frappe.throw(_("Failed to send SMS: {0}".format(response.text)))
+    except Exception as e:
+        frappe.logger().error(f"SMS Sending Error: {str(e)}")
+        frappe.throw(("An error occurred while sending the SMS: {0}".format(str(e))))
