@@ -20,7 +20,6 @@ const Login = () => {
     const [loginError, setLoginError] = useState<string>("");
     const [isTimerActive, setIsTimerActive] = React.useState(false);
     const [timer, setTimer] = React.useState(60); 
-    const [isResendOtpVisible, setIsResendOtpVisible] = useState(false); // Resend OTP button visibility
     const [currentForm, setCurrentForm] = useState<"login" | "register" | "carpenterLogin">("login");
     const [passwordShow, setPasswordShow] = useState<boolean>(false);
     const [isOtpVisible, setIsOtpVisible] = useState(false);
@@ -174,7 +173,6 @@ const Login = () => {
 
             if (otpResponse.data.message.status === "success") {
                 console.log("OTP matched:", otpResponse);
-                // alert("OTP Matched Successfully.");
                 setAlertTitle("Success");
                 setAlertMessage("OTP Matched Successfully.");
                 setShowSuccessAlert(true);
@@ -191,7 +189,6 @@ const Login = () => {
 
                 if (registerResponse.message.status === "success") {
                     console.log("Carpainter registered successfully:", registerResponse);
-                    // alert("Customer Registered Successfully.");
                     setAlertTitle("Success");
                     setAlertMessage(
                         "Customer Registration Sent to the Admin Successfully."
@@ -238,7 +235,7 @@ const Login = () => {
     };
 
     // User Registration Handle or Generate Registration OTP Logic---------
-    const handleGetOtp = async (e: React.FormEvent) => {
+    const handleGetOtp = async (e: React.FormEvent ,isResendOtp = false) => {
         e.preventDefault();
         try {
             // First, check if the user is registered
@@ -268,12 +265,29 @@ const Login = () => {
                 );
 
                 if (response.data.message.status === "success") {
-                    console.log("OTP sent successfully:", response);
+                    // console.log("OTP sent successfully:", response);
+                    const generatedregistrationOtp = response.data.message.otp;
+                    // console.log("otp registration",generatedregistrationOtp);
                     // Show success alert
                     setAlertTitle("Success");
-                    setAlertMessage("OTP has been sent to your mobile number!");
+                    // setAlertMessage("OTP has been sent to your mobile number!");
+                    setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
                     setShowSuccessAlert(true);
                     setIsOtpVisible(true);
+
+                      // Start the timer
+                    startTimer();
+                    axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
+                        mobile_number: mobile,
+                        otp: generatedregistrationOtp
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            
+                        }
+                    });
+                    
+                    console.log("SMS API called successfully");
                 } else {
                     setLoginError("Failed to send OTP. Please try again.");
                 }
@@ -372,22 +386,23 @@ const Login = () => {
     // Start time for otp ------
     const startTimer = () => {
         setIsTimerActive(true);
-        setTimer(60); // Start the timer with 60 seconds
+        setTimer(60); 
         const countdown = setInterval(() => {
             setTimer((prevTimer) => {
                 if (prevTimer <= 1) {
-                    clearInterval(countdown); // Clear the interval when timer reaches 0
+                    clearInterval(countdown);
                     setIsTimerActive(false);
                     setIsloginOtpVisible(false); 
-                    setIsResendOtpVisible(false); // Show Login button
+                    setIsOtpVisible(false);
+
 
                     return 0;
                 }
-                return prevTimer - 1; // Decrement timer
+                return prevTimer - 1; 
             });
-        }, 1000); // Update every second
+        }, 1000);
     };
-    //   Carpenter login handling-----------
+    // Carpenter login handling-----------
    const handleloginGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
     e.preventDefault();
 
@@ -418,9 +433,6 @@ const Login = () => {
                 setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
                 setShowSuccessAlert(true);
                 setIsloginOtpVisible(true);
-                setIsResendOtpVisible(true); // Show Resend OTP button
-
-
                 // Start the timer
                 startTimer();
 
@@ -482,10 +494,10 @@ const Login = () => {
                     // Add more user data as needed
                 };
                 localStorage.setItem("credentials", JSON.stringify(credentials));
-                console.log(
-                    "testing----",
-                    localStorage.setItem("credentials", JSON.stringify(credentials))
-                );
+                // console.log(
+                //     "testing----",
+                //     localStorage.setItem("credentials", JSON.stringify(credentials))
+                // );
 
                 console.log("Login Status:", localStorage.getItem("login"));
 
@@ -505,7 +517,7 @@ const Login = () => {
                 const response = await axios.get(
                     `/api/method/reward_management_app.api.website_settings.get_website_settings`
                 );
-                console.log("API Image Response:", response.data);
+                // console.log("API Image Response:", response.data);
 
                 // Check if the response is successful and contains the expected structure
                 if (
@@ -523,7 +535,7 @@ const Login = () => {
                         console.log("Banner Image Set:", fullBannerImageURL);
                     } else {
                         // If no banner_image found, use the default logo
-                        console.log("No banner_image found, using default logo.");
+                        // console.log("No banner_image found, using default logo.");
                         // Corrected default logo
                         setLogo(desktoplogo);
                     }
@@ -787,7 +799,13 @@ const Login = () => {
                                                         >
                                                             Register
                                                         </Button>
+
                                                     </Box>
+                                                    {isTimerActive && (
+                                              <Text className="text-center text-default">
+                                                  You can resend OTP in {timer} seconds
+                                              </Text>
+                                          )}
                                                 </>
                                             ) : (
                                                 <Box className="xl:col-span-12 col-span-12 grid mt-2">
@@ -865,30 +883,35 @@ const Login = () => {
                                                 )}
                                         </Box>
                                         {isloginOtpVisible ? (
-                                            <>
-                                                <Box className="mb-4">
-                                                    <Text as='label' htmlFor='mobileotp' className='text-defaultsize font-semibold'>OTP</Text>
-                                                    <input
-                                                        id='mobileotp'
-                                                        type='text'
-                                                        placeholder='OTP'
-                                                        name='mobileotp'
-                                                        onChange={changeHandler}
-                                                        value={mobileotp}
-                                                        className="border rounded-[5px] p-2 mt-2 text-xs w-full"
-                                                    />
-                                                </Box>
-                                                <Button type="submit" onClick={handlelogincarpenter} id='logincarpenter' className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium ">
-                                                    Login
-                                                </Button>
-                                                {isTimerActive ? (
-                                                    <Text className="text-center text-default">You can resend OTP in {timer} seconds</Text>
-                                                ) : (
-                                                    <Button type="button" onClick={handleloginGetOtp} id='resendotp' className="w-full mt-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium">
-                                                        Resend OTP
-                                                    </Button>
-                                                )}
-                                            </>
+                                          <>
+                                          <Box className="mb-4">
+                                              <Text as="label" htmlFor="mobileotp" className="text-defaultsize font-semibold">
+                                                  OTP
+                                              </Text>
+                                              <input
+                                                  id="mobileotp"
+                                                  type="text"
+                                                  placeholder="Enter OTP"
+                                                  name="mobileotp"
+                                                  onChange={changeHandler}
+                                                  value={mobileotp}
+                                                  className="border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                              />
+                                          </Box>
+                                          <Button
+                                              type="submit"
+                                              onClick={handlelogincarpenter}
+                                              id="logincarpenter"
+                                              className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium"
+                                          >
+                                              Login
+                                          </Button>
+                                          {isTimerActive && (
+                                              <Text className="text-center text-default">
+                                                  You can resend OTP in {timer} seconds
+                                              </Text>
+                                          )}
+                                      </>
                                         ) : (
                                             <Button type="button" onClick={handleloginGetOtp} id='getloginotp' className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium ">
                                                 Get OTP
