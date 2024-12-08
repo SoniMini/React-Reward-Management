@@ -91,7 +91,7 @@ const DownloadQRCode: React.FC = () => {
 
     const handleSearch = (value: string) => {
         console.log("Search value:", value);
-        // Implement search logic here
+       
     };
 
     const handleAddProductClick = () => {
