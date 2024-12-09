@@ -191,7 +191,7 @@ const DownloadQRCode: React.FC = () => {
         const rowIndex = Math.floor(pageSpecificIndex / columnsPerPage);
 
         // Calculate the X and Y positions for the QR code
-        const x = colIndex * (imageWidth + columnSpacing) + 10; // 10 mm left margin
+        const x = colIndex * (imageWidth + columnSpacing) + 10; 
         const y = rowIndex * (imageHeight + rowSpacing) + 20; // 20 mm top margin
 
         // Debug position
