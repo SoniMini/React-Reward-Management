@@ -170,7 +170,7 @@ const DownloadQRCode: React.FC = () => {
     const imageWidth = 33; // 33 mm
     const imageHeight = 33; // 33 mm
     const rowSpacing = 10; // Spacing between rows
-    const columnSpacing = 5; // Spacing between columns
+    const columnSpacing = 5; 
 
     // A4 dimensions in mm: 210 × 297
     const columnsPerPage = Math.floor((210 - 20) / (imageWidth + columnSpacing)); // Allow for 10 mm margins
