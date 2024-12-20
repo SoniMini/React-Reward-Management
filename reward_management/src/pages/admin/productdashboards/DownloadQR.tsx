@@ -216,7 +216,7 @@ const DownloadQRCode: React.FC = () => {
         const imageWidth = 33; // Image width in mm
         const imageHeight = 33; // Image height in mm
         const imagesPerRow = 2; // 2 images per row
-        const rowsPerPage = 1; // 2 rows per page
+        const rowsPerPage = 2; // 2 rows per page
         const marginLeft = 2.5; // Left margin in mm
         const marginRight = 2.5; // Right margin in mm
         const marginTop = 2.5; // Top margin in mm
