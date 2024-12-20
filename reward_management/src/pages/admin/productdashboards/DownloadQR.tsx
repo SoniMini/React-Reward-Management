@@ -213,7 +213,7 @@ const DownloadQRCode: React.FC = () => {
             format: [80, 80] // Custom size: 80mm by 80mm (adjust as needed)
         });
     
-        const imageWidth = 33; // Image width in mm
+        const imageWidth = 33; 
         const imageHeight = 33; // Image height in mm
         const imagesPerRow = 2; // 2 images per row
         const rowsPerPage = 2; // 2 rows per page
