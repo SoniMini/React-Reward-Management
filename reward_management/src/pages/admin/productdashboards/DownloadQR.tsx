@@ -214,17 +214,17 @@ const DownloadQRCode: React.FC = () => {
             format: [80, 80] // Custom size: 80mm by 80mm (adjust as needed)
         });
     
-        const imageWidth = 33; // Image width in mm
+        const imageWidth = 33; 
         const imageHeight = 33; // Image height in mm
         const imagesPerRow = 2; // 2 images per row
-        const rowsPerPage = 1; // 2 rows per page
+        const rowsPerPage = 2; // 2 rows per page
         const marginLeft = 2.5; // Left margin in mm
         const marginRight = 2.5; // Right margin in mm
         const marginTop = 2.5; // Top margin in mm
         const marginBottom = 2.5; // Bottom margin in mm
         const gap = 10; // Gap between images in mm
     
-        const pageWidth = pdf.internal.pageSize.width; // Get page width in mm
+        const pageWidth = pdf.internal.pageSize.width; 
         const pageHeight = pdf.internal.pageSize.height; // Get page height in mm
     
         let currentImageIndex = 0; // To track which image we're placing
