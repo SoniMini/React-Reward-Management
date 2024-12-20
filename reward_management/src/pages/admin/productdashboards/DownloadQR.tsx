@@ -223,7 +223,7 @@ const DownloadQRCode: React.FC = () => {
         const marginBottom = 2.5; // Bottom margin in mm
         const gap = 10; // Gap between images in mm
     
-        const pageWidth = pdf.internal.pageSize.width; // Get page width in mm
+        const pageWidth = pdf.internal.pageSize.width; 
         const pageHeight = pdf.internal.pageSize.height; // Get page height in mm
     
         let currentImageIndex = 0; // To track which image we're placing
