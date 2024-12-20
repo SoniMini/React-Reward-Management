@@ -159,8 +159,8 @@ def send_customer_reward_approved_notification(doc, method=None):
             'type': 'Alert',
             'email_content': f"""
                 <p>{customer.full_name}, 
-                <a href="../../reward_management/redeem-request">Your request for 
-                <strong>{doc.redeemed_points}</strong> points redemption has been approved!</a></p>
+                Your request for 
+                <strong>{doc.redeemed_points}</strong> points redemption has been approved!</p>
             """,
             'document_type': 'Redeem Request',
             'document_name': doc.name

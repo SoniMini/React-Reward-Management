@@ -91,7 +91,7 @@ const DownloadQRCode: React.FC = () => {
 
     const handleSearch = (value: string) => {
         console.log("Search value:", value);
-        // Implement search logic here
+       
     };
 
     const handleAddProductClick = () => {
@@ -160,6 +160,7 @@ const DownloadQRCode: React.FC = () => {
     //     const zipBlob = await zip.generateAsync({ type: 'blob' });
     //     saveAs(zipBlob, 'qr_codes.zip');
     // };
+
 
 
     //    per page 1 row 2 column---------------------
@@ -254,6 +255,8 @@ const DownloadQRCode: React.FC = () => {
         // Save the PDF as a blob and directly download it
         pdf.save(`${row.product_name || 'QR_Codes'}.pdf`);
     };
+
+
 
 
     // per page one row one col----------
