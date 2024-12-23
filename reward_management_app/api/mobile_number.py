@@ -171,6 +171,7 @@ def check_user_registration(mobile_number):
         }
 
 
+
 # send otp to a mobile number----------
 @frappe.whitelist(allow_guest=True)
 def send_sms_otp(mobile_number, otp):
@@ -179,8 +180,8 @@ def send_sms_otp(mobile_number, otp):
     params = {
         "key": "1n4812wh341u41U1NWH34812",
         "ph": mobile_number,
-        "sndr": "KRIINA",
-        "text": f"{otp} is your OTP for Flare Overseas Mobile App\n-Developed by Krina Web"
+        "sndr": "FLAREO",
+        "text": f"{otp} is your OTP for Flare Overseas Mobile App"
     }
 
     try:

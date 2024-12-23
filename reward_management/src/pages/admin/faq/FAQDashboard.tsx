@@ -18,6 +18,7 @@ interface FAQ {
     answer: string;
     status: string;
     created_date?: string;
+    creation?:string;
 }
 
 const FAQDashboard: React.FC = () => {
@@ -38,9 +39,11 @@ const FAQDashboard: React.FC = () => {
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
+
 
     const { data } = useFrappeGetDocList<FAQ>('FAQ', {
-        fields: ['name', 'question', 'status', 'created_date', 'answer'],
+        fields: ['name', 'question', 'status', 'created_date', 'answer','creation'],
         limit: 0,
         page: currentPage,
         filters: [['status', '=', 'Active']],
@@ -95,34 +98,32 @@ const FAQDashboard: React.FC = () => {
         setQuestion('');
         setAnswer('');
         setIsReadOnly(false);
+        setIsEditing(false); // Ensure isEditing is false for new FAQ
         setIsModalOpen(true);
     };
-
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
 
+ 
+
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        console.log("Question:", question);
-        console.log("Answer:", answer);
-
+    
         if (!answer || !question) {
             alert("Please enter a valid question and answer.");
             return;
         }
-
+    
         const data = {
             question,
             answer,
             status: "Active",
-            created_date: new Date().toISOString().split('T')[0],
         };
-
+    
         try {
             let response;
-            if (selectedFAQ) {
-                // Update existing FAQ
+            if (isEditing && selectedFAQ) {
                 response = await fetch(`/api/resource/FAQ/${selectedFAQ.name}`, {
                     method: 'PUT',
                     headers: {
@@ -131,7 +132,6 @@ const FAQDashboard: React.FC = () => {
                     body: JSON.stringify(data),
                 });
             } else {
-                // Add new FAQ
                 response = await fetch('/api/resource/FAQ', {
                     method: 'POST',
                     headers: {
@@ -140,28 +140,29 @@ const FAQDashboard: React.FC = () => {
                     body: JSON.stringify(data),
                 });
             }
-
+    
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Network response was not ok');
             }
-
+    
+            const successMessage = isEditing ? 'FAQ updated successfully!' : 'FAQ created successfully!';
             setShowSuccessAlert(true);
-            setAlertMessage(selectedFAQ ? 'FAQ updated successfully!' : 'FAQ created successfully!');
+            setAlertMessage(successMessage);
             setAlertTitle('Success');
-
-
-            // alert(selectedFAQ ? 'FAQ updated successfully!' : 'FAQ created successfully!');
+    
             setQuestion('');
-
             setAnswer('');
+            setIsEditing(false);
+            setSelectedFAQ(null);
             handleCloseModal();
-
         } catch (error) {
             console.error('Error:', error);
-            alert('Failed to save FAQ.');
+            alert('Failed to save FAQ. Please try again.');
         }
     };
-
+    
+    
     const handleDeleteFAQ = (item: FAQ) => {
         setFaqToDelete(item);
         setIsConfirmDeleteModalOpen(true);
@@ -207,8 +208,9 @@ const FAQDashboard: React.FC = () => {
         setQuestion(item.question || '');
         setAnswer(item.answer || '');
         setIsReadOnly(false);
+        setIsEditing(true); // Set isEditing to true for editing
         setIsModalOpen(true);
-    }
+    };
 
     const handleView = (item: FAQ) => {
         setSelectedFAQ(item);
@@ -251,7 +253,7 @@ const FAQDashboard: React.FC = () => {
     
     const formattedFAQData = faqData?.map(faq => ({
         ...faq,
-        created_date: faq.created_date ? formatDate(faq.created_date) : '',
+        creation: faq.creation ? formatDate(faq.creation) : '',
     })) || [];
 
     const filteredData = formattedFAQData.filter(faq => {
@@ -259,7 +261,7 @@ const FAQDashboard: React.FC = () => {
         
         
         // Parse the created_date for filtering
-        const createdDateString = faq.created_date;
+        const createdDateString = faq.creation;
         const isDateValid = typeof createdDateString === 'string' && createdDateString.trim() !== '';
         const faqDate = isDateValid ? parseDateString(createdDateString) : null;
     
@@ -304,7 +306,7 @@ const FAQDashboard: React.FC = () => {
                                     { header: 'FAQ ID', accessor: 'name' },
                                     { header: 'Question', accessor: 'question' },
                                     { header: 'Status', accessor: 'status' },
-                                    { header: 'Created Date', accessor: 'created_date' },
+                                    { header: 'Created Date', accessor: 'creation' },
                                 ]}
                                 data={filteredData || []}
                                 currentPage={currentPage}
