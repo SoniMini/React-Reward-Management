@@ -18,6 +18,7 @@ interface TableProps<T> {
     showView?: boolean;
     editHeader?: string;
     columnStyles?: { [key: string]: string }; 
+    getColumnColorClass?: (value: string, columnAccessor: boolean) => any;
     onEdit?: (item: T) => void; 
     onDelete?: (item: T) => void;
     onView?: (item: T) => void; 
@@ -48,6 +49,7 @@ const TableComponent = <T,>({
     showView = false,
     editHeader = "Edit",
     columnStyles = {},
+    getColumnColorClass = () => '',
     onEdit,
     onDelete,
     onView,
@@ -71,10 +73,10 @@ const TableComponent = <T,>({
                             </th>
                         ))}
                         {showProductQR && (
-                            <th className="text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">Product QR</th>
+                            <th className="text-start px-3 py-[6px] text-sm text-defaulttextcolor font-semibold border border-gray-300">Product QR</th>
                         )}
                         {(showEdit || showDelete || showView) && (
-                            <th className="text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">{editHeader}</th>
+                            <th className="text-start px-3 py-[6px] text-sm text-defaulttextcolor font-semibold border border-gray-300">{editHeader}</th>
                         )}
                     </tr>
                 </thead>
@@ -85,7 +87,7 @@ const TableComponent = <T,>({
                             {columns.map((column) => (
                                 <td
                                     key={column.accessor as string}
-                                    className={`p-3  text-defaultsize font-medium whitespace-nowrap border border-gray-300 ${columnStyles[column.header] || 'text-defaulttextcolor'}`}
+                                    className={`p-3  text-defaultsize font-medium whitespace-nowrap border border-gray-300 ${columnStyles[column.header] || 'text-defaulttextcolor'}  ${getColumnColorClass(item[column.accessor], column.accessor)}`}
                                 >
                                     {typeof item[column.accessor] === 'string' 
                                         ? stripHtmlTags(item[column.accessor] as string) 
@@ -94,13 +96,13 @@ const TableComponent = <T,>({
                             ))}
                             {showProductQR && (
                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300 ">
-                                    <Link aria-label="anchor" to="#" className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
+                                    <Link aria-label="anchor" to="#" className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-[6px] px-[10px] rounded-full mr-2">
                                         <i className={iconsConfig.editIcon || "ri-edit-line"}></i>
                                     </Link>
-                                    <Link aria-label="anchor" to="#" className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
+                                    <Link aria-label="anchor" to="#" className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-[6px]  px-[10px] rounded-full mr-2">
                                         <i className={iconsConfig.deleteIcon || "ri-delete-bin-line"}></i>
                                     </Link>
-                                    <Link aria-label="anchor" to="#" className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
+                                    <Link aria-label="anchor" to="#" className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-[6px]  px-[10px] rounded-full mr-2">
                                         <i className={iconsConfig.viewIcon || "ti ti-eye-check"}></i>
                                     </Link>
                                 </td>
@@ -108,17 +110,17 @@ const TableComponent = <T,>({
                             {(showEdit || showDelete || showView) && (
                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">
                                     {showEdit && (
-                                        <button onClick={() => onEdit?.(item)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
+                                        <button onClick={() => onEdit?.(item)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)]  py-[6px]  px-[10px] rounded-full mr-2">
                                             <i className={iconsConfig.editIcon || "ri-edit-line"}></i>
                                         </button>
                                     )}
                                     {showDelete && (
-                                        <button onClick={() => onDelete?.(item)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
+                                        <button onClick={() => onDelete?.(item)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)]  py-[6px]  px-[10px] rounded-full mr-2">
                                             <i className={iconsConfig.deleteIcon || "ri-delete-bin-line"}></i>
                                         </button>
                                     )}
                                     {showView && (
-                                        <button onClick={() => onView?.(item)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
+                                        <button onClick={() => onView?.(item)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)]  py-[6px]  px-[10px] rounded-full mr-2">
                                             <i className={iconsConfig.viewIcon || "ti ti-eye-check"}></i>
                                         </button>
                                     )}
