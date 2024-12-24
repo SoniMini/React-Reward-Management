@@ -36,68 +36,126 @@ def check_registered_user(mobile_number):
 
 
 # # check user registration login time
+# @frappe.whitelist(allow_guest=True)
+# def check_user_registration(mobile_number):
+#     try:
+#         # Check if the mobile number exists in Mobile Verification document
+#         existing_verification = frappe.get_all(
+#             'Mobile Verification',
+#             filters={'mobile_number': mobile_number},
+#             fields=["name", "mobile_number", "otp"],
+#             limit=1
+#         )
 
+#         # Check if the mobile number exists in User document
+#         user_info = frappe.get_value(
+#             "User",
+#             {"mobile_no": mobile_number},
+#             ["name", "full_name", "email", "role_profile_name"],
+#             as_dict=True
+#         )
 
+#         if existing_verification:
+#             # If the mobile number is found in the Mobile Verification document
+#             if user_info:
+#                 # If user exists, return user information
+#                 return {
+#                     "registered": True,
+#                     "message": "User is registered.",
+#                     # "full_name": user_info.get("full_name"),
+#                     # "email": user_info.get("email"),
+#                     # "username": user_info.get("name"),
+#                     "role_profile_name": user_info.get("role_profile_name")
+#                 }
+#             else:
+#                 # If only Mobile Verification exists and not User
+#                 return {
+#                     "registered": False,
+#                     "message": "Mobile number is verified, but user is not registered. Please complete registration."
+#                 }
+        
+#         elif user_info:
+#             # If only User exists but not Mobile Verification
+#             return {
+#                 "registered": True,
+#                 "message": "User is registered, but mobile number is not verified. Please verify your mobile number."
+#             }
+
+#         else:
+#             # If neither Mobile Verification nor User exists for the mobile number
+#             return {
+#                 "registered": False,
+#                 "message": "Mobile number not verified or registered. Please verify and register."
+#             }
+
+#     except Exception as e:
+#         # Log any exceptions that occur
+#         frappe.log_error(f"Error in check_user_registration: {str(e)}")
+#         return {
+#             "registered": False,
+#             "message": str(e)  # This will return the actual error message in case of exception
+#         }
 
 @frappe.whitelist(allow_guest=True)
 def check_user_registration(mobile_number):
     try:
-        # Check if the mobile number exists in Mobile Verification document
-        existing_verification = frappe.get_all(
-            'Mobile Verification',
-            filters={'mobile_number': mobile_number},
-            fields=["name", "mobile_number", "otp"],
-            limit=1
-        )
-
-        # Check if the mobile number exists in User document
+        # Check if the mobile number exists in the User document (matching the 'mobile_no' field)
         user_info = frappe.get_value(
-            "User",
-            {"mobile_no": mobile_number},
-            ["name", "full_name", "email", "role_profile_name"],
-            as_dict=True
+            "User",  
+            {"mobile_no": mobile_number},  
+            ["name", "email","role_profile_name"],
+            as_dict=True  
         )
 
-        if existing_verification:
-            # If the mobile number is found in the Mobile Verification document
-            if user_info:
-                # If user exists, return user information
-                return {
-                    "registered": True,
-                    "message": "User is registered.",
-                    # "full_name": user_info.get("full_name"),
-                    # "email": user_info.get("email"),
-                    # "username": user_info.get("name"),
-                    "role_profile_name": user_info.get("role_profile_name")
-                }
-            else:
-                # If only Mobile Verification exists and not User
-                return {
-                    "registered": False,
-                    "message": "Mobile number is verified, but user is not registered. Please complete registration."
-                }
-        
-        elif user_info:
-            # If only User exists but not Mobile Verification
+        if user_info:
+            # If user is found, check for the matching carpenter with the same mobile number
+            carpenter_info = frappe.get_value(
+                "Carpenter",  
+                {"mobile_number": mobile_number},
+                ["name", "full_name","full_name", "email", "enabled"],
+                as_dict=True
+            )
+
+            if carpenter_info:
+                # If carpenter is found, check if the account is enabled
+                if carpenter_info["enabled"]:
+                    # Carpenter exists and is enabled
+                    return {
+                        "registered": True,
+                        "message": "Carpenter is already registered. Login Successfull.",
+                        "full_name": user_info.get("full_name"),
+                        "email": user_info.get("email"),
+                        "username": user_info.get("name"),
+                        "role_profile_name": user_info.get("role_profile_name"),
+                    }
+                else:
+                    # Carpenter exists but the account is disabled
+                    return {
+                        "registered": False,
+                        "message": "Your account is disabled or deactivated. Please contact the admin."
+                    }
+            
+            # If no carpenter is found, but user exists
             return {
                 "registered": True,
-                "message": "User is registered, but mobile number is not verified. Please verify your mobile number."
+                "message": "User is already registered. Please login to your account."
             }
-
+        
         else:
-            # If neither Mobile Verification nor User exists for the mobile number
+            # If no user is found with the provided mobile number
             return {
                 "registered": False,
-                "message": "Mobile number not verified or registered. Please verify and register."
+                "message": "Mobile number not registered. Please register to continue."
             }
 
     except Exception as e:
         # Log any exceptions that occur
-        frappe.log_error(f"Error in check_user_registration: {str(e)}")
+        frappe.log_error(f"Error in check_registered_user: {str(e)}")
         return {
             "registered": False,
-            "message": str(e)  # This will return the actual error message in case of exception
+            "message": f"An error occurred: {str(e)}"  
         }
+
 
     
 # @frappe.whitelist(allow_guest=True)

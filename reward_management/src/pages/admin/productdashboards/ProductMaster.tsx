@@ -10,6 +10,8 @@ import TableBoxComponent from '@/components/ui/tables/tableboxheader';
 import axios from 'axios';
 import { PulseLoader } from 'react-spinners';
 // import { BASE_URL} from "../../../utils/constants";
+import DangerAlert from '../../../components/ui/alerts/DangerAlert';
+
 
 interface Product {
     name: string,
@@ -26,11 +28,18 @@ const ProductMaster: React.FC = () => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); 
     const [loading, setLoading] = useState(false);
-    
     const [itemsPerPage] = useState(5);
-    const { data: productsData } = useFrappeGetDocList<Product>('Product', {
+    const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertTitle, setAlertTitle] = useState('');
+    const { data: productsData, mutate: mutateProducts } = useFrappeGetDocList<Product>('Product', {
         fields: ['name', 'product_name', 'category', 'reward_points'],
-        limit: 0
+        // limit: 0
+        orderBy: {
+            field: 'creation',
+            order: 'desc',
+        }
     });
      // Fetch Product QR Data
      const { data: productQRData } = useFrappeGetDocList<Product>('Product QR', {
@@ -115,8 +124,14 @@ const ProductMaster: React.FC = () => {
                     product_name: selectedProduct.name,
                     quantity: quantity
                 });
+                // setShowSuccessAlert(true);
+                
+                console.log('QR Codes created successfully:', response.data);
+                setAlertTitle('Success');
+                setAlertMessage('QR Codes created successfully!');
                 setShowSuccessAlert(true);
                 console.log('QR Codes created successfully:', response.data);
+
                 // Optionally, close the modal or perform other actions here
 
                 closeModal();
@@ -145,6 +160,46 @@ const ProductMaster: React.FC = () => {
         navigate('/add-product');
         // Implement add product logic here
     };
+
+
+    const handleDeleteProduct = (item: Product) => {
+        setProductToDelete(item);
+        setIsConfirmDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!productToDelete) return;
+
+        try {
+            const response = await fetch(`/api/resource/Product/${productToDelete.name}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) {
+                const responseData = await response.json();
+                throw new Error(`Error: ${responseData.message || response.statusText}`);
+            }
+
+            setAlertTitle('Success');
+            setAlertMessage('Product deleted successfully!');
+            setShowSuccessAlert(true);
+            setIsConfirmDeleteModalOpen(false);
+            mutateProducts();
+        } catch (error) {
+            console.log(error),
+                console.error('Error deleting product:', error.message || error);
+            alert('Failed to delete Product.');
+        }
+    };
+
+    const cancelDelete = () => {
+        setIsConfirmDeleteModalOpen(false);
+        setProductToDelete(null);
+    };
+
 
      
 
@@ -197,9 +252,11 @@ const ProductMaster: React.FC = () => {
                                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">{product.reward_points}</td>
                                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">{product.quantity}</td>
                                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">
+                                                    {/* Qr Code Create Icon */}
                                                     <Link aria-label="anchor" to="#" onClick={() => openModal(product)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
                                                         <i className="ri-qr-code-line"></i>
                                                     </Link>
+                                                    {/* Download Qr Codes--- */}
                                                     <Link
                                                         aria-label="Download QR Code"
                                                         to={`/download-qr-code?product=${encodeURIComponent(product.name)}`}
@@ -208,11 +265,32 @@ const ProductMaster: React.FC = () => {
                                                         <i className="ri-download-2-line"></i>
                                                     </Link>
                                                 </td>
+                                                {/* Product Edit Icon and Logic---- */}
                                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">
                                                     <Link aria-label="anchor" to={`/edit-product?product=${encodeURIComponent(product.name)}`} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
                                                         <i className="ri-edit-2-fill"></i>
                                                     </Link>
+
+                                                    {/* Delete Icons */}
+                                                    <Link
+                                                        aria-label="anchor"
+                                                        to="#"
+                                                        className={`link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2 ${product.quantity === 0 ? '' : 'opacity-50 cursor-not-allowed'}`}
+                                                        onClick={(e) => {
+                                                            if (product.quantity <= 0) {
+                                                                e.preventDefault();
+                                                                handleDeleteProduct(product);
+                                                            }
+                                                            // else {
+                                                            //     // Implement delete functionality here
+                                                            // }
+                                                        }}
+                                                    >
+                                                        <i className="ri-delete-bin-line"></i>
+                                                    </Link>
                                                 </td>
+
+                                               
                                             </tr>
                                         ))}
                                     </tbody>
@@ -345,17 +423,37 @@ const ProductMaster: React.FC = () => {
             )}
 
             {/* Success Alert */}
-            {showSuccessAlert && <SuccessAlert 
+            {showSuccessAlert && <SuccessAlert
+                title={alertTitle}
                 showButton={false}
                 showCancleButton={false}
                 showCollectButton={false}
                 showAnotherButton={false}
                 showMessagesecond={false}
-                message="QR Codes created successfully!" onClose={function (): void {
+                message={alertMessage}
+                onClose={function (): void {
                     throw new Error('Function not implemented.');
-                } } onCancel={function (): void {
+                }}
+                onCancel={function (): void {
                     throw new Error('Function not implemented.');
-                } } />}
+                }}
+            />}
+
+
+
+                {/* Delete Alert Model Open--- */}
+
+
+            {isConfirmDeleteModalOpen && (
+                <DangerAlert
+                    type="danger"
+                    message={`Are you sure you want to delete this Product?`}
+                    onDismiss={cancelDelete}
+                    onConfirm={confirmDelete}
+                    cancelText="Cancel"
+                    confirmText="Continue"
+                />
+            )}
         </Fragment>
     );
 };
