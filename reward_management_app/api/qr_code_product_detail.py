@@ -118,6 +118,3 @@ def update_scanned_status(product_table_name, product_qr_id, carpenter_id):
         # Handle any exceptions and log errors
         frappe.log_error(frappe.get_traceback(), f"Error in update_scanned_status: {e}")
         return {"error": f"Server error: {e}"}
-
-
-
