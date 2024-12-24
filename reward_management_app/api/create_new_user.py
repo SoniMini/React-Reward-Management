@@ -103,7 +103,7 @@ def check_user_registration(mobile_number):
         user_info = frappe.get_value(
             "User",  
             {"mobile_no": mobile_number},  
-            ["name", "email"],
+            ["name", "email","role_profile_name"],
             as_dict=True  
         )
 
@@ -112,7 +112,7 @@ def check_user_registration(mobile_number):
             carpenter_info = frappe.get_value(
                 "Carpenter",  
                 {"mobile_number": mobile_number},
-                ["name", "full_name", "email", "enabled"],
+                ["name", "full_name","full_name", "email", "enabled"],
                 as_dict=True
             )
 
@@ -122,7 +122,11 @@ def check_user_registration(mobile_number):
                     # Carpenter exists and is enabled
                     return {
                         "registered": True,
-                        "message": "Carpenter is already registered. Please login to your account."
+                        "message": "Carpenter is already registered. Login Successfull.",
+                        "full_name": user_info.get("full_name"),
+                        "email": user_info.get("email"),
+                        "username": user_info.get("name"),
+                        "role_profile_name": user_info.get("role_profile_name"),
                     }
                 else:
                     # Carpenter exists but the account is disabled

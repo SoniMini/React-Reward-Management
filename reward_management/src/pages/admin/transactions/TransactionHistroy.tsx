@@ -26,6 +26,8 @@ const TransactionHistory: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
+    // const [date, setDate] = useState('');
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -110,6 +112,14 @@ const TransactionHistory: React.FC = () => {
         return new Date(year, month, day);
     };
 
+    // const formatDateToISO = (dateString: string) => {
+    //     const date = new Date(dateString);
+    //     const year = date.getFullYear();
+    //     const month = (`0${date.getMonth() + 1}`).slice(-2);
+    //     const day = (`0${date.getDate()}`).slice(-2);
+    //     return `${year}-${month}-${day}`;
+    // };
+
     const filteredData = formattedTransactionData.filter(transaction => {
         const query = searchQuery.toLowerCase();
 
@@ -141,7 +151,7 @@ const TransactionHistory: React.FC = () => {
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                // window.location.reload();
+                window.location.reload();
             }, 3000);
             return () => clearTimeout(timer);
         }
@@ -174,18 +184,25 @@ const TransactionHistory: React.FC = () => {
             return;
         }
 
+        // add current date and time ----
+        const now = new Date();
+        const transferDate = now.toISOString().split('T')[0];
+        const transferTime = now.toTimeString().split(' ')[0];
+
         const data = {
             transaction_id: transectionAccount,
             amount: transferAmount,
+            transfer_date: transferDate,
+            transfer_time: transferTime,
         };
-    
+
         try {
             const response = await axios.put(`/api/resource/Bank Balance/${selectedTransaction.name}`, data, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
             });
-        
+
             if (response.status === 200) {
                 setShowSuccessAlert(true);
                 setAlertMessage('Transaction updated successfully');
@@ -199,7 +216,7 @@ const TransactionHistory: React.FC = () => {
             setAlertTitle('Error');
             setShowSuccessAlert(true);
         }
-       
+
     };
 
     return (
@@ -250,7 +267,6 @@ const TransactionHistory: React.FC = () => {
                                 onEdit={handleEdit}
                                 editHeader="Edit"
                                 showDelete={false}
-                                editHeader='Action'
                                 columnStyles={{
                                     'Transaction ID': 'text-[var(--primaries)] font-semibold',
                                 }}
@@ -338,27 +354,23 @@ const TransactionHistory: React.FC = () => {
                                     <label htmlFor="transectionAccount" className="form-label text-sm text-defaulttextcolor font-semibold">Transection Account</label>
                                     <input
                                         className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
-                                        placeholder="Enter your question here"
+                                        placeholder="Enter Transaction Account"
                                         id="transectionAccount"
-                                        value={transectionAccount.transection_id || ''}  
-                                        onChange={(e) => setTransectionAccount(prev => ({
-                                            ...prev,
-                                            transection_id: e.target.value 
-                                        }))}
+                                        value={transectionAccount || ''}
+                                        onChange={(e) => setTransectionAccount(e.target.value)}
+
                                     />
                                 </div>
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label htmlFor="transferAmount" className="form-label text-sm text-defaulttextcolor font-semibold">Transfer Amount</label>
                                     <input
                                         className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
-                                        placeholder="Enter your question here"
+                                        placeholder="Enter Amount"
                                         id="transferAmount"
-                                        value={transferAmount.amount || ''}
+                                        value={transferAmount || ''}
                                         // onChange={(e) => setTransferAmount(e.target.value)}
-                                        onChange={(e) => setTransferAmount(prev => ({
-                                            ...prev,
-                                            amount: e.target.value  
-                                        }))}
+                                        onChange={(e) => setTransferAmount(e.target.value)}
+
                                     />
                                 </div>
 
@@ -367,7 +379,7 @@ const TransactionHistory: React.FC = () => {
                                     <button
                                         type="button"
                                         className="ti-btn ti-btn-primary bg-primary me-2"
-                                        onClick={handleSubmit}
+                                        onClick={() => handleSubmit(selectedTransaction)}
                                     >
                                         Save
                                     </button>

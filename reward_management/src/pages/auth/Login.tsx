@@ -416,11 +416,10 @@ const Login = () => {
         const checkResponse = await axios.get(`/api/method/reward_management_app.api.create_new_user.check_user_registration`, {
             params: { mobile_number: mobilenumber },
         });
-        if(checkResponse){
-            console.log("Login response for account user",checkResponse)
-        }
+       
 
-        localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
+         localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
+
 
         if (checkResponse.data.message && checkResponse.data.message.registered ===true) {
             // Call the OTP generation API
@@ -461,6 +460,62 @@ const Login = () => {
         setLoginError('An error occurred while processing your request.');
     }
 };
+
+// const handleloginGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
+//     e.preventDefault();
+
+//     if (mobilenumber.length !== 10 || !/^\d+$/.test(mobilenumber)) {
+//         alert("Mobile number must be exactly 10 digits.");
+//         return;
+//     }
+
+//     try {
+//         // Check if the user is registered
+//         const checkResponse = await axios.get(`/api/method/reward_management_app.api.create_new_user.check_user_registration`, {
+//             params: { mobile_number: mobilenumber },
+//         });
+
+//         localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
+
+//         if (checkResponse.data.message && checkResponse.data.message.registered) {
+//             // Call the OTP generation API
+//             const otpResponse = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
+//                 mobile_number: mobilenumber
+//             }, {
+//                 headers: { 'Content-Type': 'application/json' }
+//             });
+
+//             if (otpResponse.data.message.status === "success") {
+//                 const generatedOtp = otpResponse.data.message.otp;
+//                 setAlertTitle('Success');
+//                 setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
+//                 setShowSuccessAlert(true);
+//                 setIsloginOtpVisible(true);
+//                 // Start the timer
+//                 startTimer();
+
+//                 axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
+//                     mobile_number: mobilenumber,
+//                     otp: generatedOtp
+//                 }, {
+//                     headers: {
+//                         'Content-Type': 'application/json',
+                        
+//                     }
+//                 });
+                
+//                 console.log("SMS API called successfully");
+//             } else {
+//                 setLoginError('Failed to send OTP. Please try again.');
+//             }
+//         } else {
+//             setLoginError('User not registered. Please register first.');
+//         }
+//     } catch (error) {
+//         console.error('Error handling login OTP:', error);
+//         setLoginError('An error occurred while processing your request.');
+//     }
+// };
 
     const handlelogincarpenter: any = async (e: React.FocusEvent) => {
         e.preventDefault();

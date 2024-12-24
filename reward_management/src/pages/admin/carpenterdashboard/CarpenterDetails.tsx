@@ -227,14 +227,19 @@ const CarpenterDetails: React.FC = () => {
 
                                 }}
                                 getColumnColorClass={(value, accessor) => {
-                                    if (accessor === 1 && value === 'Active') {
-                                        return 'text-green-500'; 
+                                    // console.log(`Value: ${value}, Accessor: ${accessor}`); 
+                                    if (accessor === 'enabled') {
+                                       
+                                        if (value === 'Active') {
+                                            return 'text-green';  
+                                        }
+                                        if (value && value.trim().toLowerCase() === 'deactive') {
+                                            return 'text-red';  
+                                        }
                                     }
-                                    if (accessor === 0 && value === 'Deactive') {
-                                        return 'text-red-500'; 
-                                    }
-                                    return ''; // Default
+                                    return '';  
                                 }}
+                                
                             />
                         </div>
                     </div>
