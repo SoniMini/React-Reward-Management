@@ -10,6 +10,8 @@ import axios from 'axios';
 // import { BASE_URL } from "../../../utils/constants";
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import { PulseLoader } from 'react-spinners';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css'; 
 
 
 interface CarpenterRegistrations {
@@ -53,6 +55,15 @@ const CarpenterRegistration: React.FC = () => {
             field: 'creation',
             order: 'desc',
         }
+    });
+
+
+    const notyf = new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        },
+        duration: 3000, 
     });
 
     useEffect(() => {
@@ -183,13 +194,15 @@ const CarpenterRegistration: React.FC = () => {
                 },
             });
     
-            if (response.data.message.status === "success") {
+            if (response.data.success === true && response.data.status === "success") {
                 console.log("Registration request status updated successfully and create a new user");
                  // Set the success alert and trigger page reload
                  setShowSuccessAlert(true);
             } else {
                 console.error("Failed to update registration request status:", response.data.message);
-                alert('Failed to update registration request status.');
+                // alert(`Error: ${response.data.message.message || "Unknown error"}`);
+               notyf.error(`Error: ${response.data.message.message || "Unknown error"}`);
+
             }
         } catch (error:any) {
             console.error("Error details:", {
@@ -197,7 +210,9 @@ const CarpenterRegistration: React.FC = () => {
                 response: error.response?.data,
                 stack: error.stack,
             });
-            alert('An error occurred while updating the registration request status.');
+            // alert(`Error: ${error.response?.data?.message || error.message}`);
+            notyf.error(`Error: ${error.response?.data?.message || error.message}`);
+
         }
     };
 
