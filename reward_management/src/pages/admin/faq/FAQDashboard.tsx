@@ -45,6 +45,10 @@ const FAQDashboard: React.FC = () => {
     const { data } = useFrappeGetDocList<FAQ>('FAQ', {
         fields: ['name', 'question', 'status', 'created_date', 'answer','creation'],
         limit: 0,
+        orderBy: {
+            field: 'creation',
+            order: 'desc',
+        },
         page: currentPage,
         filters: [['status', '=', 'Active']],
         pageSize: itemsPerPage

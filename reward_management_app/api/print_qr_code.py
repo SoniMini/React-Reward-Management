@@ -10,10 +10,11 @@ from frappe.utils import now, format_datetime
 
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def print_qr_code():
     # Fetch fields from the Product QR document
-    qr_docs = frappe.get_all("Product QR", fields=["name", "product_name", "quantity"])
+    qr_docs = frappe.get_all("Product QR", fields=["name", "product_name", "quantity"],order_by="creation desc"
+)
 
     # Fetch child table data linked with qr_table field for each Product QR document
     for qr_doc in qr_docs:
@@ -29,8 +30,8 @@ def print_qr_code():
 
     return qr_docs
 
-
-@frappe.whitelist(allow_guest=True)
+# create qr code for products-----------
+@frappe.whitelist()
 def create_product_qr(product_name, quantity):
     try:
         # Check if a Product QR document already exists for the given product_name
@@ -64,8 +65,10 @@ def create_product_qr(product_name, quantity):
         current_time = format_datetime(current_datetime, "HH:mm:ss")
         
         # Fetch reward_points from Product master
-        product_details = frappe.get_doc("Product", product_name)  # Assuming product_name is the unique identifier
-        reward_points = product_details.reward_points if product_details else 0  # Default to 0 if not found
+        # Assuming product_name is the unique identifier
+        product_details = frappe.get_doc("Product", product_name) 
+        # Default to 0 if not found
+        reward_points = product_details.reward_points if product_details else 0  
         
 
         # Add new rows starting from index 4
@@ -92,6 +95,9 @@ def create_product_qr(product_name, quantity):
             child_row.product_table_name = product_name
             child_row.generated_date = current_date
             child_row.generated_time = current_time
+            
+            # Set the points value from the Product master
+            child_row.points = reward_points 
 
             # Generate QR code using the API with product_name and product_qr_id concatenated
             # qr_content = f"{product_qr_doc.name}_{product_name}_{formatted_product_qr_id}"
@@ -150,7 +156,7 @@ def create_product_qr(product_name, quantity):
 
         
 # show qr-code-images------- 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def print_qr_code_images(product_name):
     try:
         qr_images = []
@@ -176,7 +182,7 @@ def print_qr_code_images(product_name):
 
     except Exception as e:
         frappe.log_error(f"Error fetching QR code images: {e}")
-        return []
+        return {"success":False,"message":"Error for generating qr code"}
     
 
 
@@ -206,7 +212,7 @@ def print_qr_code_images(product_name):
 
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_product_by_name(productName):
     if not productName:
         return {"message": "Product name is required."}
@@ -215,7 +221,7 @@ def get_product_by_name(productName):
     product_qr_docs = frappe.get_all("Product QR", filters={"product_name": productName}, fields=["name", "product_name"])
 
     if not product_qr_docs:
-        return {"message": "No products found with the given name."}
+        return {"success":False,"message": "No products found with the given name."}
 
     # Initialize dictionaries to store counts and data by date
     counts_by_date = {}
@@ -268,7 +274,7 @@ def get_product_by_name(productName):
             "qr_code_images": qr_data_list
         })
 
-    return {"message": formatted_data}
+    return {"success":True,"message": formatted_data}
 
 
 

@@ -37,7 +37,7 @@ from datetime import datetime
 #         frappe.log_error(frappe.get_traceback(), _("Error in update_registration_request_status"))
 #         frappe.throw(_("Failed to update registration request status: {0}").format(str(e)))
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_registration_request_status(registration_id, status):
     try:
         # Fetch the registration document
@@ -180,3 +180,34 @@ def update_registration_request_status(registration_id, status):
 #         frappe.log_error(frappe.get_traceback(), _("Error in update_registration_request_status"))
 #         # frappe.throw(_("Failed to update registration request status: {0}").format(str(e)))
 #         return {"success": False,"status": "failed", "message": _("Failed to update registration request status: {0}").format(str(e))}
+
+
+# cancel request-----
+@frappe.whitelist()
+def cancel_customer_registration(registration_id, status):
+    try:
+        # Fetch the registration document
+        registration = frappe.get_doc("Carpenter Registration", registration_id)
+
+        if status == "Cancel":
+            # Update the status or perform any other necessary logic
+            registration.status = "Cancel"  # Assuming 'status' field exists
+            registration.save()
+
+            return {
+                "status": "success",
+                "message": "Registration request status cancelled successfully."
+            }
+        
+        # If the status is not "Cancel", return appropriate message
+        return {
+            "status": "fail",
+            "message": "Invalid status provided."
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Error in cancel_customer_registration")
+        return {
+            "status": "fail",
+            "message": f"Failed to update registration request status: {str(e)}"
+        }

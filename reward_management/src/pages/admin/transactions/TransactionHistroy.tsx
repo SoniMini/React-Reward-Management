@@ -42,6 +42,10 @@ const TransactionHistory: React.FC = () => {
     const { data: transactionData, error } = useFrappeGetDocList<Transaction>('Bank Balance', {
         fields: ['name', 'redeem_request_id', 'carpainter_id', 'carpainter_name', 'mobile_number', 'transaction_id', 'transfer_date', 'amount', 'transfer_time'],
         limit: 0,
+        orderBy: {
+            field: 'transfer_date',
+            order: 'desc',
+        },
     });
 
     if (error) {

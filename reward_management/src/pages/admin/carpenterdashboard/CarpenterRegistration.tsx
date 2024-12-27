@@ -3,7 +3,7 @@ import '../../../assets/css/pages/admindashboard.css';
 import Pageheader from '@/components/common/pageheader/pageheader';
 import TableComponent from '@/components/ui/tables/tablecompnent'; // Ensure the import path is correct
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
-import React, { Fragment, useState ,useEffect} from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import EditModalComponent from '@/components/ui/models/RewardRequestEdit';
 import axios from 'axios';
@@ -11,7 +11,8 @@ import axios from 'axios';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import { PulseLoader } from 'react-spinners';
 import { Notyf } from 'notyf';
-import 'notyf/notyf.min.css'; 
+import 'notyf/notyf.min.css';
+
 
 
 interface CarpenterRegistrations {
@@ -32,21 +33,23 @@ const CarpenterRegistration: React.FC = () => {
     const [selectedCarpenter, setSelectedCarpenter] = useState<CarpenterRegistrations | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertTitle, setAlertTitle] = useState('');
     // const { data: carpenterregisterData } = useFrappeGetDocList<CarpenterRegistrations>('Carpenter Registration', {
     //     fields: ['name', 'carpainter_id', 'carpainter_name', 'mobile_number', 'city', 'registration_date', 'status', 'approved_date'],
     // });
     const { data: carpenterregisterData, isLoading, error } = useFrappeGetDocList<CarpenterRegistrations>('Carpenter Registration', {
         fields: [
-            'name', 
-            'carpainter_id', 
-            'carpainter_name', 
-            'mobile_number', 
-            'city', 
-            'registration_date', 
-            'status', 
+            'name',
+            'carpainter_id',
+            'carpainter_name',
+            'mobile_number',
+            'city',
+            'registration_date',
+            'status',
             'approved_date'
         ],
         // limit_start: pageIndex * 10,
@@ -63,7 +66,7 @@ const CarpenterRegistration: React.FC = () => {
             x: 'right',
             y: 'top',
         },
-        duration: 3000, 
+        duration: 3000,
     });
 
     useEffect(() => {
@@ -71,7 +74,7 @@ const CarpenterRegistration: React.FC = () => {
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                window.location.reload(); 
+                window.location.reload();
             }, 3000);
             return () => clearTimeout(timer);
         }
@@ -96,7 +99,7 @@ const CarpenterRegistration: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value); 
+        setSearchQuery(value);
         setCurrentPage(1);
         console.log("Search value:", value);
     };
@@ -112,55 +115,56 @@ const CarpenterRegistration: React.FC = () => {
     };
 
     const handleEdit = (carpenter: CarpenterRegistrations) => {
-        console.log("Selected carpenter for editing:", carpenter); 
+        console.log("Selected carpenter for editing:", carpenter);
         setSelectedCarpenter(carpenter);
         setIsEditModalOpen(true);
     };
 
     const handleCloseModal = () => {
-        console.log("Closing modal. Selected carpenter:", selectedCarpenter); 
+        console.log("Closing modal. Selected carpenter:", selectedCarpenter);
         setIsEditModalOpen(false);
         setSelectedCarpenter(null);
     };
 
     const handleSubmit = async (updatedCarpenter: CarpenterRegistrations) => {
         console.log("Submitting update for:", updatedCarpenter);
-    
+
         if (!updatedCarpenter || !updatedCarpenter.name) {
             console.error("No carpenter name found for update.");
             alert('Failed to update Registration Request: No carpenter name found.');
             return;
         }
-        setLoading(true); 
-    
+        setLoading(true);
+
         const now = new Date();
         // Format: YYYY-MM-DD
-        const currentDate = now.toISOString().split('T')[0]; 
+        const currentDate = now.toISOString().split('T')[0];
         // Format: HH:MM:SS
-        const currentTime = now.toLocaleTimeString('en-US', { hour12: false });  
+        const currentTime = now.toLocaleTimeString('en-US', { hour12: false });
         console.log("current date", currentDate);
         console.log("current Time", currentTime);
-    
+
         const data = {
             approved_date: currentDate,
             approved_time: currentTime,
             status: updatedCarpenter.status
         };
-    
+
         try {
             const response = await axios.put(`/api/resource/Carpenter%20Registration/${selectedCarpenter.name}`, data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
-    
+
             if (response.status === 200) {
                 console.log("Registration Request updated successfully");
-    
+
                 if (updatedCarpenter.status?.toLowerCase() === 'approved') {
                     await updateRegistrationStatus(updatedCarpenter.name, updatedCarpenter.status);
+                } else if (updatedCarpenter.status?.toLowerCase() === 'cancel') {
+                    await cancelRegistrationStatus(updatedCarpenter.name, updatedCarpenter.status);
                 }
-    
                 // alert('Registration Request updated successfully!');
                 handleCloseModal();
             } else {
@@ -176,11 +180,11 @@ const CarpenterRegistration: React.FC = () => {
             alert('An error occurred while updating the Registration Request.');
         }
         finally {
-            setLoading(false); 
+            setLoading(false);
         }
     };
-    
-    
+
+
     // Function to call the API for creating a new user
     const updateRegistrationStatus = async (registrationId: string, status: string) => {
         try {
@@ -190,21 +194,24 @@ const CarpenterRegistration: React.FC = () => {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
-                    
+
                 },
             });
-    
-            if (response.data.success === true && response.data.status === "success") {
+            console.log("registration aprroved",response)
+
+            if (response.data.message.status === "success") {
                 console.log("Registration request status updated successfully and create a new user");
-                 // Set the success alert and trigger page reload
-                 setShowSuccessAlert(true);
+                // Set the success alert and trigger page reload
+                setShowSuccessAlert(true);
+                setAlertMessage('Registration Request Approved Successsfully!!!');
+                setAlertTitle('Success');
             } else {
                 console.error("Failed to update registration request status:", response.data.message);
                 // alert(`Error: ${response.data.message.message || "Unknown error"}`);
-               notyf.error(`Error: ${response.data.message.message || "Unknown error"}`);
+                notyf.error(`Error: ${response.data.message.message || "Unknown error"}`);
 
             }
-        } catch (error:any) {
+        } catch (error: any) {
             console.error("Error details:", {
                 message: error.message,
                 response: error.response?.data,
@@ -216,13 +223,54 @@ const CarpenterRegistration: React.FC = () => {
         }
     };
 
+    // Function to call the API for delete  a  user
+    const cancelRegistrationStatus = async (registrationId: string, status: string) => {
+        try {
+            const response = await axios.post(`/api/method/reward_management_app.api.carpenter_registration.cancel_customer_registration`, {
+                registration_id: registrationId,
+                status: status
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log("delete response", response)
+
+            if (response.data.message.status === "success") {
+                console.log("Registration request status updated successfully and cancel request successfully.");
+                // Set the success alert and trigger page reload
+                setShowSuccessAlert(true);
+                setAlertMessage('Registration Request Cancelled Successsfully!!!');
+                setAlertTitle('Success');
+            } else {
+                console.error("Failed to update registration request status and delete user/customer: ", response.data.message);
+                alert('Failed to update registration request status and delete user/customer.');
+            }
+        } catch (error) {
+            console.error("Error details:", {
+                message: error.message,
+                response: error.response?.data,
+                stack: error.stack,
+            });
+            alert('An error occurred while updating the registration request status.');
+        }
+    };
+
+
+
+
+
+
+
+
+
     // const handleStatusUpdate = async (carpenter: CarpenterRegistrations) => {
     //     if (carpenter.status?.toLowerCase() === 'approved') {
     //         await updateRegistrationStatus(carpenter.name, carpenter.status);
     //     }
     // };  
-    
-    
+
+
 
     const formatDate = (dateString: string | undefined) => {
         if (!dateString) return '';
@@ -244,7 +292,7 @@ const CarpenterRegistration: React.FC = () => {
             return null;
         }
         const day = parseInt(parts[0], 10);
-        const month = parseInt(parts[1], 10) - 1; 
+        const month = parseInt(parts[1], 10) - 1;
         const year = parseInt(parts[2], 10);
         return new Date(year, month, day);
     };
@@ -256,33 +304,33 @@ const CarpenterRegistration: React.FC = () => {
         approved_date: formatDate(carpenterregistration.approved_date),
     })) || [];
 
-    
 
-     // Adjusted filtering logic to include all columns
-     const filteredData = formattedCarpenterRegistrationData.filter(transaction => {
+
+    // Adjusted filtering logic to include all columns
+    const filteredData = formattedCarpenterRegistrationData.filter(transaction => {
         const query = searchQuery.toLowerCase();
-    
+
         // Parse registration_date for filtering
         const registrationDateString = transaction.registration_date;
         const registrationDate = parseDateString(registrationDateString);
-        
+
         // Parse approved_date for filtering
         const approvedDateString = transaction.approved_date;
         const approvedDate = parseDateString(approvedDateString);
-        
+
         // Check if the registration_date is within the selected date range
-        const isRegistrationDateInRange = 
+        const isRegistrationDateInRange =
             (!fromDate || (registrationDate && registrationDate >= fromDate)) &&
             (!toDate || (registrationDate && registrationDate <= toDate));
-    
+
         // Check if the approved_date is within the selected date range
-        const isApprovedDateInRange = 
+        const isApprovedDateInRange =
             (!fromDate || (approvedDate && approvedDate >= fromDate)) &&
             (!toDate || (approvedDate && approvedDate <= toDate));
-    
+
         // Check if either date falls within the selected date range
         const isWithinDateRange = isRegistrationDateInRange || isApprovedDateInRange;
-    
+
         return (
             isWithinDateRange &&
             (
@@ -301,26 +349,27 @@ const CarpenterRegistration: React.FC = () => {
         handleCloseModal();
     };
 
+
     return (
         <Fragment>
             {/* <Pageheader currentpage="Carpenter Registration" activepage="Carpenter Dashboard" mainpage="Carpenter Registration" /> */}
-            <Pageheader 
-                currentpage={"Carpenter Registration"} 
-                activepage={"/carpenter-registration"} 
-                
-                activepagename='Carpenter Registration' 
-               
+            <Pageheader
+                currentpage={"Carpenter Registration"}
+                activepage={"/carpenter-registration"}
+
+                activepagename='Carpenter Registration'
+
             />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
                     <div className="box">
-                        <TableBoxComponent 
-                            title="Registration Requests" 
-                            onSearch={handleSearch} 
-                            onAddButtonClick={handleAddProductClick} 
-                            buttonText="Add New Product" 
-                            showButton={false} 
+                        <TableBoxComponent
+                            title="Registration Requests"
+                            onSearch={handleSearch}
+                            onAddButtonClick={handleAddProductClick}
+                            buttonText="Add New Product"
+                            showButton={false}
                             showFromDate={true}
                             showToDate={true}
                             onDateFilter={handleDateFilter}
@@ -348,6 +397,9 @@ const CarpenterRegistration: React.FC = () => {
                                 showEdit={true}
                                 onEdit={handleEdit}
                                 editHeader="Update"
+                                iconsDisabled={{
+                                    edit: (item) => item.status === 'Approved' || item.status === 'Cancel', // Disable edit if status is inactive
+                                }}
                                 columnStyles={{
                                     'Registration ID': 'text-[var(--primaries)] font-semibold', // Example style for QR ID column
                                 }}
@@ -373,24 +425,26 @@ const CarpenterRegistration: React.FC = () => {
                     setAnswer={(value) => setSelectedCarpenter(prev => prev ? { ...prev, carpainter_name: value } : null)}
                     setStatus={(value) => setSelectedCarpenter(prev => prev ? { ...prev, status: value } : null)} transactionIdLabel={''} amountLabel={''} transactionId={''} amount={''} setTransactionId={function (value: string): void {
                         throw new Error('Function not implemented.');
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    } } setAmount={function (_value: string): void {
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    }} setAmount={function (_value: string): void {
                         throw new Error('Function not implemented.');
-                    } } showTransactionId={false} showAmount={false}                />
+                    }} showTransactionId={false} showAmount={false} />
             )}
-               {showSuccessAlert && (
+            {showSuccessAlert && (
                 <SuccessAlert
+                    title={alertTitle}
+                    message={alertMessage}
                     showButton={false}
                     showCancleButton={false}
                     showCollectButton={false}
                     showAnotherButton={false}
                     showMessagesecond={false}
-                    message="Customer Registration Approved successfully!"
+                    // message="Customer Registration Approved successfully!"
                     onClose={function (): void {
                         throw new Error('Function not implemented.');
-                    } } onCancel={function (): void {
+                    }} onCancel={function (): void {
                         throw new Error('Function not implemented.');
-                    } }                />
+                    }} />
             )}
 
             {loading && (
