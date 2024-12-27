@@ -12,10 +12,12 @@ const QRScanner = () => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [showPointCollectAlert, setShowPointCollectAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>('');
+  const [alertTitle, setAlertTitle] = useState<string>('');
+
   const [isError, setIsError] = useState<boolean>(false);
   const [isCollectingPoints, setIsCollectingPoints] = useState<boolean>(false);
   const qrScannerRef = useRef<HTMLDivElement | null>(null);
-  const [customerId, setCustomerId] = useState<string>(''); 
+  const [customerId, setCustomerId] = useState<string>('');
   const [productTableName, setProductTableName] = useState<string>('');
   const [productQrId, setProductQrId] = useState<string>('');
 
@@ -57,39 +59,77 @@ const QRScanner = () => {
         console.error("Error fetching carpenter data:", error);
       }
     };
-    
+
+    // const initQRScanner = () => {
+    //   const onScanSuccess = async (decodedText: string) => {
+    //     try {
+    //       const productResponse = await axios.get(`/api/method/reward_management_app.api.qr_code_product_detail.get_product_details_from_qr`, {
+    //         params: { decode_text: decodedText }
+    //       });
+
+    //       if (productResponse.data.message?.error) {
+    //         setAlertMessage("This QR Code has already been scanned.");
+    //         setIsError(true);
+    //       } else {
+    //         const productData = productResponse.data;
+    //         console.log("scanned qr data", productData);
+    //         setProductTableName(productData.message.product_table_name); // Save product_table_name
+    //         setProductQrId(productData.message.product_qr_id);
+    //         setProductQrPoints(productData.message.points);
+    //         setAlertMessage(
+    //           `Product Name: ${productData.message.product_name}  Points: ${productData.message.points}`
+    //         );
+    //         setIsError(false);
+    //         setCarpenterData(productData);
+    //       }
+    //       setShowAlert(true);
+    //     } catch (error) {
+    //       console.error("Error fetching product details:", error);
+    //       setAlertMessage("Error fetching product details. Please try again.");
+    //       setIsError(true);
+    //       setShowAlert(true);
+    //     }
+    //   };
+
+
     const initQRScanner = () => {
       const onScanSuccess = async (decodedText: string) => {
+        console.log("Decoded QR Code:", decodedText);
         try {
           const productResponse = await axios.get(`/api/method/reward_management_app.api.qr_code_product_detail.get_product_details_from_qr`, {
-            params: { decode_text: decodedText }
+            params: { decode_text: decodedText },
           });
 
           if (productResponse.data.message?.error) {
-            setAlertMessage("This QR Code has already been scanned.");
+            const errorMessage = productResponse.data.message.error;
+            setAlertTitle("Error");
+            setAlertMessage(errorMessage);
             setIsError(true);
+            setShowAlert(true);
           } else {
             const productData = productResponse.data;
-            console.log("scanned qr data", productData);
-            setProductTableName(productData.message.product_table_name); // Save product_table_name
+            console.log("Scanned QR data", productData);
+            setProductTableName(productData.message.product_table_name);
             setProductQrId(productData.message.product_qr_id);
             setProductQrPoints(productData.message.points);
+            // setProductEarnedAmount(productData.message.earned_amount);
             setAlertMessage(
-              `Product Name: ${productData.message.product_name}  Points: ${productData.message.points}`
+              `Product Name: ${productData.message.product_name} Points: ${productData.message.points}`
             );
             setIsError(false);
             setCarpenterData(productData);
+            setShowAlert(true); // Ensure to show the alert for success as well
           }
-          setShowAlert(true);
         } catch (error) {
           console.error("Error fetching product details:", error);
+          setAlertTitle("Error"); // Add title for consistency
           setAlertMessage("Error fetching product details. Please try again.");
           setIsError(true);
-          setShowAlert(true);
+          setShowAlert(true); // Ensure to show the alert
         }
       };
 
-      const html5QrCodeScanner = new Html5QrcodeScanner("my-qr-reader", { fps: 10, qrbox: 250 });
+      const html5QrCodeScanner: any = new Html5QrcodeScanner("my-qr-reader", { fps: 10, qrbox: 250 }, true);
       html5QrCodeScanner.render(onScanSuccess);
 
       const reader = qrScannerRef.current;
@@ -105,76 +145,76 @@ const QRScanner = () => {
   }, []);
 
   // handle collect points
-const handleCollectPoints = async () => {
-  setIsCollectingPoints(true);
-  try {
-    
- 
+  const handleCollectPoints = async () => {
+    setIsCollectingPoints(true);
+    try {
 
-    if (!customerId || !productTableName || !productQrId ||!productQrPoints ) {
-      throw new Error("Customer ID is missing");
-    }
 
-    // First API call to collect points
-    const response = await axios.post(`/api/method/reward_management_app.api.carpenter_master.update_customer_points`, {
-      points: productQrPoints,
-      carpenter_id: customerId // Use customerId instead of carpenterId
-    });
 
-    if (response.data.message?.success === true) {
-      console.log("Points collected successfully:", response);
+      if (!customerId || !productTableName || !productQrId || !productQrPoints) {
+        throw new Error("Customer ID is missing");
+      }
 
-      // Second API call to update scanned status
-      const updateResponse = await axios.post(`/api/method/reward_management_app.api.qr_code_product_detail.update_scanned_status`, {
-        product_table_name: productTableName,
-        product_qr_id: productQrId,
-        carpenter_id: customerId // Ensure customerId is passed
+      // First API call to collect points
+      const response = await axios.post(`/api/method/reward_management_app.api.carpenter_master.update_customer_points`, {
+        points: productQrPoints,
+        carpenter_id: customerId // Use customerId instead of carpenterId
       });
 
-      console.log("Product QR table data:", updateResponse);
+      if (response.data.message?.success === true) {
+        console.log("Points collected successfully:", response);
 
-      if (updateResponse.data.message?.success === true) {
-        console.log("Scanned status updated successfully:", updateResponse);
-        setShowAlert(false); // Close the SuccessAlert
-        setAlertMessage("Points collected and status updated successfully!");
-        setIsError(false);
-        setShowPointCollectAlert(true); // Open the PointCollectAlert
+        // Second API call to update scanned status
+        const updateResponse = await axios.post(`/api/method/reward_management_app.api.qr_code_product_detail.update_scanned_status`, {
+          product_table_name: productTableName,
+          product_qr_id: productQrId,
+          carpenter_id: customerId // Ensure customerId is passed
+        });
+
+        console.log("Product QR table data:", updateResponse);
+
+        if (updateResponse.data.message?.success === true) {
+          console.log("Scanned status updated successfully:", updateResponse);
+          setShowAlert(false); // Close the SuccessAlert
+          setAlertMessage("Points collected and status updated successfully!");
+          setIsError(false);
+          setShowPointCollectAlert(true); // Open the PointCollectAlert
+        } else {
+          setAlertMessage("Failed to update scanned status. Please try again.");
+          setIsError(true);
+        }
       } else {
-        setAlertMessage("Failed to update scanned status. Please try again.");
+        setAlertMessage("Failed to collect points. Please try again.");
         setIsError(true);
       }
-    } else {
-      setAlertMessage("Failed to collect points. Please try again.");
+    } catch (error) {
+      console.error("Error collecting points or updating status:", error);
+      setAlertMessage("Error collecting points or updating status. Please try again.");
       setIsError(true);
     }
-  } catch (error) {
-    console.error("Error collecting points or updating status:", error);
-    setAlertMessage("Error collecting points or updating status. Please try again.");
-    setIsError(true);
-  }
-  setIsCollectingPoints(false);
-};
+    setIsCollectingPoints(false);
+  };
 
 
-const onPointCollect = async () => {
-  try {
-    // Call the API to update carpenter points
-    const response = await axios.post(`/api/method/reward_management_app.api.carpenter_master.update_carpainter_points`, {
-      product_name: productTableName,
-      points:productQrPoints
-    });
+  const onPointCollect = async () => {
+    try {
+      // Call the API to update carpenter points
+      const response = await axios.post(`/api/method/reward_management_app.api.carpenter_master.update_carpainter_points`, {
+        product_name: productTableName,
+        points: productQrPoints
+      });
 
-    if (response.data.message?.success === true) {
-      console.log("Carpenter points updated successfully:", response);
-      // Close the alert or perform other actions if needed
-      setShowPointCollectAlert(false);
-    } else {
-      console.error("Failed to update carpenter points. Please try again.");
+      if (response.data.message?.success === true) {
+        console.log("Carpenter points updated successfully:", response);
+        // Close the alert or perform other actions if needed
+        setShowPointCollectAlert(false);
+      } else {
+        console.error("Failed to update carpenter points. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error updating carpenter points:", error);
     }
-  } catch (error) {
-    console.error("Error updating carpenter points:", error);
-  }
-};
+  };
 
 
 
@@ -187,7 +227,7 @@ const onPointCollect = async () => {
         </div>
       </div>
 
-      {showAlert && (
+      {/* {showAlert && (
         isError ? (
           <SuccessAlert
             message={alertMessage}
@@ -213,6 +253,31 @@ const onPointCollect = async () => {
                 throw new Error('Function not implemented.');
               } }          />
         )
+      )} */}
+
+      {showAlert && (
+        isError ? (
+          <SuccessAlert
+            message={alertMessage}
+            title={alertTitle}
+            buttonLabel="Close"
+            onClose={() => setShowAlert(false)}
+            showButton={true} onCancel={function (): void {
+              throw new Error('Function not implemented.');
+            }} />
+        ) : (
+          <SuccessAlert
+            message={alertMessage}
+            title="QR Code Successfully Scanned"
+            collectButtonLabel="Collect"
+            showMessage={true}
+            onClose={() => setShowAlert(false)}
+            showCollectButton={true}
+            onCollect={handleCollectPoints}
+            showButton={true} onCancel={function (): void {
+              throw new Error('Function not implemented.');
+            }} />
+        )
       )}
 
       {showPointCollectAlert && (
@@ -221,7 +286,7 @@ const onPointCollect = async () => {
           onPointClose={() => setShowPointCollectAlert(false)}
           showPointCollectButton={true}
           collectButtonLabel="Ok"
-          onPointCollect={onPointCollect} 
+          onPointCollect={onPointCollect}
         />
       )}
     </main>

@@ -27,6 +27,11 @@ interface TableProps<T> {
         deleteIcon?: string;
         viewIcon?: string;
     };
+    iconsDisabled?: {
+        edit?: (item: T) => boolean;
+        delete?: (item: T) => boolean;
+        view?: (item: T) => boolean;
+    }
 }
 
 function stripHtmlTags(html: string): string {
@@ -53,12 +58,17 @@ const TableComponent = <T,>({
     onEdit,
     onDelete,
     onView,
-    iconsConfig = {} 
+    iconsConfig = {} ,
+    iconsDisabled = {},
 }: TableProps<T>) => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(data.length / itemsPerPage);
+
+    const isEditDisabled = (item: T) => iconsDisabled?.edit ? iconsDisabled.edit(item) : false;
+    const isDeleteDisabled = (item: T) => iconsDisabled?.delete ? iconsDisabled.delete(item) : false;
+    const isViewDisabled = (item: T) => iconsDisabled?.view ? iconsDisabled.view(item) : false;
 
     return (
         <div>
@@ -110,17 +120,43 @@ const TableComponent = <T,>({
                             {(showEdit || showDelete || showView) && (
                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">
                                     {showEdit && (
-                                        <button onClick={() => onEdit?.(item)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)]  py-[6px]  px-[10px] rounded-full mr-2">
+                                        <button
+                                        onClick={(e) => {
+                                            if (isEditDisabled(item)) {
+                                                e.preventDefault(); 
+                                            } else {
+                                                onEdit?.(item); 
+                                            }
+                                        }}    className={`link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-[6px] px-[10px] rounded-full mr-2 ${isEditDisabled(item) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        disabled={isEditDisabled(item)}>
                                             <i className={iconsConfig.editIcon || "ri-edit-line"}></i>
                                         </button>
                                     )}
                                     {showDelete && (
-                                        <button onClick={() => onDelete?.(item)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)]  py-[6px]  px-[10px] rounded-full mr-2">
+                                        <button    onClick={(e) => {
+                                            if (isDeleteDisabled(item)) {
+                                                e.preventDefault(); 
+                                            } else {
+                                                onDelete?.(item); 
+                                            }
+                                        }}
+                                            className={`link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-[6px] px-[10px] rounded-full mr-2 ${isDeleteDisabled(item) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            disabled={isDeleteDisabled(item)}
+                                        >
                                             <i className={iconsConfig.deleteIcon || "ri-delete-bin-line"}></i>
                                         </button>
                                     )}
                                     {showView && (
-                                        <button onClick={() => onView?.(item)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)]  py-[6px]  px-[10px] rounded-full mr-2">
+                                        <button  onClick={(e) => {
+                                            if (isViewDisabled(item)) {
+                                                e.preventDefault(); 
+                                            } else {
+                                                onView?.(item); 
+                                            }
+                                        }}
+                                            className={`link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-[6px] px-[10px] rounded-full mr-2 ${isViewDisabled(item) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            disabled={isViewDisabled(item)}
+                                        >
                                             <i className={iconsConfig.viewIcon || "ti ti-eye-check"}></i>
                                         </button>
                                     )}
@@ -137,40 +173,7 @@ const TableComponent = <T,>({
                     <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 font-normal text-defaultsize">
                         Showing {currentItems.length} Entries <i className="bi bi-arrow-right ms-2 font-semibold"></i>
                     </div>
-                    {/* <div className="ms-auto">
-                        <nav aria-label="Page navigation" className="pagination-style-4">
-                            <ul className="ti-pagination flex items-center px-3 mb-0">
-                                <li className="page-item px-2">
-                                    <button
-                                        className="page-link"
-                                        onClick={handlePrevPage}
-                                        disabled={currentPage === 1}
-                                    >
-                                        Prev
-                                    </button>
-                                </li>
-                                {Array.from({ length: totalPages }, (_, index) => (
-                                    <li className="page-item px-2" key={index + 1}>
-                                        <button
-                                            className={`page-link px-2 rounded-md ${currentPage === index + 1 ? 'text-white bg-blue-800' : 'bg-gray-200'}`}
-                                            onClick={() => handlePageChange(index + 1)}
-                                        >
-                                            {index + 1}
-                                        </button>
-                                    </li>
-                                ))}
-                                <li className="page-item px-2">
-                                    <button
-                                        className="page-link"
-                                        onClick={handleNextPage}
-                                        disabled={currentPage === totalPages}
-                                    >
-                                        Next
-                                    </button>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div> */}
+                   
                     <div className="ms-auto">
                         <nav aria-label="Page navigation" className="pagination-style-4">
                             <ul className="ti-pagination flex items-center px-3 mb-0">

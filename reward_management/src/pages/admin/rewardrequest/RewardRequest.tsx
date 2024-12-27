@@ -52,6 +52,10 @@ const CarpenterRewardRequest: React.FC = () => {
     const { data: rewardrequestData } = useFrappeGetDocList<RewardRequest>('Redeem Request', {
         fields: ['name', 'customer_id','full_name','mobile_number', 'total_points', 'current_point_status', 'redeemed_points', 'received_date', 'received_time', 'request_status', 'approved_on', 'approve_time', 'transection_id', 'amount'],
         limit: 0,
+        orderBy: {
+            field: 'creation',
+            order: 'desc',
+        },
     });
 
     const formattedData = rewardrequestData?.map(request => ({

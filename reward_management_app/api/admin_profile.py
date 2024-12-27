@@ -5,7 +5,7 @@ from frappe import _
 
 
 # user details-----
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_users():
     try:
         users = frappe.get_all("User", fields=["name", "email", "mobile_no", "user_image","new_password"])
@@ -23,7 +23,7 @@ def get_users():
 
 # Get User Doctype Data 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_user_details(name):
     try:
         # Fetch specific fields from User document based on email
@@ -59,7 +59,7 @@ def get_user_details(name):
 
     
 # Update Admin User Profile------ 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_user_details():
     try:
         user_data = frappe.form_dict
@@ -111,7 +111,7 @@ def update_user_details():
 
 
     
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_user_image(name, new_image_url):
     try:
         # Fetch User document based on email
@@ -131,7 +131,7 @@ def update_user_image(name, new_image_url):
         
     
 # Remove user Profile 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def remove_user_image(name):
     try:
         # Fetch User document based on email
@@ -151,7 +151,7 @@ def remove_user_image(name):
 
 
 # Update password ------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_password_without_current():
     try:
         user_data = frappe.form_dict  # Use form_dict to get form data
@@ -175,7 +175,7 @@ def update_password_without_current():
     
     
 # Get Gender Doctype list-----
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_all_gender():
     try:
         genders = frappe.get_list("Gender", filters={}, fields=["name"])

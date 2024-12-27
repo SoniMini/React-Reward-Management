@@ -250,7 +250,7 @@ const Login = () => {
             console.log("Check Response Data:", checkResponse.data);
 
             // If the mobile number is not registered, show OTP input field
-            if (checkResponse.data.message.registered === false) {
+            if (checkResponse.data.message.registered === false && checkResponse.data.message.approved === false && checkResponse.data.message.activate === false) {
                 // Generate OTP for unregistered user
                 const response = await axios.post(
                     `/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`,
@@ -421,7 +421,7 @@ const Login = () => {
          localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
 
 
-        if (checkResponse.data.message && checkResponse.data.message.registered ===true) {
+         if (checkResponse.data.message && checkResponse.data.message.registered && checkResponse.data.message.approved && checkResponse.data.message.activate) {
             // Call the OTP generation API
             const otpResponse = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
                 mobile_number: mobilenumber
@@ -633,9 +633,9 @@ const Login = () => {
     return (
         <Fragment>
             <div className=" h-[100vh] bg-[var(--body-bg)] flex items-center justify-center text-defaultsize text-defaulttextcolor ">
-                <div className="grid grid-cols-12 gap-4 b">
+                <div className="grid grid-cols-12 gap-4 b ">
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-3 sm:col-span-2"></div>
-                    <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12 ">
+                    <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12   max-w-[420px] w-[420px] ">
                         <Card className="p-8 box-shadow-md border border-defaultborder shadow-md rounded-[10px] bg-white">
                             <div className="flex justify-center mb-8">
                                 {/* <img src={desktoplogo} alt="logo" className="w-28" /> */}

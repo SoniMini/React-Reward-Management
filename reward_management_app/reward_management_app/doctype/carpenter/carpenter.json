@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "format:Carpenter-{full_name}-{YYYY}-{#####}",
  "creation": "2024-07-30 17:07:26.446256",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -120,7 +120,7 @@
    "label": "Image"
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "enabled",
    "fieldtype": "Check",
    "in_filter": 1,
@@ -132,11 +132,11 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-23 13:16:35.320438",
+ "modified": "2024-12-27 14:58:46.392061",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Carpenter",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
