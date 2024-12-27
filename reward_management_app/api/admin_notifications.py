@@ -3,7 +3,7 @@ from frappe import _
 from datetime import datetime
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_notifications_log():
     # Get the current user
     user = frappe.session.user
@@ -52,6 +52,26 @@ def get_notifications_log():
         return notifications
 
 
+# Notification Updatetion for read notifications----
+@frappe.whitelist()
+def mark_notification_as_read(name, read):
+    try:
+        # Fetch the Notification Log document by its name (ID)
+        notification = frappe.get_doc("Notification Log", name)
+        
+        # Check if the notification exists
+        if notification:
+            # Update the 'read' field with the passed value
+            notification.read = read
+            notification.save() 
+            frappe.db.commit()  
+            return {"success":True,"status": "success", "message": "Notification marked as read."}
+        else:
+            return {"success":False,"status": "error", "message": "Notification not found."}
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Error marking notification as read")
+        return {"success":False,"status": "error", "message": str(e)}
+    
 @frappe.whitelist()
 def show_notification_data():
     # Fetch all notifications from the Notification Log doctype

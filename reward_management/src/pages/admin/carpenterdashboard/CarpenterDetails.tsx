@@ -38,8 +38,12 @@ const CarpenterDetails: React.FC = () => {
     });
 
     const { data: carpenterData } = useFrappeGetDocList<Carpenter>('Carpenter', {
-        fields: ['name', 'full_name', 'city', 'mobile_number', 'total_points', 'current_points', 'redeem_points', 'enabled'],
-        limit: 0
+        fields: ['name', 'full_name', 'city', 'mobile_number', 'total_points', 'current_points', 'redeem_points', 'enabled','creation'],
+        limit: 0,
+        orderBy: {
+            field: 'creation',
+            order: 'desc',
+        },
     });
 
     // Extract mobile numbers from User data

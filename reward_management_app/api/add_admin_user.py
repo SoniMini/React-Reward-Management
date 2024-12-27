@@ -1,6 +1,6 @@
 import frappe
 from frappe import _
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_users():
     # Query to get users with Admin role
     users_with_admin_role = frappe.get_all(
@@ -26,7 +26,7 @@ def get_users():
 
 
 # create new user-------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_admin_user(first_name, last_name, email, mobile_no, password,username):
     if not frappe.get_all("User", filters={"email": email,"username":username , "mobile_no":mobile_no}):
         user = frappe.get_doc({
@@ -49,7 +49,7 @@ def create_admin_user(first_name, last_name, email, mobile_no, password,username
                       
 # Get User Doctype Data 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_user_details(name):
     try:
         # Fetch specific fields from User document based on email
