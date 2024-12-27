@@ -187,7 +187,7 @@ def update_scanned_status(product_table_name, product_qr_id, carpenter_id):
             return {"success":False,"error": "No Product QR documents found"}
 
     except Exception as e:
-        # Handle any exceptions and log errors
+
         frappe.log_error(frappe.get_traceback(), f"Error: {e}")
         return {"success":False,"error": f"Server error: {e}"}
 
