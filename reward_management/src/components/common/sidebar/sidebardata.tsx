@@ -76,6 +76,28 @@ export const SidebarData = [
     ]
   },
   {
+    title: 'Category Master',
+    path: '/category-master',
+    icon : <VscCircle className='sidebaricon' />
+  },
+  {
+    title: 'Sub Category Master',
+    path: '/sub-category',
+    icon : <VscCircle className='sidebaricon' />
+  },
+
+  {
+    title: 'Customer Product Master',
+    path: '/customer-product-master',
+    icon : <VscCircle className='sidebaricon' />
+  },
+
+  {
+    title: 'Projects',
+    path: '/projects',
+    icon : <VscCircle className='sidebaricon' />
+  },
+  {
     title: 'Reward Request',
     path: '/redeemption-request',
     icon: <MdRedeem className='sidebaricon'/>
@@ -98,6 +120,11 @@ export const SidebarData = [
   {
     title: "FAQ's",
     path: '/frequently-asked-question',
+    icon: <IoIcons.IoMdHelpCircle className='sidebaricon'  />
+  },
+  {
+    title: "New Launch",
+    path: '/new-launch',
     icon: <IoIcons.IoMdHelpCircle className='sidebaricon'  />
   },
   

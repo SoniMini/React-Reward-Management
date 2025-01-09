@@ -20,7 +20,11 @@ import TransactionHistory from './pages/admin/transactions/TransactionHistroy.ts
 import FAQDashboard from './pages/admin/faq/FAQDashboard.tsx';
 import AddUserDashboard from './pages/admin/admindashboards/AddUser.tsx';
 import SetRewardPoint from './pages/admin/setrewardpoint/SetRewardPoint.tsx';
-
+import CategoryMaster from './pages/admin/productcategory/CategoryMaster.tsx';
+import SubCategoryMaster from './pages/admin/productcategory/SubCategoryMaster.tsx';
+import CustomerProductMAster from './pages/admin/customerproducts/CustomerProductDashboard.tsx';
+import AddCustomerProduct from './pages/admin/customerproducts/AddCustomerProduct.tsx';
+import EditCustomerProduct from './pages/admin/customerproducts/EditCustomerProduct.tsx';
 import CarpenterDashboard from './pages/carpenter/CarpenterDashboard.tsx'
 import CarpenterBankingHistory from './pages/carpenter/BankingHistory.tsx'
 import PointHistory from './pages/carpenter/PointHistory.tsx'
@@ -29,7 +33,8 @@ import HelpAndSupport from './pages/carpenter/HelpAndSupport.tsx'
 import RedeemRequest from './pages/carpenter/RewardRequest.tsx'
 import CusromerProducts from './pages/customer/CustomerProduct.tsx'
 import CustomerProductDetails from './pages/customer/ViewProduct.tsx'
-
+import Projects from './pages/admin/projectslider/ProjectSlider.tsx'
+import NewLaunch from './pages/admin/newlaunch/NewLaunch.tsx';
 import { FrappeProvider } from 'frappe-react-sdk';
 import AdminProfile from './pages/admin/admindashboards/AdminProfile.tsx';
 import CarpenterProfile from './pages/carpenter/CarpenterProfile.tsx';
@@ -113,6 +118,32 @@ const router = createBrowserRouter([
         element: <PrivateRoutes element={<CarpenterDetails />} />,
       },
       {
+        path: "category-master",
+        element: <PrivateRoutes element={<CategoryMaster />} />,
+      },
+      
+      {
+        path: "sub-category",
+        element: <PrivateRoutes element={<SubCategoryMaster />} />,
+      },
+
+      {
+        path: "customer-product-master",
+        element: <PrivateRoutes element={< CustomerProductMAster/>} />,
+      },
+      {
+        path: "add-customer-product",
+        element: <PrivateRoutes element={< AddCustomerProduct/>} />,
+      },
+      {
+        path: "projects",
+        element: <PrivateRoutes element={< Projects/>} />,
+      },
+      {
+        path: "edit-customer-product/:productId",
+        element: <PrivateRoutes element={< EditCustomerProduct/>} />,
+      },
+      {
         path: "redeemption-request",
         element: <PrivateRoutes element={<CarpenterRewardRequest/>}/>,
       },
@@ -131,6 +162,10 @@ const router = createBrowserRouter([
       {
         path: "frequently-asked-question",
         element: <PrivateRoutes element={<FAQDashboard />} />,
+      },
+      {
+        path: "new-launch",
+        element: <PrivateRoutes element={<NewLaunch />} />,
       },
       {
         path: "add-user",

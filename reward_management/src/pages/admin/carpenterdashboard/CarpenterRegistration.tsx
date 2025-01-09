@@ -385,7 +385,7 @@ const CarpenterRegistration: React.FC = () => {
                                     { header: 'City', accessor: 'city' },
                                     { header: 'Request Received Date', accessor: 'registration_date' },
                                     { header: 'Status', accessor: 'status' },
-                                    { header: 'Approved Date', accessor: 'approved_date' },
+                                    { header: 'Approved/Cancel Date', accessor: 'approved_date' },
                                 ]}
                                 data={filteredData || []}
                                 currentPage={currentPage}
