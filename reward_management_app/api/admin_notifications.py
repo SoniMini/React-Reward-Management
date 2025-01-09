@@ -52,6 +52,66 @@ def get_notifications_log():
         return notifications
 
 
+
+# Get top 10 notifications for the current user
+@frappe.whitelist()
+def get_top_ten_notifications_log():
+    # Get the current user
+    user = frappe.session.user
+
+    # Check if the user is "Administrator"
+    if user == "Administrator":
+        # Fetch all users with the "Admin" role
+        admin_users = frappe.get_all("User", filters={"role_profile_name": "Admin"}, pluck="name")
+
+        if admin_users:
+            # Fetch notifications for any of the admin users
+            notifications = frappe.get_all(
+                "Notification Log",
+                filters={"for_user": ["in", admin_users]},  # Filter for any admin user
+                fields=["name", "subject", "email_content", "document_type", "for_user", "creation"],
+                order_by="creation desc",
+                limit_page_length=15
+
+
+            )
+            
+            if notifications:
+                # Find the first admin user with notifications
+                first_admin_with_notifications = next(
+                    (admin_user for admin_user in admin_users if any(n['for_user'] == admin_user for n in notifications)),
+                    None
+                )
+
+                if first_admin_with_notifications:
+                    # Fetch notifications specifically for that first admin user
+                    notifications = frappe.get_all(
+                        "Notification Log",
+                        filters={"for_user": first_admin_with_notifications},
+                        fields=["name", "subject", "email_content", "document_type", "for_user", "creation"],
+                        order_by="creation desc",
+                        limit_page_length=15
+
+                    )
+                
+                return notifications
+            else:
+                return []
+        else:
+            return []
+    else:
+        # Fetch notifications for the logged-in user
+        notifications = frappe.get_all(
+            "Notification Log",
+            filters={"for_user": user},
+            fields=["name", "subject", "email_content", "document_type", "for_user", "creation"],
+            order_by="creation desc",
+            limit_page_length=15
+
+        )
+
+        return notifications
+
 # Notification Updatetion for read notifications----
 @frappe.whitelist()
 def mark_notification_as_read(name, read):

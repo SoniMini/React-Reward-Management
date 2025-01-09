@@ -247,7 +247,7 @@ const Login = () => {
             );
 
             // Log the response to inspect its structure
-            console.log("Check Response Data:", checkResponse.data);
+            // console.log("Check Response Data:", checkResponse.data);
 
             // If the mobile number is not registered, show OTP input field
             if (checkResponse.data.message.registered === false && checkResponse.data.message.approved === false && checkResponse.data.message.activate === false) {
