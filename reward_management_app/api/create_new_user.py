@@ -133,8 +133,8 @@ def check_user_registration(mobile_number):
         # Step 2: Check if the mobile number exists in Customer Registration
         existing_carpainter = frappe.db.get_value(
             "Carpenter Registration",
-            {"mobile_number": mobile_number},
-            ["name", "status"],
+            {"mobile_number": mobile_number,"status":"Pending"},
+            ["name","status"],
             as_dict=True
         )
         

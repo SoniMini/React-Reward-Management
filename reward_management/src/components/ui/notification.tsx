@@ -33,7 +33,7 @@ const iconMap = {
 };
 
 const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, toggleDropdown, onNotificationCountChange }) => {
-    const { data, error, isLoading } = useFrappeGetCall('reward_management_app.api.admin_notifications.get_notifications_log');
+    const { data, error, isLoading } = useFrappeGetCall('reward_management_app.api.admin_notifications.get_top_ten_notifications_log');
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [notificationCount, setNotificationCount] = useState<number>(0);
 
@@ -58,6 +58,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, tog
         }
         if (data?.message) {
             const notificationsArray = data.message;
+            console.log("notification data",notificationsArray);
 
             if (Array.isArray(notificationsArray)) {
                 const transformedNotifications = notificationsArray.map((notification: any, index: number) => ({
@@ -70,21 +71,21 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, tog
                 }));
 
                 setNotifications(transformedNotifications);
-                setNotificationCount(transformedNotifications.length); // Update notification count
-                onNotificationCountChange(transformedNotifications.length); // Update parent component
+                setNotificationCount(transformedNotifications.length); 
+                onNotificationCountChange(transformedNotifications.length); 
             } else {
                 console.error('Unexpected data format:', notificationsArray);
             }
         }
     }, [data, error, isLoading]);
 
-    const handleNotificationClose = (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
-        e.stopPropagation();
-        const updatedNotifications = notifications.filter((_, i) => i !== index);
-        setNotifications(updatedNotifications);
-        setNotificationCount(updatedNotifications.length); // Update notification count after closing
-        onNotificationCountChange(updatedNotifications.length); // Update parent component
-    };
+    // const handleNotificationClose = (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
+    //     e.stopPropagation();
+    //     const updatedNotifications = notifications.filter((_, i) => i !== index);
+    //     setNotifications(updatedNotifications);
+    //     setNotificationCount(updatedNotifications.length); // Update notification count after closing
+    //     onNotificationCountChange(updatedNotifications.length); // Update parent component
+    // };
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error loading notifications</div>;
@@ -119,7 +120,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, tog
                         <div className="pt-2">
                             {notifications.length > 0 ? (
                                 notifications.map((notification, index) => {
-                                    const Icon = iconMap[notification.icon] || TiGift; // Default icon if not found
+                                    const Icon = iconMap[notification.icon] || TiGift; 
                                     return (
                                         <div key={notification.id} className="flex items-center px-4 py-3 border-b hover:bg-gray-100 -mx-2">
                                             <span
@@ -133,20 +134,20 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, tog
                                             </span>
                                             <div className="flex-1 mx-2">
                                                 <p className="mb-0 text-defaulttextcolor dark:text-[#8c9097] dark:text-white/50 text-[0.8125rem] font-semibold">
-                                                    <Link to="#">
+                                                    <Link to="view-all-notifications">
                                                         <span dangerouslySetInnerHTML={{ __html: notification.subjectHTML }} />
                                                     </Link>
                                                     <br />
-                                                    <span className="text-[#63676e] dark:text-white/50 font-normal text-[0.75rem] header-notification-text" dangerouslySetInnerHTML={{ __html: notification.email_contentHTML }} />
+                                                    {/* <span className="text-[#63676e] dark:text-white/50 font-normal text-[0.75rem] header-notification-text" dangerouslySetInnerHTML={{ __html: notification.email_contentHTML }} /> */}
                                                 </p>
                                             </div>
-                                            <button
+                                            {/* <button
                                                 onClick={(e) => handleNotificationClose(e, index)}
                                                 className="text-gray-400 hover:text-gray-600 text-[1.3rem] font-normal"
                                                 aria-label="Close notification"
                                             >
                                                 &times;
-                                            </button>
+                                            </button> */}
                                         </div>
                                     );
                                 })
