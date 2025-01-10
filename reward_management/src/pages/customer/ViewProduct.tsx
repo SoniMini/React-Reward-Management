@@ -14,6 +14,7 @@ const Productdetails = () => {
 
 
   useEffect(() => {
+    document.title = 'Product Details';
 
     const url = window.location.href;
     console.log("Full URL:", url);
