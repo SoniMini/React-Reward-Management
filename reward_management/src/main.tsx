@@ -39,6 +39,7 @@ import { FrappeProvider } from 'frappe-react-sdk';
 import AdminProfile from './pages/admin/admindashboards/AdminProfile.tsx';
 import CarpenterProfile from './pages/carpenter/CarpenterProfile.tsx';
 import NotificationDashboard from './pages/admin/adminnotifications/AdminNotification.tsx';
+import SubCategoryProducts from './pages/customer/ViewSubCategoryProduct.tsx';
 
 const router = createBrowserRouter([
   {
@@ -65,8 +66,20 @@ const router = createBrowserRouter([
       </FrappeProvider>
     ),
   },
+
   {
-    path: "/view-product-details",
+    path: "/sub-category-product/:productId",
+    element: (
+      <FrappeProvider
+        socketPort={import.meta.env.VITE_SOCKET_PORT}
+        siteName={import.meta.env.VITE_SITE_NAME}
+      >
+        <SubCategoryProducts />
+      </FrappeProvider>
+    ),
+  },
+  {
+    path: "/view-product-details/:priductId",
     element: (
       <FrappeProvider
         socketPort={import.meta.env.VITE_SOCKET_PORT}

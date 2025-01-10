@@ -3,7 +3,7 @@ from frappe.model.document import Document
 
 
 # get current project details
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_project():
     
     project_slider = frappe.get_doc("Project Slider", "Project Slider")

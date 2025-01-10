@@ -3,7 +3,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import axios from 'axios';
 // import { BASE_URL } from "../../utils/constants";
 import { Link } from 'react-router-dom';
-
+import viewproduct from '../../assets/images/reward_management/viewproduct.png';
 const CarpenterDashboard: React.FC = () => {
     const [redeemPoints, setRedeemPoints] = useState<number>(0);
     const [totalPoints, setTotalPoints] = useState<number>(0);
@@ -171,6 +171,20 @@ const CarpenterDashboard: React.FC = () => {
                                                 <div className="flex flex-col items-start">
                                                     <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
                                                         <div className='pl-3'>Help & Support</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                        <Link to="/customer-product" className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
+                                            <div className="flex flex-row items-start mb-4 ">
+                                            <div className='bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center'>
+                                             
+                                                    <img src={viewproduct} alt="" className=' inline-flex items-center justify-center  w-7 h-7 rounded-[8px]' />
+                                              
+                                                </div>
+                                                <div className="flex flex-col items-start">
+                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                        <div className='pl-3'>View Products</div>
                                                     </div>
                                                 </div>
                                             </div>
