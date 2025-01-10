@@ -3,35 +3,46 @@ import sidebarLogo from '../../assets/images/01.png';
 import Modalsearch from "@/components/common/modalsearch/modalsearch";
 
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 // import { BASE_URL } from "../../utils/constants";
 
 const Productdetails = () => {
   const [fullScreen, setFullScreen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [productDetails, setProductDetails] = useState(null);
+  const [productName, setProductName] = useState("");
 
-  // Extract product_id from URL parameters
-  const urlParams = new URLSearchParams(window.location.search);
-  const productId = urlParams.get('product_id');
 
   useEffect(() => {
-    if (!productId) {
-      console.error('No product ID found in URL');
-      return;
-    }
+
+    const url = window.location.href;
+    console.log("Full URL:", url);
+
+    const pathSegments = window.location.pathname.split('/');
+
+    let productName = pathSegments[pathSegments.length - 1];
+    productName = productName.replace(/_/g, ' ');
+    console.log("Product Name:", productName);
+
+    setProductName(productName);
 
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`/api/method/reward_management_app.api.product_master.get_product_details?product_id=${productId}`);
-        console.log("data product card",response);
-        setProductDetails(response.data.message.message);
+        const response = await axios.get(`/api/method/reward_management_app.api.customer_category_product.get_product_details?product_name=${productName}`);
+        console.log("data product card", response);
+        if (response.data.message.products && response.data.message.products.length > 0) {
+          setProductDetails(response.data.message.products[0]);
+        } else {
+          console.error('No products found in the response');
+        }
       } catch (error) {
         console.error('Error fetching product details:', error);
       }
     };
 
+
     fetchProductDetails();
-  }, [productId]);
+  }, [productName]);
 
   const handleOpenSearchModal = () => {
     setIsSearchModalOpen(true);
@@ -83,62 +94,42 @@ const Productdetails = () => {
         </nav>
       </header>
 
-      <div className="grid grid-cols-12 gap-6 mt-4 mx-20">
-        <div className="xl:col-span-12 col-span-12">
-          <div className="box">
-            <div className="box-body">
-              <div className="sm:grid grid-cols-12 gap-x-6">
-                <div className="xxl:col-span-5 xl:col-span-12 col-span-12">
-                  <div className="bg-light h-full">
-                    {productDetails?.product_images ? (
-                      <img
-                        className="object-cover w-full"
-                        src={`${productDetails.product_images}`} // Concatenate with base URL if needed
-                        alt={productDetails.product_name}
-                      />
-                    ) : (
-                      <p>No image available</p>
-                    )}
-                  </div>
+      <div className="mt-6 mx-20 ">
+
+
+      <div className='p-3 font-bold text-lg uppercase flex justify-center w-full max-w-xl mx-auto'>
+  <div className="uppercase ti-btn ti-btn-primary font-semibold w-1/2">  {productName}</div>
+
+</div>
+      {/* <div className="mt-6  ti-btn ti-btn-primary rounded-[10px] font-semibold  shadow-sm p-2  uppercase flex justify-center max-w-xl mx-auto w-1/2">
+    {productName}
+  </div> */}
+        
+          {/* Display fetched product details as cards */}
+          <div className=" flex justify-center p-5">
+            {productDetails ? (
+              <div className=" flex flex-col items-center text-center">
+                <div className='bg-white rounded-[10px] border-defaultborder shadow-lg p-6'>
+                <img
+                  src={productDetails.product_image}
+                  alt={productDetails.product_name}
+                  className="object-cover rounded-[10px]"
+                />
                 </div>
-                <div className="xxl:col-span-7 xl:col-span-12 col-span-12">
-                  {productDetails ? (
-                    <div className="md:grid grid-cols-12 gap-x-3">
-                      <div className="xl:col-span-12 col-span-12 mt-4">
-                        <div className="mb-4">
-                          <p className="text-[.9375rem] font-semibold mb-1">Description :</p>
-                          <p className="text-[#8c9097] dark:text-white/50 mb-0">
-                            <div dangerouslySetInnerHTML={{ __html: productDetails.description }} />
-                          </p>
-                        </div>
-                        <div className="mb-4">
-                          <p className="text-[.9375rem] font-semibold mb-2">Product Details :</p>
-                          <div className="table-responsive min-w-full">
-                            <table className="table table-bordered whitespace-nowrap w-full">
-                              <tbody>
-                                <tr className="border border-defaultborder dark:border-defaultborder/10">
-                                  <th scope="row" className="font-semibold text-start">Product Name</th>
-                                  <td>{productDetails.product_name}</td>
-                                </tr>
-                                <tr className="border border-defaultborder dark:border-defaultborder/10">
-                                  <th scope="row" className="font-semibold text-start">Category</th>
-                                  <td>{productDetails.category}</td>
-                                </tr>
-                                
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <p>Loading product details...</p>
-                  )}
-                </div>
+               
+              
               </div>
-            </div>
-          </div>
+            ) : (
+              <div className="text-center">No product details found</div>
+            )}
+          
+
         </div>
+
+<div className=' p-3 font-bold text-lg uppercase flex justify-center w-full max-w-xl mx-auto'>
+  <button className="uppercase ti-btn ti-btn-primary font-semibold w-1/2">More Details</button>
+
+</div>
       </div>
       <Modalsearch isOpen={isSearchModalOpen} onClose={handleCloseSearchModal} />
     </Fragment>

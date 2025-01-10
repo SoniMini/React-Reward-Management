@@ -1,6 +1,5 @@
 import { Fragment, useState, useEffect } from 'react';
 import axios from 'axios';
-// import { BASE_URL } from "../../utils/constants";
 import '../../assets/css/header.css';
 import '../../assets/css/style.css';
 import '../../assets/css/pages/carpenterproducts.css';
@@ -12,25 +11,77 @@ import { Link } from 'react-router-dom';
 
 const CustomerProducts = () => {
   const [fullScreen, setFullScreen] = useState(false);
+  const [newLaunch, setNewLaunch] = useState<string>('');
+  const [url, setUrl] = useState<string>('');
+  const [category, setCategory] = useState<any[]>([]); // Holds array of category objects
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [productsData, setProductsData] = useState([]);
+  const [subcategory, setSubcategory] = useState<any[]>([]); // Holds array of subcategory objects
+  const [loading, setLoading] = useState(false); // Manage loading state
+
+  interface Product {
+    product_image: string;
+    name: string;
+  }
+
+  const [productsData, setProductsData] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/method/reward_management_app.api.product_master.get_all_products_data`);
-        
+        const response = await axios.get(
+          `/api/method/reward_management_app.api.projects.get_project`
+        );
+
         console.log("API Response:", response.data);
-        
-        // Access the message property to get the products array
-        const products = response.data.message || [];
-        setProductsData(products);
+
+        const images = Array.isArray(response.data.message.project_image)
+          ? response.data.message.project_image
+          : [];
+
+        setProductsData(images.map((image: string) => ({ product_image: image, name: '' })));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-  
+
+    const fetchnewlaunch = async () => {
+      try {
+        const response = await axios.get(
+          `/api/method/reward_management_app.api.new_launch.get_new_launch`
+        );
+        console.log("new launch Response:", response.data);
+        setNewLaunch(response.data.message.launch_name);
+        setUrl(response.data.message.url);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Fetch category and subcategory data
+    const fetchCategoryAndSubCategory = async () => {
+      try {
+        setLoading(true); // Start loading
+
+
+        // Fetch subcategory data
+        const subcategoryResponse = await axios.get(`/api/method/reward_management_app.api.product_category.get_product_category`);
+        console.log("Subcategory Response:", subcategoryResponse);
+        if (subcategoryResponse.data.message.success) {
+          // Set categories and subcategories
+          setCategory(subcategoryResponse.data.message.categories);
+          setSubcategory(subcategoryResponse.data.message.subcategories);
+        }
+
+
+      } catch (error) {
+        console.error("Error fetching category and subcategory data:", error);
+        setLoading(false); // End loading
+      }
+    };
+
+    fetchnewlaunch();
     fetchData();
+    fetchCategoryAndSubCategory();
   }, []);
 
   const handleOpenSearchModal = () => {
@@ -50,6 +101,14 @@ const CustomerProducts = () => {
       }
     }
     setFullScreen(!fullScreen);
+  };
+
+  const newLunchHandle = () => {
+    if (url) {
+      window.location.href = url;
+    } else {
+      console.log("URL not available");
+    }
   };
 
   return (
@@ -83,16 +142,13 @@ const CustomerProducts = () => {
         </nav>
       </header>
 
-      <div className="mt-4 mx-20">
-        <div className='mb-4'>
-          <h3 className='text-defaulttextcolor text-lg text-center'>Products</h3>
-        </div>
+      <div className="mt-6 mx-20">
         <div className="grid grid-cols-12 gap-x-6">
           <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-8 md:col-span-12 col-span-12">
             <div className="grid grid-cols-12 gap-x-6">
               {productsData.map((product, index) => (
                 <div
-                  className="xxl:col-span-3 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12"
+                  className="xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12"
                   key={index}
                 >
                   <div className="box product-card">
@@ -100,30 +156,10 @@ const CustomerProducts = () => {
                       <Link to="#" className="product-image">
                         <img
                           src={product.product_image}
-                          className="card-img mb-3 rounded-[5px] h-[500px] object-cover"
-                          alt={product.product_name}
+                          className="card-img mb-3 rounded-[5px] h-[500px]"
+                          alt={`Product ${index}`}
                         />
                       </Link>
-                      <div className="product-icons">
-                        <Link aria-label="Add to wishlist" to="#" className="wishlist">
-                          <i className="ri-heart-line bg-danger/20 p-2 text-danger rounded-[8px] "></i>
-                        </Link>
-                        <Link aria-label="Add to cart" to="#" className="cart">
-                          <i className="ri-shopping-cart-line bg-primary/20 p-2 text-primary rounded-[8px] "></i>
-                        </Link>
-                        <Link aria-label="View product" to={`/view-product-details?product_id=${product.product_id}`} className="view">
-                          <i className="ri-eye-line bg-success/20 text-success p-2 rounded-[8px] "></i>
-                        </Link>
-                      </div>
-                      <p className="product-name font-semibold mb-0 flex items-center justify-between">
-                        {product.product_name}
-                        <span className="ltr:float-right rtl:float-left text-warning text-xs">
-                          4.2<i className="ri-star-s-fill align-middle ms-1 inline-block"></i>
-                        </span>
-                      </p>
-                      <p className="product-description text-[.6875rem] text-[#8c9097] dark:text-white/50 mb-2">
-                        {product.category}
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -131,6 +167,55 @@ const CustomerProducts = () => {
             </div>
           </div>
         </div>
+
+        {/* <div className='mt-6 flex justify-center'>
+          <button className='ti-btn bg-primary text-white px-6 py-2 rounded-[20px] w-[50%]' onClick={newLunchHandle}> {newLaunch}</button>
+        </div> */}
+                        <div className='p-3 font-bold text-lg uppercase flex justify-center w-full max-w-xl mx-auto'>
+  <button className="uppercase ti-btn ti-btn-primary font-semibold w-1/2" onClick={newLunchHandle}>  {newLaunch}</button>
+
+</div>
+
+
+        {/* Render categories with their subcategories */}
+        <div className="mt-6 flex justify-center flex-col items-center">
+          <div className="categories-list ">
+            {category.map((cat) => (
+              <div key={cat.category_id} className="category-item mt-6">
+                <h3 className='mb-4 text-center text-defaulttextcolor text-md font-semibold'>{cat.category_name}</h3>
+                <div className='bg-white border-defaultborder rounded-[10px] shadow-lg p-5'>
+
+
+                  <div className="subcategory-list flex flex-row gap-6 items-center flex-wrap ">
+                    {subcategory
+                      .filter(sub => sub.category_id === cat.category_id)
+                      .map((sub) => (
+                        <div
+                          key={sub.sub_category_name}
+                          className="p-3 w-full sm:w-5/12 md:w-4/12 lg:w-3/12 xl:w-2/12 xxl:w-1/12"
+                        >
+                          <Link to={`/sub-category-product/${sub.sub_category_name.replace(" ", '_')}`}  className="block">
+                            <div className="subcategory-item">
+                              <div className="text-center">
+                                <img
+                                  src={sub.sub_category_image}
+                                  alt={sub.sub_category_name}
+                                  className="rounded-full w-20 h-20 bg-slate-400 shadow-sm mx-auto"
+                                />
+                              </div>
+                              <div className="text-center">{sub.sub_category_name}</div>
+                            </div>
+                          </Link>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+
       </div>
 
       <Modalsearch isOpen={isSearchModalOpen} onClose={handleCloseSearchModal} />
