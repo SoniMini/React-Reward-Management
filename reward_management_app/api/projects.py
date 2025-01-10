@@ -17,6 +17,7 @@ def get_project():
     
     # Prepare the response dictionary
     response = {
+        "success": True,
         "project_url": project_slider.project_url,
         "project_image": [entry["project_image"] for entry in project_image_data]
     }
