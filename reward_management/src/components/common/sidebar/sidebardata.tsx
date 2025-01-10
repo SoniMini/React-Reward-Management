@@ -24,6 +24,7 @@ import { TbCategoryPlus } from "react-icons/tb";
 import { MdOutlineCategory } from "react-icons/md";
 import CustomerProduct from '../../../assets/images/reward_management/customer-loyalty.png'
 import { SiOpenproject } from "react-icons/si";
+import SocialMediaLink from '../../../assets/images/reward_management/social-media.png';
 
 
 
@@ -127,15 +128,22 @@ export const SidebarData = [
     icon: <IconCoins className='sidebaricon'  />
   },
   {
-    title: "FAQ's",
-    path: '/frequently-asked-question',
-    icon: <IoIcons.IoMdHelpCircle className='sidebaricon'  />
-  },
-  {
     title: "New Launch",
     path: '/new-launch',
     icon: <NewReleasesIcon className='sidebaricon'  />
   },
+
+  {
+    title: "Social Media Links",
+    path: '/social-media-link',
+    icon: <img src={SocialMediaLink} alt="social media" className='sidebaricon'  />
+  },
+  {
+    title: "FAQ's",
+    path: '/frequently-asked-question',
+    icon: <IoIcons.IoMdHelpCircle className='sidebaricon'  />
+  },
+  
   
   {
     title: 'Add User',

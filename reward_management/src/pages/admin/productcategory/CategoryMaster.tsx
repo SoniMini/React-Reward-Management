@@ -26,11 +26,9 @@ const CategoryMaster: React.FC = () => {
         useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [showAddCatalogueForm, setShowAddCatalogueForm] = useState(false);
-    const [productCategoryToDelete, setProductCategoryToDelete] =
-        useState<ProductCategory | null>(null);
+    const [productCategoryToDelete, setProductCategoryToDelete] = useState<ProductCategory | null>(null);
     const [alertTitle, setAlertTitle] = useState("");
-    const [productCategoryToEdit, setProductCategoryToEdit] =
-        useState<ProductCategory | null>(null);
+    // const [productCategoryToEdit, setProductCategoryToEdit] =useState<ProductCategory | null>(null);
     const [filteredData, setFilteredData] = useState<ProductCategory[]>([]);
 
 

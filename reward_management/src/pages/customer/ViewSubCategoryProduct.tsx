@@ -18,6 +18,7 @@ const SubCategoryProducts = () => {
 
     // Extract sub-category product name from URL
     useEffect(() => {
+        document.title = 'Sub Category Products';
         const url = window.location.href;
         console.log("Full URL:", url);
 
