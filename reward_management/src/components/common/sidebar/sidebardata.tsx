@@ -18,6 +18,15 @@ import { IconCoins } from '@tabler/icons-react';
 import RedeemIcon from '@mui/icons-material/Redeem'; 
 import { IconHelpHexagon } from '@tabler/icons-react';
 import '../../../assets/css/sidebar.css';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
+import ViewProduct from '../../../assets/images/reward_management/viewproducts.png'
+import { TbCategoryPlus } from "react-icons/tb";
+import { MdOutlineCategory } from "react-icons/md";
+import CustomerProduct from '../../../assets/images/reward_management/customer-loyalty.png'
+import { SiOpenproject } from "react-icons/si";
+
+
+
 
 
 const iconStyle = { height: '8px', width: '8px', strokeWidth: '5rem' };
@@ -78,24 +87,24 @@ export const SidebarData = [
   {
     title: 'Category Master',
     path: '/category-master',
-    icon : <VscCircle className='sidebaricon' />
+    icon : <TbCategoryPlus className='sidebaricon' />
   },
   {
     title: 'Sub Category Master',
     path: '/sub-category',
-    icon : <VscCircle className='sidebaricon' />
+    icon : <MdOutlineCategory className='sidebaricon' />
   },
 
   {
     title: 'Customer Product Master',
     path: '/customer-product-master',
-    icon : <VscCircle className='sidebaricon' />
+    icon : <img src={CustomerProduct} alt="image" className='sidebaricon'  />
   },
 
   {
     title: 'Projects',
     path: '/projects',
-    icon : <VscCircle className='sidebaricon' />
+    icon : <SiOpenproject className='sidebaricon' />
   },
   {
     title: 'Reward Request',
@@ -125,7 +134,7 @@ export const SidebarData = [
   {
     title: "New Launch",
     path: '/new-launch',
-    icon: <IoIcons.IoMdHelpCircle className='sidebaricon'  />
+    icon: <NewReleasesIcon className='sidebaricon'  />
   },
   
   {
@@ -158,10 +167,23 @@ export const SidebarData = [
     path: '/redeem-request',
     icon: <RedeemIcon  className='sidebaricon'/>
   },
+
+  {
+    title: 'View Products',
+    path: '/customer-product',
+    icon: (
+      <img
+        src={ViewProduct}
+        alt="View Products"
+        className="sidebaricon"
+      />
+    ),
+  },
   {
     title: 'Help & Support',
     path: '/help-and-support',
     icon: <IconHelpHexagon  className='sidebaricon'/>
   },
+ 
   
 ];

@@ -56,7 +56,9 @@ const EditCustomerProduct: React.FC = () => {
 
          // Extract gift product ID from pathname
          const pathSegments = location.pathname.split('/');
-         const ProductId = pathSegments[pathSegments.length - 1];
+         let ProductId = pathSegments[pathSegments.length - 1];
+         ProductId = ProductId.replace(/_/g, ' ');
+         console.log("Product Name:", ProductId);
 
 
            // console.log("Extracted Product ID:", ProductId);
@@ -70,9 +72,7 @@ const EditCustomerProduct: React.FC = () => {
                 if (response.data.message?.status === "success" && productData) {
                     const matchedProduct = productData.find(
                         (product: { name: string }) =>
-                            product.name
-                                .replace(/\s+/g, "%20")
-                                .toLowerCase() === ProductId?.toLowerCase()
+                            product.name.toLowerCase() === ProductId?.toLowerCase()
                     );
         
                     if (matchedProduct) {
