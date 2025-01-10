@@ -26,6 +26,7 @@ const CustomerProducts = () => {
   const [productsData, setProductsData] = useState<Product[]>([]);
 
   useEffect(() => {
+    document.title = 'Category Products';
     const fetchData = async () => {
       try {
         const response = await axios.get(

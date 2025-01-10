@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-10 18:29:33.197035",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "facebook_url",
+  "instagram_url",
+  "whatsapp_url",
+  "google_map_url"
+ ],
+ "fields": [
+  {
+   "fieldname": "facebook_url",
+   "fieldtype": "Data",
+   "label": "Facebook Url"
+  },
+  {
+   "fieldname": "instagram_url",
+   "fieldtype": "Data",
+   "label": "Instagram Url"
+  },
+  {
+   "fieldname": "whatsapp_url",
+   "fieldtype": "Data",
+   "label": "WhatsApp Url"
+  },
+  {
+   "fieldname": "google_map_url",
+   "fieldtype": "Data",
+   "label": "Google Map Url"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-01-10 18:31:02.527247",
+ "modified_by": "Administrator",
+ "module": "reward_management_app",
+ "name": "Social Media Link",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

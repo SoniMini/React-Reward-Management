@@ -40,6 +40,7 @@ import AdminProfile from './pages/admin/admindashboards/AdminProfile.tsx';
 import CarpenterProfile from './pages/carpenter/CarpenterProfile.tsx';
 import NotificationDashboard from './pages/admin/adminnotifications/AdminNotification.tsx';
 import SubCategoryProducts from './pages/customer/ViewSubCategoryProduct.tsx';
+import SocialMediaLink from './pages/admin/socialmedialink/SocialMediaLinks.tsx';
 
 const router = createBrowserRouter([
   {
@@ -179,6 +180,10 @@ const router = createBrowserRouter([
       {
         path: "new-launch",
         element: <PrivateRoutes element={<NewLaunch />} />,
+      },
+      {
+        path: "social-media-link",
+        element: <PrivateRoutes element={<SocialMediaLink />} />,
       },
       {
         path: "add-user",

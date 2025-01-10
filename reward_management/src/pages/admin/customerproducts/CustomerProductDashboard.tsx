@@ -33,6 +33,7 @@ const CustomerProductMaster: React.FC = () => {
   
     // Fetch data from API
     useEffect(() => {
+        document.title = 'Customer Product Master';
         const fetchProducts = async () => {
             setLoading(true);
             try {
