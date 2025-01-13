@@ -37,11 +37,15 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
         # Deduct redeemed points if action is Approved
         if action == "Cancel":
             # Calculate new current_point_status in Redeem Request
-            redeem_request.current_point_status = redeem_request.total_points + redeem_request.redeemed_points
+            # redeem_request.current_point_status = redeem_request.total_points + redeem_request.redeemed_points
             
             # Update points in Carpainter
             carpainter.current_points = carpainter.current_points + redeem_request.redeemed_points
-            carpainter.redeem_points = (carpainter.redeem_points or 0) - redeem_request.redeemed_points
+            
+            carpainter.point_requested = (carpainter.point_requested or 0) - redeem_request.redeemed_points
+            
+             # Calculate new current_point_status in Redeem Request
+            redeem_request.current_point_status = carpainter.current_points
             
             # Save both documents
             redeem_request.save(ignore_permissions=True)
@@ -51,12 +55,18 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
             frappe.db.commit()
           # Deduct redeemed points if action is Approved
         if action == "Approved":
+            # Update points in Carpainter
+            carpainter.redeem_points = (carpainter.redeem_points or 0) + redeem_request.redeemed_points
+            
+            
             # Create Bank Balance document with current datetime
             create_bank_balance(redeem_request.name, redeem_request.redeemed_points, transaction_id)
         
-            
+
             # Save the updates to redeem_request
             redeem_request.save(ignore_permissions=True)
+            carpainter.save(ignore_permissions=True)
+
             
             # Commit the transaction
             frappe.db.commit()

@@ -83,7 +83,7 @@ const SubCategoryMaster: React.FC = () => {
     }, [searchQuery, productsubcategoryData]);
 
     React.useEffect(() => {
-        document.title = "Sub Catagory";
+        document.title = "Sub Category";
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);

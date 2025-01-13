@@ -63,7 +63,7 @@ const CategoryMaster: React.FC = () => {
     }, [searchQuery, productcategoryData]);
 
     React.useEffect(() => {
-        document.title = "Product Catagory";
+        document.title = "Product Category";
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
