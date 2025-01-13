@@ -23,7 +23,7 @@ def get_carpainter_data():
         carpainters = frappe.get_list(
             "Carpenter",
             filters={"mobile_number": user_mobile_no},
-            fields=["name", "first_name", "full_name", "last_name", "city", "total_points", "mobile_number", "current_points", "redeem_points", "email"]
+            fields=["name", "first_name", "full_name", "last_name", "city", "total_points", "mobile_number", "current_points", "redeem_points","point_requested", "email"]
         )
 
         for carpainter in carpainters:
@@ -83,7 +83,7 @@ def get_customer_details():
     user_info = frappe.get_doc("User", logged_in_user)
     user_mobile_no = user_info.mobile_no
     # Fetch Customer document based on the email
-    customer = frappe.get_all("Carpenter", filters={"mobile_number": user_mobile_no}, fields=["name", "total_points","mobile_number","current_points","redeem_points","city","first_name","full_name","last_name"])
+    customer = frappe.get_all("Carpenter", filters={"mobile_number": user_mobile_no}, fields=["name", "total_points","mobile_number","current_points","point_requested","redeem_points","city","first_name","full_name","last_name"])
     if customer:
         return customer[0]  # Return the first match
     else:
