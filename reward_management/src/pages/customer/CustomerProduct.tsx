@@ -65,7 +65,7 @@ const CustomerProducts = () => {
 
 
         // Fetch subcategory data
-        const subcategoryResponse = await axios.get(`/api/method/reward_management_app.api.product_category.get_product_category`);
+        const subcategoryResponse = await axios.get(`/api/method/reward_management_app.api.product_category.get_product_categories`);
         console.log("Subcategory Response:", subcategoryResponse);
         if (subcategoryResponse.data.message.success) {
           // Set categories and subcategories
