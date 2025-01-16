@@ -361,7 +361,7 @@ const SubCategoryMaster: React.FC = () => {
                                             <input
                                                 type="text"
                                                 id="subcategoryName"
-                                                className="form-control w-full rounded-md text-defaulttextcolor text-sm border border-[#dadada]"
+                                                className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm border border-[#dadada]"
                                                 placeholder="Enter Product Category"
                                                 value={
                                                     productSubCategory ||
@@ -381,7 +381,7 @@ const SubCategoryMaster: React.FC = () => {
                                                         <select
                                                             id="product-category-add"
                                                             name="product-category-add"
-                                                            className="w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem]"
+                                                            className="w-full border border-[#dadada] text-defaultsize text-defaulttextcolor rounded-[5px]"
                                                             value={productCategory}
                                                             onChange={(e) => setProductCategory(e.target.value)}
                                                             required
@@ -406,7 +406,7 @@ const SubCategoryMaster: React.FC = () => {
                                             <input
                                                 type="file"
                                                 multiple
-                                                className="form-control w-full rounded-md text-defaulttextcolor text-sm font-medium p-2 border border-[#dadada]"
+                                                className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm font-medium p-2 border border-[#dadada]"
                                                 id="product-images-add"
                                                 onChange={handleFileChange}
                                             />
@@ -434,7 +434,7 @@ const SubCategoryMaster: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 text-center border-t p-4 border-defaultborder">
 
 
-                                    <div className="flex justify-end">
+                                    <div className="flex justify-end items-baseline">
                                         <button
                                             type="submit"
                                             className="ti-btn ti-btn-primary-full bg-primary me-2"

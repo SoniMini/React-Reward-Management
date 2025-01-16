@@ -261,7 +261,7 @@ const CategoryMaster: React.FC = () => {
                                             <input
                                                 type="text"
                                                 id="categoryName"
-                                                className="form-control w-full rounded-md text-defaulttextcolor text-sm border border-[#dadada]"
+                                                className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm border border-[#dadada]"
                                                 placeholder="Enter Product Category"
                                                 value={
                                                     productCatalogue 
