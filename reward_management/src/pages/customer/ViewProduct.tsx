@@ -31,8 +31,8 @@ const Productdetails = () => {
       try {
         const response = await axios.get(`/api/method/reward_management_app.api.customer_category_product.get_product_details?product_name=${productName}`);
         console.log("data product card", response);
-        if (response.data.message.products && response.data.message.products.length > 0) {
-          setProductDetails(response.data.message.products[0]);
+        if (response.data.message.products && response.data.message.products) {
+          setProductDetails(response.data.message.products);
         } else {
           console.error('No products found in the response');
         }
