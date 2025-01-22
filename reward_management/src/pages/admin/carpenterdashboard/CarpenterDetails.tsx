@@ -16,6 +16,7 @@ interface Carpenter {
     current_points: number,
     redeem_points: number,
     enabled: boolean,
+    email : string;
 }
 
 interface User {
@@ -38,7 +39,7 @@ const CarpenterDetails: React.FC = () => {
     });
 
     const { data: carpenterData } = useFrappeGetDocList<Carpenter>('Carpenter', {
-        fields: ['name', 'full_name', 'city', 'mobile_number', 'total_points', 'current_points', 'redeem_points', 'enabled','creation'],
+        fields: ['name', 'full_name', 'city', 'mobile_number', 'total_points', 'current_points', 'redeem_points', 'enabled','creation','email'],
         limit: 0,
         orderBy: {
             field: 'creation',
@@ -204,14 +205,15 @@ const CarpenterDetails: React.FC = () => {
                             <TableComponent<Carpenter>
                                 columns={[
                                     { header: 'Carpenter ID', accessor: 'name' },
-                                    { header: 'Carpenter Name', accessor: 'full_name' },  
-                                    { header: 'Mobile Number', accessor: 'mobile_number' },
+                                    { header: 'Name', accessor: 'full_name' ,link:"/carpenter/:mobile_number"},
+                                    // { header: 'Email', accessor: 'email' ,link:"/carpenter/:full_name"},  
+                                    { header: 'Mobile Number', accessor: 'mobile_number'},
                                     { header: 'City', accessor: 'city' },
                                     { header: 'Total Points', accessor: 'total_points' },
                                     { header: 'Available Points', accessor: 'current_points' },
                                     { header: 'Redeemed Points ', accessor: 'redeem_points' },
                                     {
-                                        header: 'Active/Deactive',
+                                        header: 'Status',
                                         accessor: 'enabled',
 
                                     }
@@ -265,7 +267,7 @@ const CarpenterDetails: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label className="form-label text-sm text-defaulttextcolor font-semibold">Carpenter Status</label>
                                     <select
-                                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         value={updatedStatus}
                                         onChange={handleStatusChange}
                                     >

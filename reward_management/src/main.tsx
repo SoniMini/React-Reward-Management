@@ -13,6 +13,7 @@ import AddProduct from './pages/admin/productdashboards/Addproduct.tsx';
 import EditProduct from './pages/admin/productdashboards/EditProduct.tsx';
 import CarpenterRegistration from './pages/admin/carpenterdashboard/CarpenterRegistration.tsx';
 import CarpenterDetails from './pages/admin/carpenterdashboard/CarpenterDetails.tsx';
+import Carpenter from './pages/admin/carpenterdashboard/CarpenterProfileSetting.tsx';
 import CarpenterRewardRequest from './pages/admin/rewardrequest/RewardRequest.tsx';
 import CarpenterRedeemptionHistory from './pages/admin/rewardrequest/RedeemptionHistory.tsx';
 import AdminAnnouncement from './pages/admin/announcement/AnnouncementDashboard.tsx';
@@ -80,7 +81,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/view-product-details/:priductId",
+    path: "/view-product-details/:productId",
     element: (
       <FrappeProvider
         socketPort={import.meta.env.VITE_SOCKET_PORT}
@@ -132,9 +133,15 @@ const router = createBrowserRouter([
         element: <PrivateRoutes element={<CarpenterDetails />} />,
       },
       {
+        path: "carpenter/:carpenterId",
+        element: <PrivateRoutes element={<Carpenter />} />,
+      },
+      {
         path: "category-master",
         element: <PrivateRoutes element={<CategoryMaster />} />,
       },
+
+      
       
       {
         path: "sub-category",

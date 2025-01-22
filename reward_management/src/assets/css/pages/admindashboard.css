@@ -1,9 +1,9 @@
 .category-link {
   
     border-radius: 0.5rem;
-    border-width: 1px;
+    /* border-width: 1px; */
     border-style: solid;
-    border-color: rgb(var(--default-border));
+    /* border-color: rgb(var(--default-border)); */
     padding: 1.25rem;
   
     transition-property: all;
@@ -11,6 +11,7 @@
     transition-duration: 150ms;
     transition-duration: 0.3s;
     transition-timing-function: linear;
+    
 }
 
 .page-link.bg-blue-800 {
@@ -27,4 +28,13 @@
 
 .link-icon:hover i {
     color: white;
+}
+.card-data {
+    background: rgb(81,126,130);
+    background: linear-gradient(90deg, rgba(81,126,130,1) 0%, rgba(114,151,154,1) 35%, rgba(146,175,177,1) 100%);
+}
+
+.new-launch{
+    background: rgb(31,42,44) !important;
+    background: linear-gradient(90deg, rgba(31,42,44,1) 0%, rgba(43,62,66,1) 35%, rgba(67,103,112,1) 100%) !important;
 }

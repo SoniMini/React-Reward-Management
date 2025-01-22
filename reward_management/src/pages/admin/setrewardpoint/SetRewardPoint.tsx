@@ -110,7 +110,7 @@ const SetRewardPointsDashboard: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <input
                                                 type="number"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 id="setMinPoints"
                                                 placeholder="Minimum Points"
                                                 value={minPoints}
@@ -120,7 +120,7 @@ const SetRewardPointsDashboard: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <input
                                                 type="number"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 id="setMaxPoints"
                                                 placeholder="Maximum Points"
                                                 value={maxPoints}
@@ -131,7 +131,7 @@ const SetRewardPointsDashboard: React.FC = () => {
                                             <button
                                                 id='submitpoints'
                                                 type="submit"
-                                                className="ti-btn bg-primary text-white w-full"
+                                                className="ti-btn new-launch border-none text-white w-full"
                                             >
                                                 Submit
                                             </button>

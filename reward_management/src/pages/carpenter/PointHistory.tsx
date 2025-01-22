@@ -5,7 +5,8 @@ import TableComponent from '@/components/ui/tables/tablecompnent'; // Corrected 
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
 import React, { Fragment, useState, useEffect } from "react";
 import axios from 'axios';
-// import { BASE_URL } from "../../utils/constants";
+import AvailablePoint from '../../assets/images/reward_management/02.png';
+import PointRedeemed from '../../assets/images/reward_management/04.png';
 
 interface PointHistoryItem {
     earned_points: number;
@@ -147,27 +148,34 @@ const PointHistory: React.FC = () => {
                             <div className="">
                                 <div className="">
                                     <div className="grid grid-cols-12 xl:gap-y-0 gap-4">
-                                        <div className="category-link xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
-                                            <div className="flex flex-row items-start mb-4">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
-                                                    <i className="ti ti-wallet text-[1.25rem]"></i>
+                                    <div className="category-link card-data xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
+                                            <div className="flex flex-row items-start mb-4 ">
+                                                <div className='lg:w-1/6 md:w-1/2 w-1/3'>
+                                                <span className="avatar avatar-lg bg-[#dee9eb]  inline-flex items-center justify-center w-16 h-16 rounded-full mb-2 mr-3">
+                                                    {/* <i className="ti ti-wallet text-[1.25rem]"></i> */}
+                                                    <img src={AvailablePoint} alt="" className='w-10 h-10'/>
                                                 </span>
+                                                </div>
                                                 <div className="flex flex-col items-start">
-                                                    <h5 className="text-[1.125rem] font-semibold mb-2" id='totalgeneratedPoint'>{totalPoints}</h5>
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                    <h5 className="text-[1.125rem] text-white font-semibold mb-2">{totalPoints}</h5>
+                                                    <div className="flex flex-row text-[1rem] font-semibold uppercase text-white dark:text-white/50">
                                                         <div>Available Points</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="category-link xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
-                                            <div className="flex flex-row items-start mb-4">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
-                                                    <i className="ti ti-wallet text-[1.25rem]"></i>
+                                        <div className="category-link card-data xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
+                                            <div className="flex flex-row items-start mb-4 ">
+                                            <div className='lg:w-1/6 md:w-1/2 w-1/3'>
+
+                                                <span className="avatar avatar-lg bg-[#dee9eb]  inline-flex items-center justify-center w-16 h-16 rounded-full mb-2 mr-3">
+                                                    {/* <i className="ti ti-wallet text-[1.25rem]"></i> */}
+                                                    <img src={PointRedeemed} alt="" className='w-10 h-10'/>
                                                 </span>
+                                                </div>
                                                 <div className="flex flex-col items-start">
-                                                    <h5 className="text-[1.125rem] font-semibold mb-2" id='totalscannedPoints'>{redeemPoints}</h5>
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                    <h5 className="text-[1.125rem] text-white font-semibold mb-2">{redeemPoints}</h5>
+                                                    <div className="flex flex-row text-[1rem] font-semibold uppercase text-white dark:text-white/50">
                                                         <div>Points Redeemed</div>
                                                     </div>
                                                 </div>

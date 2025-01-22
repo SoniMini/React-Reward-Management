@@ -67,15 +67,15 @@ const Sidebar = ({ isSidebarActive }) => {
                     } else {
                         // If no banner_image found, use the default logo
                         console.log('No banner_image found, using default logo.');
-                        setLogo(sidebarLogo); // Corrected default logo
+                        setLogo(sidebarLogo);
                     }
                 } else {
                     console.error('API response was not successful:', response.data.message);
-                    setLogo(sidebarLogo); // Corrected default logo
+                    setLogo(sidebarLogo);
                 }
             } catch (error) {
                 console.error('Error fetching website settings:', error);
-                setLogo(sidebarLogo); // Corrected default logo
+                setLogo(sidebarLogo); 
             } finally {
                 setLoading(false); 
             }

@@ -110,7 +110,7 @@ const NewLaunchDashboard: React.FC = () => {
                                             <button
                                                 id='submit'
                                                 type="submit"
-                                                className="ti-btn bg-primary text-white w-full"
+                                                className="ti-btn new-launch border-none  text-white w-full"
                                             >
                                                 Submit
                                             </button>

@@ -361,7 +361,7 @@ const SubCategoryMaster: React.FC = () => {
                                             <input
                                                 type="text"
                                                 id="subcategoryName"
-                                                className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm border border-[#dadada]"
+                                                className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm border border-[#dadada] outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
                                                 placeholder="Enter Product Category"
                                                 value={
                                                     productSubCategory ||
@@ -381,7 +381,7 @@ const SubCategoryMaster: React.FC = () => {
                                                         <select
                                                             id="product-category-add"
                                                             name="product-category-add"
-                                                            className="w-full border border-[#dadada] text-defaultsize text-defaulttextcolor rounded-[5px]"
+                                                            className="w-full border border-[#dadada] text-defaultsize text-defaulttextcolor rounded-[5px]  outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
                                                             value={productCategory}
                                                             onChange={(e) => setProductCategory(e.target.value)}
                                                             required
@@ -406,7 +406,7 @@ const SubCategoryMaster: React.FC = () => {
                                             <input
                                                 type="file"
                                                 multiple
-                                                className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm font-medium p-2 border border-[#dadada]"
+                                                className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm font-medium p-2 border border-[#dadada] outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
                                                 id="product-images-add"
                                                 onChange={handleFileChange}
                                             />

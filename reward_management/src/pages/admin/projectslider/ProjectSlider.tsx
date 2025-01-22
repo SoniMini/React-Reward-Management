@@ -323,7 +323,7 @@ const handleProjectLinkChange = (index: number, value: string) => {
             </h3>
             <button
             onClick={handleAddNewGuide}
-            className="ti-btn !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]"
+            className="ti-btn card-data border-none !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]"
           >
             Add New Project
           </button>
@@ -338,7 +338,7 @@ const handleProjectLinkChange = (index: number, value: string) => {
                     <h3 className="text-defaulttextcolor box-title text-[.9375rem] font-bold mb-4 ">
                                                 Project Image
                                             </h3>
-                      <button onClick={() => handleEditGuide(project)} className="ti-btn !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]">Edit</button>
+                      <button onClick={() => handleEditGuide(project)} className="ti-btn !py-1 ti-btn-primary border-none !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]">Edit</button>
                       
                     </div>
                   <div className="flex justify-center">
@@ -390,7 +390,7 @@ const handleProjectLinkChange = (index: number, value: string) => {
                     type="file"
                     multiple
                     id="file-upload"
-                    className="mt-1 block w-full p-2 border border-[#dadada] rounded-[5px]"
+                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border border-[#dadada] rounded-[5px]"
                     onChange={handleFileChange}
                   />
                   {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
@@ -467,7 +467,7 @@ const handleProjectLinkChange = (index: number, value: string) => {
                   type="file"
                   multiple
                   id="file-upload"
-                  className="mt-1 block w-full p-2 border border-[#dadada] rounded-[5px]"
+                  className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border border-[#dadada] rounded-[5px]"
                   onChange={handleFileChange}
                 />
                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}

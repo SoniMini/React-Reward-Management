@@ -1,5 +1,6 @@
 import frappe
 from frappe import _
+from frappe.utils.file_manager import save_file
 
 
 @frappe.whitelist()
@@ -171,12 +172,20 @@ def get_all_product_qr():
 @frappe.whitelist()
 def get_product_details(product_id):
     if not product_id:
-        frappe.throw(_("Product ID is required"))
+        return{
+            "success":False,
+            "message":"Product ID is required"
+        }
+        # frappe.throw(_("Product ID is required"))
 
     product = frappe.get_doc("Product", product_id)
 
     if not product:
-        frappe.throw(_("Product not found"))
+         return{
+            "success":False,
+            "message":"Product not found"
+        }
+        # frappe.throw(_("Product not found"))
 
     product_details = {
         "product_id": product.name,
@@ -186,7 +195,9 @@ def get_product_details(product_id):
         "product_images": product.product_image
     }
 
-    return {"message": product_details}
+    return {
+        "success":True,
+        "message": product_details}
 
 
 
@@ -212,9 +223,14 @@ def add_product(productName, rewardPoints, discription, productCategory,productI
         return {"success": True, "message": _("Product added successfully.")}
 
     except Exception as e:
+        return{
+            "success":False,
+            "message":f"Error adding product : {str(e)}"
+        }
+        # frappe.throw(_("Failed to add product. Please try again later."))
         # Log error and raise exception
-        frappe.log_error(f"Error adding product: {str(e)}")
-        frappe.throw(_("Failed to add product. Please try again later."))
+        # frappe.log_error(f"Error adding product: {str(e)}")
+        
 
 
 @frappe.whitelist()
@@ -223,13 +239,18 @@ def upload_file():
         # Example: Retrieving file from FormData
         file = frappe.request.files.get('file')
         if not file:
-            frappe.throw('No file attached.')
+            return{
+                "success":False,
+                "message":"No file attached."
+            }
+            # frappe.throw('No file attached.')
 
         # Example: Saving file using save_file function
         file_url = save_file(file.filename, file.stream, 'reward_management', 'Product')
 
         # Return success response with file_url
         return {
+            "success":True,
             'status': 'OK',
             'message': {
                 'file_url': file_url
@@ -237,8 +258,12 @@ def upload_file():
         }
 
     except Exception as e:
-        frappe.log_error(f'Error uploading file: {str(e)}')
-        frappe.throw('Failed to upload file. Please try again later.')
+        return{
+            "success":False,
+            "message":f"Error uploading file: {str(e)}"
+        }
+        # frappe.log_error(f'Error uploading file: {str(e)}')
+        # frappe.throw('Failed to upload file. Please try again later.')
 
 
 
@@ -250,7 +275,7 @@ def get_tableproduct_detail(product_id=None):
 
     try:
         product = frappe.get_doc("Product", product_id)
-        frappe.log_error(frappe.as_json(product.as_dict()), "Product Details")
+        # frappe.log_error(frappe.as_json(product.as_dict()), "Product Details")
         
         return {
             "message": {
@@ -263,8 +288,11 @@ def get_tableproduct_detail(product_id=None):
             }
         }
     except Exception as e:
-        frappe.log_error(frappe.get_traceback(), "get_tableproduct_detail Error")
-        frappe.throw(_("An error occurred while fetching product details."))
+        # frappe.log_error(frappe.get_traceback(), "get_tableproduct_detail Error")
+        return{
+            "success":False,
+            "message":f"Product Not Found: {str(e)}"
+        }
         
         
         
@@ -279,7 +307,11 @@ def get_product_detail(product_id):
     product = frappe.get_doc("Product", product_id)
 
     if not product:
-        frappe.throw(_("Product not found"))
+        return{
+            "success":False,
+            "message":"product not found"
+        }
+        # frappe.throw(_("Product not found"))
 
     product_details = {
         "product_id": product.name,
@@ -290,4 +322,6 @@ def get_product_detail(product_id):
         "product_images": product.product_image
     }
 
-    return {"message": product_details}
+    return {
+        "success":True,
+        "message": product_details}

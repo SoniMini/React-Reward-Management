@@ -3,7 +3,17 @@ import React, { Fragment, useState, useEffect } from "react";
 import axios from 'axios';
 // import { BASE_URL } from "../../utils/constants";
 import { Link } from 'react-router-dom';
-import viewproduct from '../../assets/images/reward_management/viewproduct.png';
+
+import TotalPoints from '../../assets/images/reward_management/01.png';
+import AvailablePoint from '../../assets/images/reward_management/02.png';
+import PointRequested from '../../assets/images/reward_management/03.png';
+import PointRedeemed from '../../assets/images/reward_management/04.png';
+import BankHistory from '../../assets/images/reward_management/08-b.png';
+import QRScanner from '../../assets/images/reward_management/05-b.png';
+import PointHistroy from '../../assets/images/reward_management/09-b.png';
+import RedeemRequest from '../../assets/images/reward_management/10-b.png';
+import HelpSupport from '../../assets/images/reward_management/011-b.png';
+import ViewProduct from '../../assets/images/reward_management/12-b.png';
 const CarpenterDashboard: React.FC = () => {
     const [redeemPoints, setRedeemPoints] = useState<number>(0);
     const [requestedPoints , setRequestedPoints] = useState<number>(0);
@@ -66,139 +76,165 @@ const CarpenterDashboard: React.FC = () => {
                         <div className="xl:col-span-12 col-span-12">
                             <div className="">
                                 <div className="">
-                                    <div className="grid grid-cols-12 xl:gap-y-0 gap-4">
-                                        <div className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
-                                            <div className="flex flex-row items-start mb-4 ">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
-                                                    <i className="ti ti-wallet text-[1.25rem]"></i>
+                                    <div className="grid grid-cols-12 xl:gap-y-0 gap-4 ">
+                                        {/*number cards start----  */}
+                                        <div className="category-link card-data xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
+                                            {/* first------- */}
+                                            <div className="flex flex-row items-start ">
+                                                <div className='xxl:w-1/3 xl:w-1/2'>
+                                                <span className="avatar avatar-lg bg-[#dee9eb] inline-flex items-center justify-center w-16 h-16 rounded-full mb-2 mr-3">
+                                                    {/* <i className="ti ti-wallet text-[1.25rem]"></i> */}
+                                                    <img src={TotalPoints} alt="" className='w-10 h-10' />
                                                 </span>
+                                                </div>
                                                 <div className="flex flex-col items-start">
-                                                    <h5 className="text-[1.125rem] font-semibold mb-2">{totalPoints}</h5>
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                    <h5 className="text-[1.125rem] text-white font-semibold mb-2">{totalPoints}</h5>
+                                                    <div className="flex flex-row text-[1rem] font-semibold uppercase text-white dark:text-white/50">
                                                         <div>Total Points</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
-                                            <div className="flex flex-row items-start mb-4 ">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
-                                                    <i className="ti ti-wallet text-[1.25rem]"></i>
+                                        {/* second-------- */}
+                                        <div className="category-link card-data xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
+                                            <div className="flex flex-row items-start ">
+                                                <div className='xxl:w-1/3 xl:w-1/2'>
+                                                <span className="avatar avatar-lg bg-[#dee9eb]  inline-flex items-center justify-center w-16 h-16 rounded-full mb-2 mr-3">
+                                                    {/* <i className="ti ti-wallet text-[1.25rem]"></i> */}
+                                                    <img src={AvailablePoint} alt="" className='w-10 h-10'/>
                                                 </span>
+                                                </div>
                                                 <div className="flex flex-col items-start">
-                                                    <h5 className="text-[1.125rem] font-semibold mb-2">{currentPoints}</h5>
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                    <h5 className="text-[1.125rem] text-white font-semibold mb-2">{currentPoints}</h5>
+                                                    <div className="flex flex-row text-[1rem] font-semibold uppercase text-white dark:text-white/50">
                                                         <div>Available Points</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
-                                            <div className="flex flex-row items-start mb-4 ">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
-                                                    <i className="ti ti-wallet text-[1.25rem]"></i>
+                                        {/* third----- */}
+                                        <div className="category-link card-data xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
+                                            <div className="flex flex-row items-start ">
+                                                <div className='xxl:w-1/3 xl:w-1/2'>
+                                                <span className="avatar avatar-lg bg-[#dee9eb]  inline-flex items-center justify-center w-16 h-16 rounded-full mb-2 mr-3">
+                                                    {/* <i className="ti ti-wallet text-[1.25rem]"></i> */}
+                                                    <img src={PointRequested} alt="" className='w-10 h-10'/>
+
                                                 </span>
+                                                </div>
                                                 <div className="flex flex-col items-start">
-                                                    <h5 className="text-[1.125rem] font-semibold mb-2">{requestedPoints}</h5>
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                    <h5 className="text-[1.125rem] font-semibold text-white mb-2">{requestedPoints}</h5>
+                                                    <div className="flex flex-row text-[1rem] font-semibold uppercase text-white dark:text-white/50">
                                                         <div>Points Requested</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
-                                            <div className="flex flex-row items-start mb-4 ">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
-                                                    <i className="ti ti-wallet text-[1.25rem]"></i>
+                                        {/* fourth------- */}
+                                        <div className="category-link card-data xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
+                                            <div className="flex flex-row items-start ">
+                                                <div className='xxl:w-1/3 xl:w-1/2'>
+                                                <span className="avatar avatar-lg  bg-[#dee9eb]  inline-flex items-center justify-center w-16 h-16 rounded-full mb-2 mr-3">
+                                                    {/* <i className="ti ti-wallet text-[1.25rem]"></i> */}
+                                                    <img src={PointRedeemed} alt="" className='w-10 h-10'/>
+
                                                 </span>
+                                                </div>
                                                 <div className="flex flex-col items-start">
-                                                    <h5 className="text-[1.125rem] font-semibold mb-2">{redeemPoints}</h5>
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                    <h5 className="text-[1.125rem] font-semibold text-white mb-2">{redeemPoints}</h5>
+                                                    <div className="flex flex-row text-[1rem] font-semibold uppercase text-white dark:text-white/50">
                                                         <div>Points Redeemed</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <Link to="/qr-scanner" className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
+                                        {/* link cards----- */}
+                                        <Link to="/qr-scanner" className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 xl:mt-5">
                                             <div className="flex flex-row items-start mb-4">
-                                                <div className='bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center'>
-                                                    <span className="avatar avatar-lg bg-primary text-white inline-flex items-center justify-center w-7 h-7 rounded-[8px]">
-                                                        <i className="bi bi-qr-code-scan text-[1rem]"></i>
+                                                <div className='rounded-full w-16 h-16 flex items-center justify-center '>
+                                                    <span className="avatar avatar-lg  text-white inline-flex items-center justify-center w-16 h-16 rounded-full">
+                                                        {/* <i className="bi bi-qr-code-scan text-[1rem]"></i> */}
+                                                        <img src={QRScanner} alt="" className=''/>
+
                                                     </span>
                                                 </div>
                                                 <div className="flex flex-col items-start">
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                    <div className="flex flex-row text-[1rem] text-defaulttextcolor font-semibold dark:text-white/50">
                                                         <div className='pl-3'>QR Scanner</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </Link>
 
-                                        <Link to="/point-history" className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
+                                        <Link to="/point-history" className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 xl:mt-5">
                                             <div className="flex flex-row items-start mb-4">
-                                            <div className='bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center'>
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-7 h-7 rounded-[8px]  ">
-                                                    <i className="bi bi-coin text-[1rem]"></i>
+                                            <div className=' rounded-full w-16 h-16 flex items-center justify-center'>
+                                                <span className="avatar avatar-lg  text-white inline-flex items-center justify-center w-16 h-16 rounded-full ">
+                                                    {/* <i className="bi bi-coin text-[1rem]"/> */}
+                                                    <img src={PointHistroy} alt="" className='' />
                                                 </span>
                                                 </div>
                                                 <div className="flex flex-col items-start">
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                    <div className="flex flex-row text-[1rem] text-defaulttextcolor font-semibold dark:text-white/50">
                                                         <div className='pl-3'>Point History</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </Link>
-                                        <Link to="/redeem-request" className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
+                                        <Link to="/redeem-request" className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 xl:mt-5">
                                             <div className="flex flex-row items-start mb-4 ">
-                                            <div className='bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center'>
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
-                                                    <i className="ri-gift-line text-[1rem]"></i>
+                                            <div className='rounded-full w-16 h-16 flex items-center justify-center'>
+                                                <span className="avatar avatar-lg  text-white inline-flex items-center justify-center  w-16 h-16 rounded-full ">
+                                                    {/* <i className="ri-gift-line text-[1rem]"></i> */}
+                                                    <img src={RedeemRequest} alt="" />
                                                 </span>
                                                 </div>
                                                 <div className="flex flex-col items-start">
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                    <div className="flex flex-row text-[1rem] text-defaulttextcolor font-semibold dark:text-white/50">
                                                         <div className='pl-3'>Redeem Request</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </Link>
-                                        <Link to="/banking-history" className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
+                                        <Link to="/banking-history" className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 xl:mt-5">
                                             <div className="flex flex-row items-start mb-4 ">
-                                            <div className='bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center'>
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
-                                                    <i className="ri-bank-line text-[1rem]"></i>
+                                            <div className='rounded-full w-16 h-16 flex items-center justify-center'>
+                                                <span className="avatar avatar-lg  text-white inline-flex items-center justify-center  w-16 h-16 rounded-full">
+                                                    {/* <i className="ri-bank-line text-[1rem]"></i> */}
+                                                    <img src={BankHistory} alt="" />
                                                 </span>
                                                 </div>
                                                 <div className="flex flex-col items-start">
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                    <div className="flex flex-row text-[1rem] text-defaulttextcolor font-semibold dark:text-white/50">
                                                         <div className='pl-3'>Bank History</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </Link>
-                                        <Link to="/help-and-support" className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
+                                        <Link to="/help-and-support" className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 xl:mt-5">
                                             <div className="flex flex-row items-start mb-4 ">
-                                            <div className='bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center'>
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
-                                                    <i className="ri-questionnaire-line text-[1rem]"></i>
+                                            <div className='rounded-full w-16 h-16 flex items-center justify-center'>
+                                                <span className="avatar avatar-lg  text-white inline-flex items-center justify-center rounded-full ">
+                                                    {/* <i className="ri-questionnaire-line text-[1rem]"></i> */}
+                                                    <img src={HelpSupport} alt="" />
                                                 </span>
                                                 </div>
                                                 <div className="flex flex-col items-start">
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                    <div className="flex flex-row text-[1rem] text-defaulttextcolor font-semibold dark:text-white/50">
                                                         <div className='pl-3'>Help & Support</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </Link>
-                                        <Link to="/customer-product" className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
+                                        <Link to="/customer-product" className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 xl:mt-5">
                                             <div className="flex flex-row items-start mb-4 ">
-                                            <div className='bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center'>
+                                            <div className=' rounded-full w-16 h-16 flex items-center justify-center'>
                                              
-                                                    <img src={viewproduct} alt="" className=' inline-flex items-center justify-center  w-7 h-7 rounded-[8px]' />
+                                                    <img src={ViewProduct} alt="" className='' />
                                               
                                                 </div>
                                                 <div className="flex flex-col items-start">
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                                    <div className="flex flex-row text-[1rem] text-defaulttextcolor font-semibold dark:text-white/50">
                                                         <div className='pl-3'>View Products</div>
                                                     </div>
                                                 </div>

@@ -351,7 +351,7 @@ const FAQDashboard: React.FC = () => {
                                         <label className="form-label text-sm text-defaulttextcolor font-semibold">FAQ ID</label>
                                         <input
                                             type="text"
-                                            className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                             value={selectedFAQ.name || ''}
                                             readOnly
                                         />
@@ -360,7 +360,7 @@ const FAQDashboard: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label htmlFor="question" className="form-label text-sm text-defaulttextcolor font-semibold">Question</label>
                                     <input
-                                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         placeholder="Enter your question here"
                                         id="question"
 
@@ -398,8 +398,8 @@ const FAQDashboard: React.FC = () => {
                                         <label className="form-label text-sm text-defaulttextcolor font-semibold">Created Date</label>
                                         <input
                                             type="text"
-                                            className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
-                                            value={selectedFAQ.created_date || ""}
+                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                            value={selectedFAQ.creation || ""}
                                             readOnly
                                         />
                                     </div>

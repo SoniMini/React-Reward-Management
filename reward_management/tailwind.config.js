@@ -22,10 +22,10 @@ module.exports = {
     screens: {
       lg: "992px",
       md: "768px",
-      sm: "480px",
-     
+      sm: "640px",
+      ssm:"480px" ,
       xl: "1200px",
-      xxl: "1400px",
+      xxl: "1500px",
       xxxl: "1800px",
     },
     borderRadius: {
