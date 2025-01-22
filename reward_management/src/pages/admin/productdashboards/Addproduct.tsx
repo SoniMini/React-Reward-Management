@@ -149,7 +149,7 @@ const AddProduct: React.FC = () => {
                                                     <label htmlFor="product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Name</label>
                                                     <input 
                                                         type="text" 
-                                                        className="form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2" 
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2" 
                                                         id="product-name-add" 
                                                         placeholder="Name" 
                                                         value={productName}
@@ -162,7 +162,7 @@ const AddProduct: React.FC = () => {
                                                     <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Reward Points</label>
                                                     <input 
                                                         type="text" 
-                                                        className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2" 
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2" 
                                                         id="product-cost-add" 
                                                         placeholder="Reward points" 
                                                         value={rewardPoints}
@@ -199,7 +199,7 @@ const AddProduct: React.FC = () => {
                                                 <input 
                                                     id="product-category-add" 
                                                     name="product-category-add" 
-                                                    className="w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2" 
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2" 
                                                     placeholder="Category"
                                                     value={productCategory}
                                                     onChange={(e) => setProductCategory(e.target.value)}
@@ -213,7 +213,7 @@ const AddProduct: React.FC = () => {
                                                     accept="image/*" 
                                                     multiple 
                                                     onChange={handleFileChange}
-                                                    className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] p-2 "
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] p-2 "
                                                 />
                                                 <div className="image-preview-grid mt-4">
                                                     {previews.map((src, index) => (

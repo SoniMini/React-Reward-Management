@@ -44,7 +44,7 @@ const CreateQRCodeModal: React.FC<ModalProps> = ({
                                 min="1"
                                 value={quantity}
                                 onChange={(e) => setQuantity(Number(e.target.value))}
-                                className="w-full p-2 border border-gray-300 rounded mb-4"
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] w-full p-2 border border-gray-300 rounded mb-4"
                                 placeholder="Enter quantity"
                                 id="quantity"
                             />

@@ -7,10 +7,10 @@ import TableComponent from '@/components/ui/tables/tablecompnent';
 import TableBoxComponent from '@/components/ui/tables/tableboxheader';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
-import { saveAs } from 'file-saver';
+// import { saveAs } from 'file-saver';
 import { jsPDF } from 'jspdf';
-import JSZip from 'jszip';
-import html2canvas from 'html2canvas';
+// import JSZip from 'jszip';
+// import html2canvas from 'html2canvas';
 
 interface QRCodeImage {
     qr_code_image: string;
@@ -20,6 +20,7 @@ interface QRCodeImage {
 interface DownloadProductQRCode {
     product_name?: string;
     generated_date?: string;
+    generated_time?: string;
     total_product?: number;
     points?: number;
     qr_code_images?: QRCodeImage[];
@@ -34,6 +35,10 @@ const DownloadQRCode: React.FC = () => {
     const navigate = useNavigate();
     const urlParams = new URLSearchParams(window.location.search);
     const productName = urlParams.get('product');
+    const [filteredData, setFilteredData] = useState<DownloadProductQRCode[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [fromDate, setFromDate] = useState<Date | null>(null);
+    const [toDate, setToDate] = useState<Date | null>(null);
 
     useEffect(() => {
         document.title="Download QR";
@@ -54,6 +59,7 @@ const DownloadQRCode: React.FC = () => {
                     const aggregatedData = response.data.message.message.map((item: any) => ({
                         product_name: item.qr_code_images[0]?.product_name || 'Unknown Product Name',
                         generated_date: item.generated_date,
+                        generated_time: item.generated_time,
                         total_product: item.total_product,
                         points: item.qr_code_images.reduce((acc: number, img: any) => acc + img.points, 0),
                         qr_code_images: item.qr_code_images, 
@@ -71,33 +77,98 @@ const DownloadQRCode: React.FC = () => {
         fetchData();
     }, [productName]);
 
-    const totalPages = Math.ceil(data.length / itemsPerPage);
 
-    const handlePrevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
 
-    const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
 
-    const handlePageChange = (pageNumber: number) => {
-        setCurrentPage(pageNumber);
+// table filter logic-------------
+useEffect(() => {
+    const parseDateString = (dateString: string): Date | null => {
+      console.log("Input dateString:", dateString);
+      if (typeof dateString !== 'string' || !dateString.trim()) {
+        console.error("Expected a non-empty string, but received:", dateString);
+        return null;
+      }
+  
+      const parts = dateString.split('-'); 
+      if (parts.length !== 3) {
+        console.error("Invalid date format:", dateString);
+        return null;
+      }
+  
+      const day = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1; 
+      const year = parseInt(parts[2], 10);
+  
+      const date = new Date(year, month, day);
+      return isNaN(date.getTime()) ? null : date; 
     };
+  
+    const filtered = data
+      ?.map((item) => ({
+        ...item,
+        generated_date: item.generated_date || "", 
+      }))
+      .filter((item) => {
+        const query = searchQuery.toLowerCase();
+        const generatedDateString = item.generated_date;
+  
+        const generatedDate = generatedDateString
+          ? parseDateString(generatedDateString)
+          : null;
+  
+        const isWithinDateRange =
+          (!fromDate || (generatedDate && generatedDate >= new Date(fromDate))) &&
+          (!toDate || (generatedDate && generatedDate <= new Date(toDate)));
+  
+        const matchesSearchQuery =
+          item.product_name?.toLowerCase().includes(query) ||
+          (item.points && item.points.toString().includes(query)) ||
+          (item.generated_time && item.generated_time.toString().includes(query)) ||
+          (item.total_product && item.total_product.toString().includes(query));
+  
+        return isWithinDateRange && matchesSearchQuery;
+      });
+  
+    setFilteredData(filtered);
+  }, [data, searchQuery, fromDate, toDate]);
+  
 
-    const handleSearch = (value: string) => {
-        console.log("Search value:", value);
-       
-    };
+const totalPages = Math.ceil(data.length / itemsPerPage);
 
-    const handleAddProductClick = () => {
-        console.log("Back button clicked");
-        navigate('/product-master');
-    };
+const handlePrevPage = () => {
+    if (currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+    }
+};
+
+const handleNextPage = () => {
+    if (currentPage < totalPages) {
+        setCurrentPage(currentPage + 1);
+    }
+};
+
+const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+};
+
+const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+
+const handleAddProductClick = () => {
+    console.log("Back button clicked");
+    navigate('/product-master');
+};
+
+const handleDateFilter = (from: Date | null, to: Date | null) => {
+    setFromDate(from);
+    setToDate(to);
+    setCurrentPage(1);
+  };
+
+  if (error) return <div>Error: {error}</div>;
+
 
     // // Function to handle QR code image download
     // const handleDownloadQR = (row: DownloadProductQRCode) => {
@@ -117,38 +188,38 @@ const DownloadQRCode: React.FC = () => {
 const handleDownloadQR = async (row: DownloadProductQRCode) => {
     const pdf = new jsPDF({
         orientation: 'landscape',
-        unit: 'mm', // Unit in millimeters
-        format: [80, 38], // Page size: 80mm by 38mm
+        unit: 'mm', 
+        format: [80, 38], 
     });
 
-    const imageWidth = 33; // Image width in mm
-    const imageHeight = 33; // Image height in mm
-    const imagesPerRow = 2; // 2 images per row
-    const rowsPerPage = 1; // 1 row per page
+    const imageWidth = 33; 
+    const imageHeight = 33;
+    const imagesPerRow = 2;
+    const rowsPerPage = 1; 
 
-    const marginLeft = 2; // Left margin in mm
-    const marginRight = 2; // Right margin in mm
-    const marginTop = 2.5; // Top margin in mm
-    const marginBottom = 2.5; // Bottom margin in mm
+    const marginLeft = 2;
+    const marginRight = 2; 
+    const marginTop = 2.5; 
+    const marginBottom = 2.5; 
 
     // Calculate available space for images
-    const pageWidth = 80; // Page width in mm
-    const pageHeight = 38; // Page height in mm
-    const availableWidth = pageWidth - marginLeft - marginRight; // Width after margins
-    const availableHeight = pageHeight - marginTop - marginBottom; // Height after margins
+    const pageWidth = 80; 
+    const pageHeight = 38; 
+    const availableWidth = pageWidth - marginLeft - marginRight;
+    const availableHeight = pageHeight - marginTop - marginBottom; 
 
     // Calculate the gap between images dynamically
     const gapX = (availableWidth - imagesPerRow * imageWidth) / (imagesPerRow - 1);
     const gapY = (availableHeight - rowsPerPage * imageHeight) / (rowsPerPage - 1);
 
-    let currentImageIndex = 0; // Track the current image index
-    let currentY = marginTop; // Start from the top margin
+    let currentImageIndex = 0; 
+    let currentY = marginTop; 
 
     // Loop through images and place them
     while (currentImageIndex < row.qr_code_images.length) {
         if (currentImageIndex % (imagesPerRow * rowsPerPage) === 0 && currentImageIndex > 0) {
-            pdf.addPage(); // Add a new page if needed
-            currentY = marginTop; // Reset Y position
+            pdf.addPage(); 
+            currentY = marginTop; 
         }
 
         // Calculate the X position for the current image
@@ -159,7 +230,7 @@ const handleDownloadQR = async (row: DownloadProductQRCode) => {
 
         // Move to the next row after placing the last image in the row
         if ((currentImageIndex + 1) % imagesPerRow === 0) {
-            currentY += imageHeight + gapY; // Adjust for the next row
+            currentY += imageHeight + gapY; 
         }
 
         currentImageIndex++;
@@ -242,6 +313,9 @@ const handleDownloadQR = async (row: DownloadProductQRCode) => {
                             onAddButtonClick={handleAddProductClick} 
                             buttonText="Back" 
                             showButton={true} 
+                            showFromDate={true}
+                            showToDate={true}
+                            onDateFilter={handleDateFilter}
                             icon="ri-arrow-left-line"
                         />
 
@@ -251,9 +325,13 @@ const handleDownloadQR = async (row: DownloadProductQRCode) => {
                                     { header: 'Product Name', accessor: 'product_name' },
                                     { header: 'Reward Points', accessor: 'points' },
                                     { header: 'Generated Date', accessor: 'generated_date' },
+                                    { header: 'Generated Time', accessor: 'generated_time' },
                                     { header: 'Total QR', accessor: 'total_product' },
                                 ]}
-                                data={data}
+                                data={filteredData.slice(
+                                    (currentPage - 1) * itemsPerPage,
+                                    currentPage * itemsPerPage
+                                  )}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}

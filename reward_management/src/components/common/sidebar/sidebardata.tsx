@@ -19,12 +19,12 @@ import RedeemIcon from '@mui/icons-material/Redeem';
 import { IconHelpHexagon } from '@tabler/icons-react';
 import '../../../assets/css/sidebar.css';
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
-import ViewProduct from '../../../assets/images/reward_management/viewproducts.png'
+import ViewProduct from '../../../assets/images/reward_management/product-research.png'
 import { TbCategoryPlus } from "react-icons/tb";
 import { MdOutlineCategory } from "react-icons/md";
 import CustomerProduct from '../../../assets/images/reward_management/customer-loyalty.png'
 import { SiOpenproject } from "react-icons/si";
-import SocialMediaLink from '../../../assets/images/reward_management/social-media.png';
+import SocialMediaLink from '../../../assets/images/reward_management/network.png';
 
 
 

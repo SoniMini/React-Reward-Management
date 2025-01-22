@@ -20,7 +20,7 @@ def print_qr_code():
     for qr_doc in qr_docs:
         qr_doc['qr_table_data'] = frappe.get_all("Product QR Table",
                                                  filters={"parent": qr_doc['name']},
-                                                 fields=["product_table_name", "qr_code_image", "product_qr_id", "points","generated_date","scanned","product_qr_name","carpenter_id","carpenter_name","mobile_number","redeem_date"])
+                                                 fields=["product_table_name", "qr_code_image", "product_qr_id", "points","generated_date","generated_time","scanned","product_qr_name","carpenter_id","carpenter_name","mobile_number","redeem_date"])
               # Format date fields as dd-MM-yyyy
         for qr_data in qr_doc['qr_table_data']:
             if qr_data.get('generated_date'):
@@ -221,18 +221,18 @@ def get_product_by_name(productName):
     product_qr_docs = frappe.get_all("Product QR", filters={"product_name": productName}, fields=["name", "product_name"])
 
     if not product_qr_docs:
-        return {"success":False,"message": "No products found with the given name."}
+        return {"message": "No products found with the given name."}
 
-    # Initialize dictionaries to store counts and data by date
-    counts_by_date = {}
-    qr_data_by_date = {}
+    # Initialize dictionaries to store counts and data by date and time
+    counts_by_date_time = {}
+    qr_data_by_date_time = {}
 
     # Fetch child table data linked with qr_table field for each Product QR document
     for product_qr_doc in product_qr_docs:
         qr_table_data = frappe.get_all("Product QR Table",
                                        filters={"parent": product_qr_doc['name']},
-                                       fields=["product_table_name", "qr_code_image", "product_qr_id", "points", "generated_date"],
-                                       order_by="generated_date desc")
+                                       fields=["product_table_name", "qr_code_image", "product_qr_id", "points", "generated_date", "generated_time"],
+                                       order_by="generated_date desc, generated_time desc")
 
         # Ensure qr_table_data is populated
         product_qr_doc['qr_table_data'] = qr_table_data
@@ -241,40 +241,120 @@ def get_product_by_name(productName):
         for qr_data in qr_table_data:
             if qr_data.get('generated_date'):
                 formatted_date = frappe.utils.formatdate(qr_data['generated_date'], 'dd-MM-yyyy')
-
-                # Count QR codes by generated date
-                if formatted_date in counts_by_date:
-                    counts_by_date[formatted_date] += 1
+                
+                # Extract hour and minute from generated_time (which is timedelta)
+                generated_time = qr_data['generated_time']
+                if generated_time:
+                    # Calculate total seconds to extract hours and minutes
+                    total_seconds = int(generated_time.total_seconds())
+                    hours, remainder = divmod(total_seconds, 3600)
+                    minutes, _ = divmod(remainder, 60)
+                    formatted_time = f"{hours:02}:{minutes:02}" 
                 else:
-                    counts_by_date[formatted_date] = 1
+                    continue 
 
-                # Group QR data by generated date
-                if formatted_date in qr_data_by_date:
-                    qr_data_by_date[formatted_date].append({
+                # Create a combined key for counts based on formatted date and only hour and minute
+                date_time_key = f"{formatted_date} {formatted_time}"
+
+                # Count QR codes by generated date and time
+                if date_time_key in counts_by_date_time:
+                    counts_by_date_time[date_time_key] += 1
+                else:
+                    counts_by_date_time[date_time_key] = 1
+
+                # Group QR data by generated date and time
+                if date_time_key in qr_data_by_date_time:
+                    qr_data_by_date_time[date_time_key].append({
                         "product_name": product_qr_doc['product_name'],
                         "qr_code_image": qr_data['qr_code_image'],
                         "points": qr_data['points']
                     })
                 else:
-                    qr_data_by_date[formatted_date] = [{
+                    qr_data_by_date_time[date_time_key] = [{
                         "product_name": product_qr_doc['product_name'],
                         "qr_code_image": qr_data['qr_code_image'],
                         "points": qr_data['points']
                     }]
 
-    # Prepare formatted data with unique dates, total counts, and QR code images
+    # Prepare formatted data with unique date-time keys, total counts, and QR code images
     formatted_data = []
-    for generated_date, qr_data_list in qr_data_by_date.items():
-        total_points = sum(qr_data.get("points", 0) for qr_data in qr_data_list)
-        total_count = counts_by_date.get(generated_date, 0)
+    for date_time_key, qr_data_list in qr_data_by_date_time.items():
+        total_count = counts_by_date_time.get(date_time_key, 0)
+        formatted_date, formatted_time = date_time_key.split(' ', 1) 
         formatted_data.append({
-            "generated_date": generated_date,
+            "generated_date": formatted_date,
+            "generated_time": formatted_time,
             "total_product": total_count,
-            "total_points": total_points,
             "qr_code_images": qr_data_list
         })
 
-    return {"success":True,"message": formatted_data}
+    return {"message": formatted_data}
+
+
+# @frappe.whitelist()
+# def get_product_by_name(productName):
+#     if not productName:
+#         return {"message": "Product name is required."}
+
+#     # Fetch Product QR documents by product name
+#     product_qr_docs = frappe.get_all("Product QR", filters={"product_name": productName}, fields=["name", "product_name"])
+
+#     if not product_qr_docs:
+#         return {"success":False,"message": "No products found with the given name."}
+
+#     # Initialize dictionaries to store counts and data by date
+#     counts_by_date = {}
+#     qr_data_by_date = {}
+
+#     # Fetch child table data linked with qr_table field for each Product QR document
+#     for product_qr_doc in product_qr_docs:
+#         qr_table_data = frappe.get_all("Product QR Table",
+#                                        filters={"parent": product_qr_doc['name']},
+#                                        fields=["product_table_name", "qr_code_image", "product_qr_id", "points", "generated_date","generated_time"],
+#                                        order_by="generated_date desc, generated_time desc")
+
+#         # Ensure qr_table_data is populated
+#         product_qr_doc['qr_table_data'] = qr_table_data
+
+#         # Format date fields as dd-MM-yyyy
+#         for qr_data in qr_table_data:
+#             if qr_data.get('generated_date'):
+#                 formatted_date = frappe.utils.formatdate(qr_data['generated_date'], 'dd-MM-yyyy')
+                
+
+#                 # Count QR codes by generated date
+#                 if formatted_date in counts_by_date:
+#                     counts_by_date[formatted_date] += 1
+#                 else:
+#                     counts_by_date[formatted_date] = 1
+
+#                 # Group QR data by generated date
+#                 if formatted_date in qr_data_by_date:
+#                     qr_data_by_date[formatted_date].append({
+#                         "product_name": product_qr_doc['product_name'],
+#                         "qr_code_image": qr_data['qr_code_image'],
+#                         "points": qr_data['points']
+#                     })
+#                 else:
+#                     qr_data_by_date[formatted_date] = [{
+#                         "product_name": product_qr_doc['product_name'],
+#                         "qr_code_image": qr_data['qr_code_image'],
+#                         "points": qr_data['points']
+#                     }]
+
+#     # Prepare formatted data with unique dates, total counts, and QR code images
+#     formatted_data = []
+#     for generated_date, qr_data_list in qr_data_by_date.items():
+#         total_points = sum(qr_data.get("points", 0) for qr_data in qr_data_list)
+#         total_count = counts_by_date.get(generated_date, 0)
+#         formatted_data.append({
+#             "generated_date": generated_date,
+#             "total_product": total_count,
+#             "total_points": total_points,
+#             "qr_code_images": qr_data_list
+#         })
+
+#     return {"success":True,"message": formatted_data}
 
 
 

@@ -69,7 +69,7 @@ const Faqs = () => {
             <div className="xl:col-span-12 col-span-12">
               <div className="box">
                 <div className="box-header">
-                  <div className="box-title text-[.9375rem] text-defaulttextcolor font-bold p-[1.25rem] ">
+                  <div className="box-title text-[.9375rem] text-primary font-bold p-[1.25rem] ">
                     General Topics ?
                   </div>
                   <hr />
@@ -86,8 +86,8 @@ const Faqs = () => {
           <button
             className={`group py-4 px-5 inline-flex items-center justify-between gap-x-3 w-full font-semibold text-start transition ${
               expandedIndex === index
-                ? 'text-primary bg-primary/10 dark:text-primary'  // Active styles
-                : 'text-gray-800 hover:text-gray-500 dark:text-gray-200 dark:hover:text-white/80'  // Inactive styles
+                ? 'text-primary bg-[#dee9eb] dark:text-primary'  // Active styles
+                : 'text-primary hover:text-primary/50 dark:text-primary/50 dark:hover:text-white/80'  // Inactive styles
             }`}
             aria-controls={`hs-accordion-collapse-${index}`}
             type="button"
@@ -95,7 +95,7 @@ const Faqs = () => {
           >
             {faq.question}
             <svg
-              className={`w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-[#8c9097] ${expandedIndex === index ? 'hidden' : 'block'}`}
+              className={`w-3 h-3 text-primary group-hover:text-primary/50 dark:text-primary ${expandedIndex === index ? 'hidden' : 'block'}`}
               width="16"
               height="16"
               viewBox="0 0 16 16"
@@ -110,7 +110,7 @@ const Faqs = () => {
               />
             </svg>
             <svg
-              className={`w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-[#8c9097] ${expandedIndex === index ? 'block' : 'hidden'}`}
+              className={`w-3 h-3 text-primary group-hover:text-primary/50 dark:text-primary ${expandedIndex === index ? 'block' : 'hidden'}`}
               width="16"
               height="16"
               viewBox="0 0 16 16"
@@ -133,7 +133,7 @@ const Faqs = () => {
             {/* <p className="py-4 px-5">
               {stripHTML(faq.answer)}
             </p> */}
-              <p className="py-4 px-5" dangerouslySetInnerHTML={{ __html: faq.answer }} />
+              <p className="py-4 px-5 text-primary" dangerouslySetInnerHTML={{ __html: faq.answer }} />
           </div>
         </div>
       ))}

@@ -1,233 +1,144 @@
-// import React, { Fragment, useState, useEffect } from "react";
-// import { Link } from "react-router-dom";
-// import '../../assets/css/header.css';
-// // import '../../assets/css/style.css';
+import { Fragment, useState, useEffect } from "react";
+import '../../assets/css/pages/admindashboard.css';
+import ProfilePic from '/src/assets/images/reward_management/9.jpg';
+import '../../assets/css/header.css';
+import '../../assets/css/style.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'boxicons/css/boxicons.min.css';
+import sidebarLogo from '../../assets/images/01.png';
+import axios from 'axios';
+import { Link } from "react-router-dom";
 
-// import ProfilePic from '../../assets/images/reward_management/9.jpg';
-// import { IconAlignLeft } from '@tabler/icons-react';
-// import { IconX } from '@tabler/icons-react';
-// import '@fortawesome/fontawesome-free/css/all.min.css';
-// import 'boxicons/css/boxicons.min.css';
-// import NotificationDropdown from '@/components/ui/notification';
-// import Modalsearch from "./modalsearch/modalsearch";
+const Header = () => {
+    const [logo, setLogo] = useState(null);
+    const [loading, setLoading] = useState(true); 
+    const [fullScreen, setFullScreen] = useState(false);
+    const [theme, setTheme] = useState({
+        dataNavLayout: 'vertical',
+        dataVerticalStyle: 'closed',
+        dataNavStyle: 'menu-click',
+        toggled: '',
+        class: 'light',
+    });
 
-// const Header = ({ toggleSidebar, isSidebarActive }) => {
-//     const [fullScreen, setFullScreen] = useState(false);
-//     const [theme, setTheme] = useState({
-//         dataNavLayout: 'vertical',
-//         dataVerticalStyle: 'closed',
-//         dataNavStyle: 'menu-click',
-//         toggled: '',
-//         class: 'light',
-//     });
+    // Fullscreen toggle handler
+    const toggleFullScreen = () => {
+        const elem = document.documentElement;
+        if (!document.fullscreenElement) {
+            elem.requestFullscreen().then(() => setFullScreen(true));
+        } else {
+            document.exitFullscreen().then(() => setFullScreen(false));
+        }
+    };
 
-//     const [dropdownOpen, setDropdownOpen] = useState(false);
-//     const [notificationCount, setNotificationCount] = useState(5);
-//     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-//     const [isDropdownVisible, setDropdownVisible] = useState(false);
+    // Fullscreen change listener
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setFullScreen(!!document.fullscreenElement);
+        };
 
-//     const toggleDropdown = () => {
-//         setDropdownOpen(!dropdownOpen);
-//     };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+        };
+    }, []);
 
-//     const toggleFullScreen = () => {
-//         const elem = document.documentElement;
-//         if (!document.fullscreenElement) {
-//             elem.requestFullscreen().then(() => setFullScreen(true));
-//         } else {
-//             document.exitFullscreen().then(() => setFullScreen(false));
-//         }
-//     };
+    // Theme toggle handler
+    const toggleDarkMode = () => {
+        const newClass = theme.class === 'dark' ? 'light' : 'dark';
+        const updatedTheme = {
+            ...theme,
+            class: newClass,
+            dataHeaderStyles: newClass,
+            dataMenuStyles: theme.dataNavLayout === 'horizontal' ? newClass : 'dark',
+        };
 
-//     const handleFullscreenChange = () => {
-//         setFullScreen(!!document.fullscreenElement);
-//     };
+        setTheme(updatedTheme);
+        applyTheme(updatedTheme);
 
-//     useEffect(() => {
-//         document.addEventListener('fullscreenchange', handleFullscreenChange);
-//         return () => {
-//             document.removeEventListener('fullscreenchange', handleFullscreenChange);
-//         };
-//     }, []);
+        localStorage.setItem(`ynex${newClass}theme`, newClass);
+        localStorage.removeItem(`ynex${newClass === 'dark' ? 'light' : 'dark'}theme`);
+        localStorage.removeItem("ynexMenu");
+        localStorage.removeItem("ynexHeader");
+    };
 
-//     const ToggleDark = () => {
-//         const newClass = theme.class === 'dark' ? 'light' : 'dark';
-//         const newTheme = {
-//             ...theme,
-//             "class": newClass,
-//             "dataHeaderStyles": newClass,
-//             "dataMenuStyles": theme.dataNavLayout === 'horizontal' ? newClass : "dark"
-//         };
+    // Apply theme to the document
+    const applyTheme = (currentTheme) => {
+        const root = document.documentElement;
+        Object.entries(currentTheme).forEach(([key, value]) => {
+            if (key.startsWith('data')) {
+                root.style.setProperty(`--${key}`, value);
+            }
+        });
+    };
 
-//         setTheme(newTheme);
-//         applyTheme(newTheme);
+    // Fetch website settings and apply theme
+    useEffect(() => {
+        const fetchWebsiteSettings = async () => {
+            try {
+                const response = await axios.get('/api/method/reward_management_app.api.website_settings.get_website_settings');
+                const { data } = response;
 
-//         if (newClass === 'dark') {
-//             localStorage.setItem("ynexdarktheme", "dark");
-//             localStorage.removeItem("ynexlighttheme");
-//         } else {
-//             localStorage.setItem("ynexlighttheme", "light");
-//             localStorage.removeItem("ynexdarktheme");
-//         }
-//         localStorage.removeItem("ynexMenu");
-//         localStorage.removeItem("ynexHeader");
-//     };
+                if (data?.message?.status === 'success') {
+                    const bannerImage = data.message.data.banner_image;
+                    const fullBannerImageURL = bannerImage ? `${window.origin}${bannerImage}` : sidebarLogo;
+                    setLogo(fullBannerImageURL);
+                } else {
+                    setLogo(sidebarLogo);
+                    console.error('Invalid API response:', data.message);
+                }
+            } catch (error) {
+                setLogo(sidebarLogo);
+                console.error('Error fetching website settings:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-//     const applyTheme = (theme) => {
-//         const root = document.documentElement;
-//         root.style.setProperty('--data-nav-layout', theme.dataNavLayout);
-//         root.style.setProperty('--data-vertical-style', theme.dataVerticalStyle);
-//         root.style.setProperty('--data-nav-style', theme.dataNavStyle);
-//         root.style.setProperty('--data-toggled', theme.toggled);
-//         root.style.setProperty('--data-class', theme.class);
+        fetchWebsiteSettings();
+        applyTheme(theme);
+    }, [theme]);
 
-//         const sidemenu = document.querySelector(".side-menu");
-//         const appHeader = document.querySelector(".app-header");
-//         if (sidemenu) {
-//             const sidebarWidth = isSidebarActive ? '5rem' : '15rem'; // Width changes based on icon
-//             sidemenu.style.width = sidebarWidth;
-//             if (appHeader) {
-//                 appHeader.style.paddingLeft = sidebarWidth; // Adjust header padding to match sidebar width
-//             }
-//         }
-//     };
+    // Show loading spinner if loading
+    if (loading) {
+        return <div className="loading">Loading...</div>;
+    }
 
-//     useEffect(() => {
-//         applyTheme(theme);
-//     }, [theme, isSidebarActive]);
+    return (
+        <Fragment>
+            <header className="bg-white border border-defaultborder border-b-2">
+                <nav className="main-header h-[3.75rem] lg:mx-20 md:mx-10 mx-5">
+                    <div className="main-header-container">
+                        <div className="header-content-left">
+                            <div className="header-element md:px-[0.325rem] flex items-center">
+                                <img
+                                    src={logo}
+                                    alt="logo"
+                                    className="sidebar-logo w-18 h-10"
+                                />
+                            </div>
+                        </div>
+                        <div className="header-content-right flex items-center">
+                            <div className="header-element py-[1rem]">
+                                <button className="header-btn" onClick={toggleFullScreen}>
+                                    <i className={`header-link-icon bx ${fullScreen ? 'bx-exit-fullscreen' : 'bx-fullscreen'}`}></i>
+                                </button>
+                            </div>
+                            <div className="header-element py-[1rem] md:px-[0.65rem] px-2 header-search">
+                                <Link to="/" title="Go to Profile">
+                                    <img
+                                        className="inline-block rounded-full w-[30px] h-[30px]"
+                                        src={ProfilePic}
+                                        alt="Profile"
+                                    />
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+        </Fragment>
+    );
+};
 
-
-
-//     const handleOpenSearchModal = () => {
-//         setIsSearchModalOpen(true);
-//     };
-
-//     const handleCloseSearchModal = () => {
-//         setIsSearchModalOpen(false);
-//     };
-//     const handleDropdownToggle = () => {
-//         setDropdownVisible(prevState => !prevState);
-//     };
-
-
-
-//     return (
-//         <Fragment>
-//             <header className="app-header">
-//                 <nav className="main-header h-[3.75rem]">
-//                     <div className="main-header-container ps-[0.725rem] pe-[1rem]">
-//                         <div className="header-content-left">
-//                             <div className="header-element md:px-[0.325rem] !items-center">
-//                                 <Link
-//                                     aria-label="Toggle Sidebar"
-//                                     className="sidemenu-toggle animated-arrow hor-toggle horizontal-navtoggle inline-flex items-center"
-//                                     to="#"
-//                                     onClick={toggleSidebar}
-//                                 >
-//                                     {isSidebarActive ? (
-//                                         <IconX className="text-[rgb(var(--header-prime-color))]" />
-//                                     ) : (
-//                                         <IconAlignLeft className="text-[rgb(var(--header-prime-color))]" />
-//                                     )}
-//                                 </Link>
-//                             </div>
-//                         </div> 
-
-
-//                         <div className="header-content-right flex items-center ">
-
-//                             {/* search btn logic start------- */}
-//                             <div className="header-element py-[1rem] md:px-[0.65rem] px-2 header-search">
-//                                 <button
-//                                     aria-label="button"
-//                                     type="button"
-//                                     onClick={handleOpenSearchModal}
-//                                     className="inline-flex flex-shrink-0 justify-center items-center gap-2 rounded-full font-medium focus:ring-offset-0 focus:ring-offset-white transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-[#8c9097] dark:text-white/50 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
-//                                 >
-//                                     <i className="bx bx-search-alt-2 header-link-icon"></i>
-//                                 </button>
-//                             </div>
-//                             {/* end search btn */}
-
-//                             {/* notification logic start------- */}
-//                             <div>
-//                                 <div className="header-element py-[1rem] md:px-[0.65rem] px-2">
-//                                     <button className="header-btn header-btn-search" onClick={toggleDropdown}>
-//                                         <div className="notification-icon-container relative">
-//                                             <i className="bx bx-bell header-link-icon" style={{ color: 'rgb(83, 100, 133)' }}></i>
-//                                             {notificationCount > 0 && (
-//                                                 <span className="flex absolute h-5 w-5 -top-[0.25rem] end-0 -me-[0.6rem]">
-//                                                     <span className="animate-slow-ping absolute inline-flex -top-[2.5px] -start-[2.5px] h-full w-full rounded-full bg-[var(--bg-secondary)]   opacity-75"></span>
-//                                                     <span
-//                                                         className="relative inline-flex justify-center items-center rounded-full h-[14.7px] w-[14px]  bg-[var(--secondaries)]  text-[0.625rem] text-white"
-//                                                         id="notification-icon-badge"
-//                                                     >
-//                                                         {notificationCount}
-//                                                     </span>
-//                                                 </span>
-//                                             )}
-//                                         </div>
-//                                     </button>
-//                                 </div>
-
-//                                 <NotificationDropdown isOpen={dropdownOpen} toggleDropdown={toggleDropdown} />
-//                             </div>
-//                             {/* end notification */}
-
-
-//                             {/* start full screen */}
-//                             <div className="header-element py-[1rem] md:px-[0.65rem] px-2">
-//                                 <button className="header-btn" onClick={toggleFullScreen}>
-//                                     <i className={`header-link-icon bx ${fullScreen ? 'bx-exit-fullscreen' : 'bx-fullscreen'}`}></i>
-//                                 </button>
-//                             </div>
-//                             {/* end of fullscreen */}
-
-//                             {/* start of user profile */}
-//                             <div className="header-element py-[1rem] md:px-[0.65rem] px-2">
-
-//                                 <button id="dropdown-profile" type="button"
-//                                     className="hs-dropdown-toggle ti-dropdown-toggle !gap-2 !p-0 flex-shrink-0 sm:me-2 me-0 !rounded-full !shadow-none text-xs align-middle !border-0 !shadow-transparent "
-//                                     onClick={handleDropdownToggle}>
-//                                     <img className="inline-block rounded-full " src={ProfilePic} width="32" height="32" alt="Image Description" />
-//                                 </button>
-//                                 <div className="md:block hidden dropdown-profile cursor-pointer" onClick={handleDropdownToggle}>
-//                                     <p className="font-semibold mb-0 leading-none text-[#536485] text-[0.813rem] ">Json Taylor</p>
-//                                     <span className="opacity-[0.7] font-normal text-[#536485] block text-[0.6875rem] ">Web Designer</span>
-//                                 </div>
-//                                 {/* user profile list--- */}
-//                                 <div
-//                                     className={`hs-dropdown-menu main-header-dropdown ti-dropdown-menu bg-white mt-3 fixed top-12 right-4 border-0 w-[10rem] p-0 border-defaultborder ${isDropdownVisible ? '' : 'hidden'}  pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end`}
-//                                     aria-labelledby="dropdown-profile"
-//                                 >
-//                                     <ul className="text-defaulttextcolor font-medium dark:text-[#8c9097] dark:text-white/50">
-//                                         <li className="user-profile-list hover:bg-[var(--bg-primary)] hover:text-[var(--primaries)] ">
-//                                             <a className="w-full ti-dropdown-item !text-[0.8125rem] !gap-x-0 !p-[0.65rem] !inline-flex" href={`/admin-dashboard`}>
-//                                                 <i className="ti ti-user-circle text-[1.125rem] me-2 opacity-[0.7]"></i>Profile
-//                                             </a>
-//                                         </li>
-//                                         <li className="user-profile-list hover:bg-[var(--bg-primary)]  hover:text-[var(--primaries)]">
-//                                             <a className="w-full ti-dropdown-item !text-[0.8125rem] !gap-x-0 !p-[0.65rem] !inline-flex" href={`/`}>
-//                                                 <i className="ti ti-adjustments-horizontal text-[1.125rem] me-2 opacity-[0.7]"></i>Settings
-//                                             </a>
-//                                         </li>
-//                                         <li className="user-profile-list hover:bg-[var(--bg-primary)]  hover:text-[var(--primaries)]">
-//                                             <a className="w-full ti-dropdown-item !text-[0.8125rem] !p-[0.65rem] !gap-x-0 !inline-flex" href={`/`}>
-//                                                 <i className="ti ti-logout text-[1.125rem] me-2 opacity-[0.7]"></i>Log Out
-//                                             </a>
-//                                         </li>
-//                                     </ul>
-//                                 </div>
-
-//                             </div>
-//                         </div>
-//                         {/* end of user profile */}
-//                     </div>
-//                 </nav>
-//             </header>
-//             <Modalsearch isOpen={isSearchModalOpen} onClose={handleCloseSearchModal} />
-//         </Fragment>
-//     );
-// };
-
-// export default Header;
+export default Header;

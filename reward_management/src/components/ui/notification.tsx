@@ -111,7 +111,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, tog
                             <p className="mb-0 text-[1.0625rem] text-defaulttextcolor font-semibold dark:text-[#8c9097] dark:text-white/50">
                                 Notifications
                             </p>
-                            <span className="text-xs py-[0.25rem/2] px-[0.45rem] rounded-sm bg-cyan-50 text-[var(--secondaries)] bg-[var(--bg-secondary)]" id="notification-data">
+                            <span className="text-xs py-[0.25rem/2] px-[0.45rem] rounded-[4px] bg-[#dee9eb] text-primary font-medium" id="notification-data">
                                 {notificationCount} unread
                             </span>
                         </div>
@@ -133,7 +133,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, tog
                                                 />
                                             </span>
                                             <div className="flex-1 mx-2">
-                                                <p className="mb-0 text-defaulttextcolor dark:text-[#8c9097] dark:text-white/50 text-[0.8125rem] font-semibold">
+                                                <p className="mb-0 text-primary dark:text-[#8c9097] dark:text-white/50 text-[0.8125rem] font-semibold">
                                                     <Link to="view-all-notifications">
                                                         <span dangerouslySetInnerHTML={{ __html: notification.subjectHTML }} />
                                                     </Link>
@@ -157,7 +157,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, tog
                         </div>
                         <div className="p-4">
                             <div className="grid">
-                                <Link to='/view-all-notifications' className="ti-btn ti-btn-primary-full !m-0 w-full p-2">View All</Link>
+                                <Link to='/view-all-notifications' className="ti-btn new-launch border-none text-white !m-0 w-full p-2">View All</Link>
                             </div>
                         </div>
                         </div>

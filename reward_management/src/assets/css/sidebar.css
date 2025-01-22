@@ -1,8 +1,8 @@
 /* Existing styles for the sidebar */
 .side-menu {
     width: 15rem; /* Default width */
-    background-color: rgb(17 ,28 ,67);
-    /* background-color: rgb(1 ,70 ,77); */
+    /* background-color: rgb(17 ,28 ,67); */
+    background-color: rgb(5 ,74 ,82);
     color: white;
     transition: width 0.3s ease; /* Smooth transition for width change */
     position: fixed;
@@ -16,10 +16,10 @@
 
 .side-menu:hover{
     width: 15rem !important;
-    background-color: rgb(17, 28 ,67);
-    /* background-color: rgb(1 ,70 ,77); */
+    /* background-color: rgb(17, 28 ,67); */
+    background-color: rgb(5 ,74 ,82);
     color: white;
-     transition: width 0.3s ease; /* Smooth transition for width change */
+    transition: width 0.3s ease; /* Smooth transition for width change */
     position: fixed;
     top: 0;
     left: 0;
@@ -148,7 +148,7 @@
         line-height: 1;
         font-weight: 600;
         --tw-text-opacity: 1;
-        color: rgb(163 174 209 / var(--tw-text-opacity));
+        /* color: rgb(163 174 209 / var(--tw-text-opacity)); */
         text-decoration-line: none;
        
     
@@ -166,7 +166,7 @@
     font-weight: 600;
     line-height: 1;
     --tw-text-opacity: 1;
-    color: rgb(163 174 209 / var(--tw-text-opacity));
+    /* color: rgb(163 174 209 / var(--tw-text-opacity)); */
   
     text-decoration-line: none;
    

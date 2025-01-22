@@ -123,24 +123,29 @@ html {
 /* Root variables */
 :root {
     --body-bg: rgb(240 241 247);
-    --primary-btn: 132 90 223;
-    --bg-primary: rgba(132, 90, 223, 0.102);
+    /* --primary-btn: 132 90 223; */
+    --primary-btn: 5 74 82;
+
+    /* --bg-primary: rgba(132, 90, 223, 0.102); */
+    --bg-primary: rgba(222,233,235,255);
     --bg-secondary: rgb(207 250 254);
     --bg-pink: rgb(248, 232, 239);
     --bg-warning: rgb(240, 225, 197);
     --bg-success: rgba(218, 244, 236, 0.922);
-    --primaries: rgb(132, 90, 223);
-    /* --primaries: rgb(143, 184, 188); */
+    --primaries: rgb(5, 74, 82);
+    /* --primaries: rgb(132, 90, 223); */
     /* --primaries: rgb(1, 70, 77);  */
     --secondaries: rgb(35, 183, 229);
     --pinkes: rgb(231 ,145, 188);
     --warninges: rgb(245 ,184 ,73);
     --successes: rgb(38 ,191, 148);
-    --body-bg: rgb(240 241 247);
-    --primary: 132 90 223;
-    /* --primary: 1 70 77; */
+    /* --body-bg: rgb(240 241 247); */
+    --body-bg : rgb(222,233,235);
+    /* --primary: 132 90 223; */
+    --primary: 5 74 82;
     
-    --primary-rgb: 132, 90, 223;
+    /* --primary-rgb: 132, 90, 223; */
+    --primary-rgb: 5, 74, 82;
     --secondary: 35 183 229;
     --testsec:35 183 229;
     --warning: 245 184 73;
@@ -226,3 +231,9 @@ html {
 
     flex-direction: column;
 }
+
+.ti-btn-primary{
+    background-color:  #dee9eb !important;
+    color: #01464d !important;
+}
+

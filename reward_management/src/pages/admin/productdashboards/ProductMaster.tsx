@@ -228,7 +228,8 @@ const ProductMaster: React.FC = () => {
                             buttonOnClick={handleAddProductClick} 
                         />
                         <div className="box-body m-5">
-                            <div className="table-responsive pt-2">
+                            <div className="table-responsive pt-2  overflow-scroll">
+                                
                                 <table className="table whitespace-nowrap min-w-full">
                                     <thead>
                                         <tr>
@@ -253,21 +254,21 @@ const ProductMaster: React.FC = () => {
                                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">{product.quantity}</td>
                                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">
                                                     {/* Qr Code Create Icon */}
-                                                    <Link aria-label="anchor" to="#" onClick={() => openModal(product)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
+                                                    <Link aria-label="anchor" to="#" onClick={() => openModal(product)} className="link-icon bg-[#dee9eb] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
                                                         <i className="ri-qr-code-line"></i>
                                                     </Link>
                                                     {/* Download Qr Codes--- */}
                                                     <Link
                                                         aria-label="Download QR Code"
                                                         to={`/download-qr-code?product=${encodeURIComponent(product.name)}`}
-                                                        className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2"
+                                                        className="link-icon bg-[#dee9eb] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2"
                                                     >
                                                         <i className="ri-download-2-line"></i>
                                                     </Link>
                                                 </td>
                                                 {/* Product Edit Icon and Logic---- */}
                                                 <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">
-                                                    <Link aria-label="anchor" to={`/edit-product?product=${encodeURIComponent(product.name)}`} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
+                                                    <Link aria-label="anchor" to={`/edit-product?product=${encodeURIComponent(product.name)}`} className="link-icon bg-[#dee9eb] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
                                                         <i className="ri-edit-2-fill"></i>
                                                     </Link>
 
@@ -275,7 +276,7 @@ const ProductMaster: React.FC = () => {
                                                     <Link
                                                         aria-label="anchor"
                                                         to="#"
-                                                        className={`link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2 ${product.quantity === 0 ? '' : 'opacity-50 cursor-not-allowed'}`}
+                                                        className={`link-icon bg-[#dee9eb] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2 ${product.quantity === 0 ? '' : 'opacity-50 cursor-not-allowed'}`}
                                                         onClick={(e) => {
                                                             if (product.quantity <= 0) {
                                                                 e.preventDefault();
@@ -367,7 +368,7 @@ const ProductMaster: React.FC = () => {
                                                         pageNumber <= totalPages && (
                                                             <li className="page-item px-2" key={pageNumber}>
                                                                 <button
-                                                                    className={`page-link px-2 rounded-md ${currentPage === pageNumber ? 'text-white bg-blue-800' : 'bg-gray-200'}`}
+                                                                    className={`page-link px-2 rounded-[5px] ${currentPage === pageNumber ? 'text-white bg-primary' : 'bg-[#dee9eb]'}`}
                                                                     onClick={() => handlePageChange(pageNumber)}
                                                                 >
                                                                     {pageNumber}

@@ -98,7 +98,8 @@
     fill: rgb(var(--header-prime-color));
     padding: 0.25rem;
     font-size: 1.25rem;
-    color: rgb(var(--header-prime-color));
+    /* color: rgb(var(--header-prime-color)); */
+    color: rgb(var(--primary));
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 150ms;
@@ -158,4 +159,9 @@
 }
 .text-defaulttextcolor {
     color: rgb(var(--default-text-color));
+}
+ 
+.new-launch{
+    background: rgb(31,42,44) !important;
+    background: linear-gradient(90deg, rgba(31,42,44,1) 0%, rgba(43,62,66,1) 35%, rgba(67,103,112,1) 100%) !important;
 }

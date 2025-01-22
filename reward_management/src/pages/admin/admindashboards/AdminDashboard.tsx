@@ -3,6 +3,14 @@ import '../../../assets/css/pages/admindashboard.css';
 import React, { Fragment, useState, useEffect } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import axios from 'axios';
+import TotalPoints from '../../../assets/images/reward_management/01.png';
+import AvailablePoint from '../../../assets/images/reward_management/02.png';
+import PointRequested from '../../../assets/images/reward_management/03.png';
+import TotalPrpducts from '../../../assets/images/reward_management/in-stock (1).png';
+import Carpenter from '../../../assets/images/reward_management/06.png';
+import QRScanner from '../../../assets/images/reward_management/05.png';
+import TotalPointsGenerated from '../../../assets/images/reward_management/stars.png';
+import RedeemRequest from '../../../assets/images/reward_management/10.png';
 
 interface Carpenter {
     name: string;
@@ -116,44 +124,63 @@ const AdminDashboard: React.FC = () => {
                                     {[{
                                         id: 'totalgeneratedPoint',
                                         value: totalGeneratedQrPoint,
-                                        label: 'Total Generated Points'
+                                        label: 'Total Generated Points',
+                                        image: TotalPointsGenerated
+
                                     }, {
                                         id: 'totalscannedPoints',
                                         value: countTotalScannedPoint,
-                                        label: 'Total Points Scanned'
+                                        label: 'Total Points Scanned',
+                                        image: QRScanner
+
                                     }, {
                                         id: 'totalredeemedPoint',
                                         value: countTotalRedeemedpoints,
-                                        label: 'Total Points Redeemed'
+                                        label: 'Total Points Redeemed',
+                                        image: TotalPoints
+
                                     }, {
                                         id: 'totalrequestPending',
                                         value: pendingRedeemptionCount,
-                                        label: 'Total Redemption Request Pending'
+                                        label: 'Total Redemption Request Pending',
+                                        image: PointRequested
+
                                     }, {
                                         id: 'totalavailablePoints',
                                         value: countTotalAvailablePoints,
-                                        label: 'Total Available Points'
+                                        label: 'Total Available Points',
+                                        image: AvailablePoint
+
                                     }, {
                                         id: 'registeredCarpenter',
                                         value: countTotalRegisteredCarpenter,
-                                        label: 'Registered Carpenter'
+                                        label: 'Registered Carpenter',
+                                        image: Carpenter
+
                                     }, {
                                         id: 'totalRedeemptions',
                                         value: redemptionsCount,
-                                        label: 'Total Redeemptions'
+                                        label: 'Total Redeemptions',
+                                        image: RedeemRequest
+
                                     }, {
                                         id: 'toatlProducts',
                                         value: productCount,
-                                        label: 'Total Product'
+                                        label: 'Total Product',
+                                        image: TotalPrpducts
+
                                     }].map((card, index) => (
-                                        <div key={index} className="category-link xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
-                                            <div className="flex flex-row items-start mb-4">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
-                                                    <i className="ti ti-wallet text-[1.25rem]"></i>
-                                                </span>
-                                                <div className="flex flex-col items-start">
-                                                    <h5 className="text-[1.125rem] font-semibold mb-2" id={card.id}>{card.value}</h5>
-                                                    <div className="flex flex-row text-[1rem] text-[#8c9097] dark:text-white/50">
+                                        <div key={index} className="category-link card-data xxl:col-span-3 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4  shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5">
+                                            <div className="flex flex-row items-start ">
+                                                <div className='xxl:w-1/4'>
+                                                <span className="avatar avatar-lg bg-[#dee9eb] text-white inline-flex items-center justify-center w-16 h-16 rounded-full mb-2 mr-4">
+                                                    {/* <i className="ti ti-wallet text-[1.25rem]"></i> */}
+                                                    <img src={card.image} alt={`${card.label} icon`} className='w-10 h-10 ' />
+                                                     </span>
+                                                </div>
+                                                <div className="flex flex-col items-start ">
+                                                    <h5 className="text-[1.125rem] font-semibold text-white test white mb-2" id={card.id}>{card.value}</h5>
+                                                    <div className="flex flex-row text-[1rem] text-white uppercase font-semibold dark:text-white/50">
                                                         <div>{card.label}</div>
                                                     </div>
                                                 </div>
@@ -174,9 +201,10 @@ const AdminDashboard: React.FC = () => {
                                 Top 10 Carpenters
                             </div>
                         </div>
-                        <div className="box-body m-5">
-                            <div className="table-responsive pt-2">
-                                <table className="table whitespace-nowrap min-w-full">
+                        <div className="box-body m-5 ">
+                            <div className="table-responsive pt-2 ">
+                                <div className='overflow-scroll'>
+                                <table className="table whitespace-nowrap min-w-full ">
                                     <thead>
                                         <tr>
                                             <th scope="col" className="text-start p-3 text-[.9375rem] text-defaulttextcolor font-semibold border border-gray-300">S.No</th>
@@ -206,6 +234,7 @@ const AdminDashboard: React.FC = () => {
                                         )}
                                     </tbody>
                                 </table>
+                                </div>
                                 <div className="box-footer p-4 border-t">
                                     <div className="sm:flex items-center">
                                         <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 font-normal text-defaultsize">
@@ -226,7 +255,7 @@ const AdminDashboard: React.FC = () => {
                                                     {Array.from({ length: totalPages }, (_, index) => (
                                                         <li className="page-item px-2" key={index + 1}>
                                                             <button
-                                                                className={`page-link px-2 rounded-md ${currentPage === index + 1 ? 'text-white bg-blue-800' : 'bg-gray-200'}`}
+                                                                className={`page-link px-2 rounded-[5px] ${currentPage === index + 1 ? 'text-white bg-primary' : 'bg-[#dee9eb]'}`}
                                                                 onClick={() => handlePageChange(index + 1)}
                                                             >
                                                                 {index + 1}

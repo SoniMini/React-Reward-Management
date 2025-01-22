@@ -77,7 +77,7 @@ const SuccessAlert: React.FC<SuccessAlertProps> = ({
                         {showCollectButton && onCollect && (
                             <button
                                 type="button"
-                                className="ti-btn ti-btn-primary bg-primary text-white font-medium py-2 px-4 rounded transition-all duration-300"
+                                className="ti-btn bg-[#dee9eb] text-primary font-medium py-2 px-4 rounded transition-all duration-300"
                                 onClick={onCollect}
                             >
                                 {collectButtonLabel}
@@ -95,7 +95,7 @@ const SuccessAlert: React.FC<SuccessAlertProps> = ({
                         {showCancleButton && (
                             <button
                                 type="button"
-                                className="ti-btn ti-btn-primary bg-primary text-white font-medium py-2 px-4 rounded transition-all duration-300"
+                                className="ti-btn  bg-primary text-white font-medium py-2 px-4 rounded transition-all duration-300"
                                 onClick={onCancel}
                             >
                                 {buttonLabel}
