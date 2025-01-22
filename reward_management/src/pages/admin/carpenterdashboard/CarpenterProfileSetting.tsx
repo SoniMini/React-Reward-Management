@@ -85,7 +85,7 @@ const CarpenterProfile = () => {
 
     const update_user_details = async () => {
         try {
-            const response = await axios.post(`/api/method/reward_management_app.api.carpenter_profile.update_user_details`, {
+            const response = await axios.post(`/api/method/reward_management_app.api.carpenter_profile.update_carpenter_details`, {
                 name: email,  // New email
                 old_email: oldEmail,  // Old email
                 first_name: firstName,
