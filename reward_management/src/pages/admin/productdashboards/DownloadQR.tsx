@@ -133,7 +133,6 @@ useEffect(() => {
   }, [data, searchQuery, fromDate, toDate]);
   
 
-
 const totalPages = Math.ceil(data.length / itemsPerPage);
 
 const handlePrevPage = () => {
@@ -184,7 +183,6 @@ const handleDateFilter = (from: Date | null, to: Date | null) => {
     // };
 
     
-
        //  download and create direct pdf for qr images---------
 // //    per page 2 row 2 column---------------------
 const handleDownloadQR = async (row: DownloadProductQRCode) => {
@@ -241,6 +239,8 @@ const handleDownloadQR = async (row: DownloadProductQRCode) => {
     // Save the PDF file
     pdf.save(`${row.product_name || 'QR_Codes'}.pdf`);
 };
+
+
 
 
     // per page one row one col----------
