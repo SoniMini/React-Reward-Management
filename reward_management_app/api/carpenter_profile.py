@@ -309,3 +309,36 @@ def get_all_gender():
         
         
         
+# get carpenter user detail for admin side carpenter details
+@frappe.whitelist()
+def show_carpenter_user(carpenterName):
+    try : 
+        # Fetch specific fields from User document based on email
+        user = frappe.get_value("User", {"mobile_no": carpenterName}, 
+                                ["name", "email", "first_name", "last_name", "full_name", "bio", "location", "mobile_no",
+                                 "gender", "birth_date","user_image"], as_dict=True)
+
+        if user:
+            # Return relevant user details as JSON
+            return {
+                "name": user.get("name"),
+                "email": user.get("email"),
+                "first_name": user.get("first_name"),
+                "last_name": user.get("last_name"),
+                "full_name": user.get("full_name"),
+                "mobile_no": user.get("mobile_no"),
+                "gender": user.get("gender"),
+                "birth_date": user.get("birth_date"),
+                "location": user.get("location"),
+                "user_image": user.get("user_image" or "")
+            }
+        else:
+            return {
+                "success":False,
+                "message":"user not found for this mobile number"
+            }
+            # frappe.throw(_("User not found for email: {0}").format(carpenterName))
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), _("API Error"))
+        raise frappe.ValidationError(_("Error fetching user details: {0}").format(str(e)))

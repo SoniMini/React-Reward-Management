@@ -56,7 +56,7 @@ const ViewModal: React.FC<ViewModalProps> = ({
                         <div className="xl:col-span-12 col-span-12 mb-4">
                             <label htmlFor="question" className="form-label text-sm text-defaulttextcolor font-semibold">{questionLabel}</label>
                             <input
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 placeholder="Enter your question here"
                                 id="question"
                                 value={question}
@@ -67,7 +67,7 @@ const ViewModal: React.FC<ViewModalProps> = ({
                             <label htmlFor="answer" className="form-label text-sm text-defaulttextcolor font-semibold">{answerLabel}</label>
                             <input
                                 type="text"
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 placeholder="Enter your answer here"
                                 id="answer"
                                 value={answer}
@@ -82,7 +82,7 @@ const ViewModal: React.FC<ViewModalProps> = ({
                                 </label>
                                 <input
                                     type="date"
-                                    className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                     id="date"
                                     value={date || ''}  // Ensure default value is an empty string if date is undefined
                                     onChange={(e) => setDate && setDate(e.target.value)} // Optional setter
@@ -97,7 +97,7 @@ const ViewModal: React.FC<ViewModalProps> = ({
                                 </label>
                                 <input
                                     type="date"
-                                    className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                     id="endDate"
                                     value={endDate || ''}  // Ensure default value is an empty string if endDate is undefined
                                     onChange={(e) => setEndDate && setEndDate(e.target.value)} // Optional setter

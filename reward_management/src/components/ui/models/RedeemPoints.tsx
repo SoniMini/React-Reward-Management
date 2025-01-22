@@ -75,7 +75,7 @@ const RedeemPointAlert: React.FC<PointCollectedAlertProps> = ({
                 <div className="mb-4">
                     <input
                         type="number" // Numeric input
-                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                         placeholder="Enter points to redeem"
                         id="pointredeem"
                         value={pointredeem}

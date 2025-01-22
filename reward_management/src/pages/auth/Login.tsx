@@ -19,7 +19,7 @@ const Login = () => {
     const [password, setPassword] = useState<string>("");
     const [loginError, setLoginError] = useState<string>("");
     const [isTimerActive, setIsTimerActive] = React.useState(false);
-    const [timer, setTimer] = React.useState(60); 
+    const [timer, setTimer] = React.useState(60);
     const [currentForm, setCurrentForm] = useState<"login" | "register" | "carpenterLogin">("login");
     const [passwordShow, setPasswordShow] = useState<boolean>(false);
     const [isOtpVisible, setIsOtpVisible] = useState(false);
@@ -29,7 +29,7 @@ const Login = () => {
     const [alertTitle, setAlertTitle] = useState("");
     const [logo, setLogo] = useState(null);
     const [loading, setLoading] = useState(true);
-   
+
 
 
     const [data, setData] = useState({
@@ -235,7 +235,7 @@ const Login = () => {
     };
 
     // User Registration Handle or Generate Registration OTP Logic---------
-    const handleGetOtp = async (e: React.FormEvent ,isResendOtp = false) => {
+    const handleGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
         e.preventDefault();
         try {
             // First, check if the user is registered
@@ -266,7 +266,7 @@ const Login = () => {
 
                 if (response.data.message.status === "success") {
                     // console.log("OTP sent successfully:", response);
-                    const generatedregistrationOtp = response.data.message.otp;
+                    // const generatedregistrationOtp = response.data.message.otp;
                     // console.log("otp registration",generatedregistrationOtp);
                     // Show success alert
                     setAlertTitle("Success");
@@ -275,19 +275,19 @@ const Login = () => {
                     setShowSuccessAlert(true);
                     setIsOtpVisible(true);
 
-                      // Start the timer
+                    // Start the timer
                     startTimer();
-                    axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
-                        mobile_number: mobile,
-                        otp: generatedregistrationOtp
-                    }, {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            
-                        }
-                    });
-                    
-                    console.log("SMS API called successfully");
+                    // axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
+                    //     mobile_number: mobile,
+                    //     otp: generatedregistrationOtp
+                    // }, {
+                    //     headers: {
+                    //         'Content-Type': 'application/json',
+
+                    //     }
+                    // });
+
+                    // console.log("SMS API called successfully");
                 } else {
                     setLoginError("Failed to send OTP. Please try again.");
                 }
@@ -386,136 +386,136 @@ const Login = () => {
     // Start time for otp ------
     const startTimer = () => {
         setIsTimerActive(true);
-        setTimer(60); 
+        setTimer(60);
         const countdown = setInterval(() => {
             setTimer((prevTimer) => {
                 if (prevTimer <= 1) {
                     clearInterval(countdown);
                     setIsTimerActive(false);
-                    setIsloginOtpVisible(false); 
+                    setIsloginOtpVisible(false);
                     setIsOtpVisible(false);
 
 
                     return 0;
                 }
-                return prevTimer - 1; 
+                return prevTimer - 1;
             });
         }, 1000);
     };
     // Carpenter login handling-----------
-   const handleloginGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
-    e.preventDefault();
+    const handleloginGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
+        e.preventDefault();
 
-    if (mobilenumber.length !== 10 || !/^\d+$/.test(mobilenumber)) {
-        alert("Mobile number must be exactly 10 digits.");
-        return;
-    }
+        if (mobilenumber.length !== 10 || !/^\d+$/.test(mobilenumber)) {
+            alert("Mobile number must be exactly 10 digits.");
+            return;
+        }
 
-    try {
-        // Check if the user is registered
-        const checkResponse = await axios.get(`/api/method/reward_management_app.api.create_new_user.check_user_registration`, {
-            params: { mobile_number: mobilenumber },
-        });
-       
-
-         localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
-
-
-         if (checkResponse.data.message && checkResponse.data.message.registered && checkResponse.data.message.approved && checkResponse.data.message.activate) {
-            // Call the OTP generation API
-            const otpResponse = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
-                mobile_number: mobilenumber
-            }, {
-                headers: { 'Content-Type': 'application/json' }
+        try {
+            // Check if the user is registered
+            const checkResponse = await axios.get(`/api/method/reward_management_app.api.create_new_user.check_user_registration`, {
+                params: { mobile_number: mobilenumber },
             });
 
-            if (otpResponse.data.message.status === "success") {
-                const generatedOtp = otpResponse.data.message.otp;
-                setAlertTitle('Success');
-                setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
-                setShowSuccessAlert(true);
-                setIsloginOtpVisible(true);
-                // Start the timer
-                startTimer();
 
-                axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
-                    mobile_number: mobilenumber,
-                    otp: generatedOtp
+            localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
+
+
+            if (checkResponse.data.message && checkResponse.data.message.registered && checkResponse.data.message.approved && checkResponse.data.message.activate) {
+                // Call the OTP generation API
+                const otpResponse = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
+                    mobile_number: mobilenumber
                 }, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        
-                    }
+                    headers: { 'Content-Type': 'application/json' }
                 });
-                
-                console.log("SMS API called successfully");
+
+                if (otpResponse.data.message.status === "success") {
+                    // const generatedOtp = otpResponse.data.message.otp;
+                    setAlertTitle('Success');
+                    setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
+                    setShowSuccessAlert(true);
+                    setIsloginOtpVisible(true);
+                    // Start the timer
+                    startTimer();
+
+                    // axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
+                    //     mobile_number: mobilenumber,
+                    //     otp: generatedOtp
+                    // }, {
+                    //     headers: {
+                    //         'Content-Type': 'application/json',
+
+                    //     }
+                    // });
+
+                    // console.log("SMS API called successfully");
+                } else {
+                    setLoginError(checkResponse.data.message.message);
+                }
             } else {
                 setLoginError(checkResponse.data.message.message);
             }
-        } else {
-            setLoginError(checkResponse.data.message.message);
+        } catch (error) {
+            console.error('Error handling login OTP:', error);
+            setLoginError('An error occurred while processing your request.');
         }
-    } catch (error) {
-        console.error('Error handling login OTP:', error);
-        setLoginError('An error occurred while processing your request.');
-    }
-};
+    };
 
-// const handleloginGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
-//     e.preventDefault();
+    // const handleloginGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
+    //     e.preventDefault();
 
-//     if (mobilenumber.length !== 10 || !/^\d+$/.test(mobilenumber)) {
-//         alert("Mobile number must be exactly 10 digits.");
-//         return;
-//     }
+    //     if (mobilenumber.length !== 10 || !/^\d+$/.test(mobilenumber)) {
+    //         alert("Mobile number must be exactly 10 digits.");
+    //         return;
+    //     }
 
-//     try {
-//         // Check if the user is registered
-//         const checkResponse = await axios.get(`/api/method/reward_management_app.api.create_new_user.check_user_registration`, {
-//             params: { mobile_number: mobilenumber },
-//         });
+    //     try {
+    //         // Check if the user is registered
+    //         const checkResponse = await axios.get(`/api/method/reward_management_app.api.create_new_user.check_user_registration`, {
+    //             params: { mobile_number: mobilenumber },
+    //         });
 
-//         localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
+    //         localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
 
-//         if (checkResponse.data.message && checkResponse.data.message.registered) {
-//             // Call the OTP generation API
-//             const otpResponse = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
-//                 mobile_number: mobilenumber
-//             }, {
-//                 headers: { 'Content-Type': 'application/json' }
-//             });
+    //         if (checkResponse.data.message && checkResponse.data.message.registered) {
+    //             // Call the OTP generation API
+    //             const otpResponse = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
+    //                 mobile_number: mobilenumber
+    //             }, {
+    //                 headers: { 'Content-Type': 'application/json' }
+    //             });
 
-//             if (otpResponse.data.message.status === "success") {
-//                 const generatedOtp = otpResponse.data.message.otp;
-//                 setAlertTitle('Success');
-//                 setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
-//                 setShowSuccessAlert(true);
-//                 setIsloginOtpVisible(true);
-//                 // Start the timer
-//                 startTimer();
+    //             if (otpResponse.data.message.status === "success") {
+    //                 const generatedOtp = otpResponse.data.message.otp;
+    //                 setAlertTitle('Success');
+    //                 setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
+    //                 setShowSuccessAlert(true);
+    //                 setIsloginOtpVisible(true);
+    //                 // Start the timer
+    //                 startTimer();
 
-//                 axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
-//                     mobile_number: mobilenumber,
-//                     otp: generatedOtp
-//                 }, {
-//                     headers: {
-//                         'Content-Type': 'application/json',
-                        
-//                     }
-//                 });
-                
-//                 console.log("SMS API called successfully");
-//             } else {
-//                 setLoginError('Failed to send OTP. Please try again.');
-//             }
-//         } else {
-//             setLoginError('User not registered. Please register first.');
-//         }
-//     } catch (error) {
-//         console.error('Error handling login OTP:', error);
-//         setLoginError('An error occurred while processing your request.');
-//     }
-// };
+    //                 axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
+    //                     mobile_number: mobilenumber,
+    //                     otp: generatedOtp
+    //                 }, {
+    //                     headers: {
+    //                         'Content-Type': 'application/json',
+
+    //                     }
+    //                 });
+
+    //                 console.log("SMS API called successfully");
+    //             } else {
+    //                 setLoginError('Failed to send OTP. Please try again.');
+    //             }
+    //         } else {
+    //             setLoginError('User not registered. Please register first.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error handling login OTP:', error);
+    //         setLoginError('An error occurred while processing your request.');
+    //     }
+    // };
 
     const handlelogincarpenter: any = async (e: React.FocusEvent) => {
         e.preventDefault();
@@ -632,34 +632,36 @@ const Login = () => {
 
     return (
         <Fragment>
-            <div className=" h-[100vh] bg-[var(--body-bg)] flex items-center justify-center text-defaultsize text-defaulttextcolor ">
+            <div className=" h-[100vh] bg-white flex items-center justify-center text-defaultsize text-defaulttextcolor ">
                 <div className="grid grid-cols-12 gap-4 b ">
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-3 sm:col-span-2"></div>
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12   max-w-[420px] w-[420px] ">
-                        <Card className="p-8 box-shadow-md border border-defaultborder shadow-md rounded-[10px] bg-white">
+                        <Card className="p-8  rounded-[10px] bg-[var(--body-bg)]">
                             <div className="flex justify-center mb-8">
                                 {/* <img src={desktoplogo} alt="logo" className="w-28" /> */}
                                 <img src={logo} alt="logo" className="w-20" />
                             </div>
-                            <div className="text-center mb-5">
+                            <div className="text-center mb-5 text-primary">
                                 <p className="text-lg font-semibold">
                                     {currentForm === "login" && "Login"}
-                                    {currentForm === "register" && "Registration"}
                                     {currentForm === "carpenterLogin" && "Customer Login"}
+
+                                    {currentForm === "register" && "Registration"}
                                 </p>
                                 <p className="text-[#8c9097] text-center font-normal">
                                     {currentForm === "login" && "Please Login to Your Account"}
-                                    {currentForm === "register" &&
-                                        "Please enter details to register"}
                                     {currentForm === "carpenterLogin" &&
                                         "Please login as a Customer"}
+                                    {currentForm === "register" &&
+                                        "Please enter details to register"}
+                                    
                                 </p>
                             </div>
 
-                            <div className="flex justify-evenly border-b mb-6 gap-4 font-semibold text-sm">
+                            <div className="flex justify-evenly  mb-6 gap-4 font-semibold text-sm">
                                 <Button
                                     onClick={() => setCurrentForm("login")}
-                                    className={`flex-1 bg-white text-defaulttextcolor ${currentForm === "login"
+                                    className={`flex-1 text-defaulttextcolor ${currentForm === "login"
                                         ? "border-b-2 border-primary text-primary"
                                         : ""
                                         }`}
@@ -667,8 +669,8 @@ const Login = () => {
                                     Admin
                                 </Button>
                                 <Button
-                                    onClick={() => setCurrentForm("register")}
-                                    className={`flex-1 bg-white text-defaulttextcolor ${currentForm === "register"
+                                    onClick={() => setCurrentForm("carpenterLogin")}
+                                    className={`flex-1  text-defaulttextcolor ${currentForm === "carpenterLogin"
                                         ? "border-b-2 border-primary text-primary"
                                         : ""
                                         }`}
@@ -693,7 +695,7 @@ const Login = () => {
                                             <Text
                                                 as="label"
                                                 htmlFor="username"
-                                                className="text-defaultsize font-semibold "
+                                                className="text-defaultsize font-semibold text-primary"
                                             >
                                                 Username/Email
                                             </Text>
@@ -703,14 +705,14 @@ const Login = () => {
                                                 placeholder="Username"
                                                 onChange={(e) => setUsername(e.target.value)}
                                                 value={username}
-                                                className="border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                className="bg-white border-none shadow-md rounded-[5px] p-2 mt-2 text-xs w-full text-primary outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
                                             />
                                         </Box>
                                         <Box className="mb-4 ">
                                             <Text
                                                 as="label"
                                                 htmlFor="password"
-                                                className="text-defaultsize font-semibold "
+                                                className="text-defaultsize font-semibold  text-primary"
                                             >
                                                 Password
                                             </Text>
@@ -721,7 +723,7 @@ const Login = () => {
                                                     placeholder="******"
                                                     onChange={(e) => setPassword(e.target.value)}
                                                     value={password}
-                                                    className="border p-2 pt-2 mt-2 rounded-[5px] w-full"
+                                                    className="bg-white border-none shadow-md p-2 pt-2 mt-2 rounded-[5px] w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
                                                 />
                                                 <button
                                                     type="button"
@@ -734,7 +736,7 @@ const Login = () => {
                                         </Box>
                                         <Button
                                             type="submit"
-                                            className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium "
+                                            className="w-full mb-2 ti-btn new-launch !bg-primary !text-white !font-medium border-none shadow-md "
                                         >
                                             Login
                                         </Button>
@@ -748,14 +750,14 @@ const Login = () => {
                                                 <Text
                                                     as="label"
                                                     htmlFor="firstName"
-                                                    className="form-label text-defaultsize font-semibold"
+                                                    className="form-label text-defaultsize font-semibold text-primary"
                                                 >
                                                     First Name
                                                 </Text>
                                                 <input
                                                     type="text"
                                                     name="firstName"
-                                                    className="form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                    className="bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
                                                     onChange={changeHandler}
                                                     value={firstName}
                                                     placeholder="First Name"
@@ -767,14 +769,14 @@ const Login = () => {
                                                 <Text
                                                     as="label"
                                                     htmlFor="lastName"
-                                                    className="form-label text-defaultsize font-semibold"
+                                                    className="form-label text-defaultsize font-semibold text-primary"
                                                 >
                                                     Last Name
                                                 </Text>
                                                 <input
                                                     type="text"
                                                     name="lastName"
-                                                    className="form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                    className="bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
                                                     onChange={changeHandler}
                                                     value={lastName}
                                                     placeholder="Last Name"
@@ -786,14 +788,14 @@ const Login = () => {
                                                 <Text
                                                     as="label"
                                                     htmlFor="city"
-                                                    className="form-label text-defaultsize font-semibold"
+                                                    className="form-label text-defaultsize font-semibold text-primary"
                                                 >
                                                     City
                                                 </Text>
                                                 <input
                                                     type="text"
                                                     name="city"
-                                                    className="form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                    className="bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
                                                     onChange={changeHandler}
                                                     value={city}
                                                     placeholder="City"
@@ -805,14 +807,14 @@ const Login = () => {
                                                 <Text
                                                     as="label"
                                                     htmlFor="mobile"
-                                                    className="form-label text-defaultsize font-semibold"
+                                                    className="form-label text-defaultsize font-semibold text-primary"
                                                 >
                                                     Mobile Number
                                                 </Text>
                                                 <input
                                                     type="tel"
                                                     name="mobile"
-                                                    className={`form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full ${mobile.length !== 10 || !/^\d+$/.test(mobile)
+                                                    className={`bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground ${mobile.length !== 10 || !/^\d+$/.test(mobile)
                                                         ? "border-red-500"
                                                         : ""
                                                         }`}
@@ -834,14 +836,14 @@ const Login = () => {
                                                         <Text
                                                             as="label"
                                                             htmlFor="otp"
-                                                            className="form-label text-defaultsize font-semibold"
+                                                            className="form-label text-defaultsize font-semibold text-primary"
                                                         >
                                                             OTP
                                                         </Text>
                                                         <input
                                                             type="number"
                                                             name="otp"
-                                                            className="form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                            className="bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
                                                             onChange={changeHandler}
                                                             value={otp}
                                                             placeholder="OTP"
@@ -850,7 +852,7 @@ const Login = () => {
                                                     </Box>
                                                     <Box className="xl:col-span-12 col-span-12 grid mt-2">
                                                         <Button
-                                                            className="ti-btn ti-btn-primary !bg-primary !text-white !font-medium"
+                                                            className="ti-btn new-launch !bg-primary !text-white !font-medium border-none shadow-md"
                                                             type="submit"
                                                             id="register"
                                                             onClick={handleRegister}
@@ -860,15 +862,15 @@ const Login = () => {
 
                                                     </Box>
                                                     {isTimerActive && (
-                                              <Text className="text-center text-default">
-                                                  You can resend OTP in {timer} seconds
-                                              </Text>
-                                          )}
+                                                        <Text className="text-center text-default">
+                                                            You can resend OTP in {timer} seconds
+                                                        </Text>
+                                                    )}
                                                 </>
                                             ) : (
                                                 <Box className="xl:col-span-12 col-span-12 grid mt-2">
                                                     <Button
-                                                        className="ti-btn ti-btn-primary !bg-primary !text-white !font-medium"
+                                                        className="ti-btn new-launch  !bg-primary !text-white !font-medium border-none shadow-md "
                                                         type="button"
                                                         onClick={handleGetOtp}
                                                         id="getotp"
@@ -879,12 +881,12 @@ const Login = () => {
                                             )}
                                         </Box>
 
-                                        <Box className="mt-4 text-center">
-                                            <Text className="text-default">
+                                        <Box className="mt-4 text-center font-semibold">
+                                            <Text className="text-primary">
                                                 Already have an account?{" "}
                                                 <a
                                                     href="#"
-                                                    className="text-primary"
+                                                    className="text-defaulttextcolor text-default"
                                                     onClick={() => setCurrentForm("carpenterLogin")}
                                                 >
                                                     Login
@@ -892,14 +894,14 @@ const Login = () => {
                                             </Text>
                                         </Box>
 
-                                        <Box className="text-center my-4 authentication-barrier">
+                                        <Box className="text-center my-4 authentication-barrier font-semibold text-primary">
                                             <Text>OR</Text>
                                         </Box>
 
-                                        <Box className="mt-4 text-center">
-                                            <Text className="text-default">
+                                        <Box className="mt-4 text-center font-semibold">
+                                            <Text className="text-default text-primary">
                                                 View as a{" "}
-                                                <a href="/customer-product" className="text-primary">
+                                                <a href="/customer-product" className="text-defaulttextcolor">
                                                     Customer?
                                                 </a>
                                             </Text>
@@ -916,7 +918,7 @@ const Login = () => {
                                             <Text
                                                 as="label"
                                                 htmlFor="mobilenumber"
-                                                className="text-defaultsize font-semibold"
+                                                className="text-defaultsize font-semibold text-primary"
                                             >
                                                 Mobile Number
                                             </Text>
@@ -927,7 +929,7 @@ const Login = () => {
                                                 name="mobilenumber"
                                                 onChange={changeHandler}
                                                 value={mobilenumber}
-                                                className={`border rounded-[5px] p-2 mt-2 text-xs w-full  ${mobilenumber.length !== 10 || !/^\d+$/.test(mobile)
+                                                className={`border-none bg-white shadow-md rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground ${mobilenumber.length !== 10 || !/^\d+$/.test(mobile)
                                                     ? "border-red-500"
                                                     : ""
                                                     }`}
@@ -941,61 +943,61 @@ const Login = () => {
                                                 )}
                                         </Box>
                                         {isloginOtpVisible ? (
-                                          <>
-                                          <Box className="mb-4">
-                                              <Text as="label" htmlFor="mobileotp" className="text-defaultsize font-semibold">
-                                                  OTP
-                                              </Text>
-                                              <input
-                                                  id="mobileotp"
-                                                  type="text"
-                                                  placeholder="Enter OTP"
-                                                  name="mobileotp"
-                                                  onChange={changeHandler}
-                                                  value={mobileotp}
-                                                  className="border rounded-[5px] p-2 mt-2 text-xs w-full"
-                                              />
-                                          </Box>
-                                          <Button
-                                              type="submit"
-                                              onClick={handlelogincarpenter}
-                                              id="logincarpenter"
-                                              className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium"
-                                          >
-                                              Login
-                                          </Button>
-                                          {isTimerActive && (
-                                              <Text className="text-center text-default">
-                                                  You can resend OTP in {timer} seconds
-                                              </Text>
-                                          )}
-                                      </>
+                                            <>
+                                                <Box className="mb-4">
+                                                    <Text as="label" htmlFor="mobileotp" className="text-defaultsize font-semibold text-primary">
+                                                        OTP
+                                                    </Text>
+                                                    <input
+                                                        id="mobileotp"
+                                                        type="text"
+                                                        placeholder="Enter OTP"
+                                                        name="mobileotp"
+                                                        onChange={changeHandler}
+                                                        value={mobileotp}
+                                                        className="border-none bg-white shadow-md rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
+                                                    />
+                                                </Box>
+                                                <Button
+                                                    type="submit"
+                                                    onClick={handlelogincarpenter}
+                                                    id="logincarpenter"
+                                                    className="w-full mb-2 ti-btn new-launch !bg-primary !text-white !font-medium border-none shadow-md"
+                                                >
+                                                    Login
+                                                </Button>
+                                                {isTimerActive && (
+                                                    <Text className="text-center text-default">
+                                                        You can resend OTP in {timer} seconds
+                                                    </Text>
+                                                )}
+                                            </>
                                         ) : (
-                                            <Button type="button" onClick={handleloginGetOtp} id='getloginotp' className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium ">
+                                            <Button type="button" onClick={handleloginGetOtp} id='getloginotp' className="w-full mb-2 ti-btn new-launch !bg-primary !text-white !font-medium border-none shadow-md">
                                                 Get OTP
                                             </Button>
                                         )}
-                                        <Box className="mt-4 text-center">
-                                            <Text className="text-default">
+                                        <Box className="mt-4 text-center font-semibold">
+                                            <Text className="text-default text-primary">
                                                 Don't have an account?{" "}
                                                 <a
                                                     href="#"
-                                                    className="text-primary"
+                                                    className="text-defaulttextcolor"
                                                     onClick={() => setCurrentForm("register")}
                                                 >
                                                     Register
                                                 </a>
                                             </Text>
                                         </Box>
-                                        <Box className="text-center my-4 authentication-barrier">
+                                        <Box className="text-center my-4 authentication-barrier font-semibold text-primary">
                                             <Text>OR</Text>
                                         </Box>
-                                        <Box className="mt-4 text-center">
-                                            <Text className="text-default">
+                                        <Box className="mt-4 text-center font-semibold">
+                                            <Text className="text-default text-primary">
                                                 View as a{" "}
                                                 <a
                                                     href="/customer-product"
-                                                    className="text-primary"
+                                                    className="text-defaulttextcolor"
                                                     onClick={() => setCurrentForm("carpenterLogin")}
                                                 >
                                                     Customer?

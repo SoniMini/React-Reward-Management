@@ -60,7 +60,7 @@ const EditProduct: React.FC = () => {
                     const images = Array.isArray(product.product_image) ? product.product_image : [product.product_image].filter(Boolean);
                     setExistingImages(images);
                 } else {
-                    console.warn("Product details not found in response.");
+                    console.log("Product details not found in response.");
                 }
             } catch (error) {
                 console.error('Error fetching product data:', error);
@@ -154,7 +154,7 @@ const EditProduct: React.FC = () => {
     };
 
     return (
-        <Fragment>
+        <>
                 <Pageheader
                 currentpage={"Edit Product"}
                 activepage={"/product-master"}
@@ -176,7 +176,7 @@ const EditProduct: React.FC = () => {
                                                     <label htmlFor="product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Name</label>
                                                     <input 
                                                         type="text" 
-                                                        className="form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2" 
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2" 
                                                         id="product-name-add" 
                                                         placeholder="Name" 
                                                         value={productName}
@@ -188,7 +188,7 @@ const EditProduct: React.FC = () => {
                                                     <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Reward Points</label>
                                                     <input 
                                                         type="text" 
-                                                        className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2" 
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2" 
                                                         id="product-cost-add" 
                                                         placeholder="Reward points" 
                                                         value={rewardPoints}
@@ -197,7 +197,7 @@ const EditProduct: React.FC = () => {
                                                     />
                                                 </div>
                                                 <div className="xl:col-span-12 col-span-12 mb-4">
-                                                    <label className="form-label text-sm font-semibold text-defaulttextcolor">Product Description</label>
+                                                    <label className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-label text-sm font-semibold text-defaulttextcolor">Product Description</label>
                                                     <div id="product-features" className="mt-2">
                                                         <SunEditor 
                                                             setContents={productDescription}
@@ -225,7 +225,7 @@ const EditProduct: React.FC = () => {
                                                 <input 
                                                     id="product-category-add" 
                                                     name="product-category-add" 
-                                                    className="w-full mt-2 border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] form-control" 
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] w-full mt-2 border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] form-control" 
                                                     placeholder="Category" 
                                                     value={productCategory}
                                                     onChange={(e) => setProductCategory(e.target.value)}
@@ -237,7 +237,7 @@ const EditProduct: React.FC = () => {
                                                 <input 
                                                     type="file" 
                                                     multiple 
-                                                    className="form-control w-full border border-defaultborder rounded-[0.5rem] mt-2 p-2" 
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full border border-defaultborder rounded-[0.5rem] mt-2 p-2" 
                                                     id="product-images-add"
                                                     onChange={handleFileChange}
                                                 />
@@ -291,7 +291,7 @@ const EditProduct: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </Fragment>
+        </>
     );
 };
 

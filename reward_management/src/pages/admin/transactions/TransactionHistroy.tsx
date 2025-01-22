@@ -298,7 +298,7 @@ const TransactionHistory: React.FC = () => {
                                         <label htmlFor="name" className="form-label text-sm text-defaulttextcolor font-semibold">Transection ID</label>
                                         <input
                                             type="text"
-                                            className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                             id='name'
                                             value={selectedTransaction.name || ''}
                                             readOnly
@@ -309,7 +309,7 @@ const TransactionHistory: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label htmlFor="redeem_request_id" className="form-label text-sm text-defaulttextcolor font-semibold">Redeem Request ID</label>
                                     <input
-                                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         placeholder="Enter your question here"
                                         id="redeem_request_id"
 
@@ -321,7 +321,7 @@ const TransactionHistory: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label htmlFor="carpainter_id" className="form-label text-sm text-defaulttextcolor font-semibold">Carpenter ID</label>
                                     <input
-                                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         placeholder="Enter your question here"
                                         id="carpainter_id"
 
@@ -333,7 +333,7 @@ const TransactionHistory: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label htmlFor="carpainter_name" className="form-label text-sm text-defaulttextcolor font-semibold">Carpenter Name</label>
                                     <input
-                                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         placeholder="Enter your question here"
                                         id="carpainter_name"
 
@@ -345,7 +345,7 @@ const TransactionHistory: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label htmlFor="mobile_number" className="form-label text-sm text-defaulttextcolor font-semibold">Carpenter Mobile Number</label>
                                     <input
-                                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         placeholder="Enter your question here"
                                         id="mobile_number"
 
@@ -357,7 +357,7 @@ const TransactionHistory: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label htmlFor="transectionAccount" className="form-label text-sm text-defaulttextcolor font-semibold">Transection Account</label>
                                     <input
-                                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         placeholder="Enter Transaction Account"
                                         id="transectionAccount"
                                         value={transectionAccount || ''}
@@ -368,7 +368,7 @@ const TransactionHistory: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label htmlFor="transferAmount" className="form-label text-sm text-defaulttextcolor font-semibold">Transfer Amount</label>
                                     <input
-                                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         placeholder="Enter Amount"
                                         id="transferAmount"
                                         value={transferAmount || ''}

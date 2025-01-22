@@ -99,7 +99,7 @@ const SocialMediaLink: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <input
                                                 type="text"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 id="setFaceBookLink"
                                                 placeholder="Facebook Link"
                                                 value={facebookLink}
@@ -109,7 +109,7 @@ const SocialMediaLink: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <input
                                                 type="text"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 id="setwatsappLink"
                                                 placeholder="Whatsapp Link"
                                                 value={whatsappLink}
@@ -119,7 +119,7 @@ const SocialMediaLink: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <input
                                                 type="text"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 id="setinstaLink"
                                                 placeholder="Instagram Link"
                                                 value={instaLink}
@@ -129,7 +129,7 @@ const SocialMediaLink: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <input
                                                 type="text"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 id="setgoogleLink"
                                                 placeholder="Google Link"
                                                 value={googleLink}
@@ -140,7 +140,7 @@ const SocialMediaLink: React.FC = () => {
                                             <button
                                                 id='submit'
                                                 type="submit"
-                                                className="ti-btn bg-primary text-white w-full"
+                                                className="border-none ti-btn new-launch text-white w-full"
                                             >
                                                 Submit
                                             </button>

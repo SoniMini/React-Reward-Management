@@ -142,7 +142,7 @@ const AdminProfile = () => {
             else if (response.data.message.status === 'error') {
                 console.log("Update user response:", response);
                 setShowSuccessAlert(true);
-                // setShowSuccessAlert(true); // This should likely be set to false in case of error
+                // setShowSuccessAlert(true); 
             } 
             else {
                 console.error("Unexpected response status:", response.data.message.status);
@@ -281,7 +281,7 @@ const AdminProfile = () => {
                                             </div>
 
                                             <div className="inline-flex">
-                                                <button type="button" className="ti-btn ti-btn-primary bg-primary me-1" onClick={changeUserImage}>Change</button>
+                                                <button type="button" className="ti-btn ti-btn-primary  me-1" onClick={changeUserImage}>Change</button>
                                                 <button type="button" className="bg-light ti-btn text-defaulttextcolor" onClick={removeUserImage}>Remove</button>
                                             </div>
                                         </div>
@@ -291,7 +291,7 @@ const AdminProfile = () => {
                                                 <label htmlFor="first-name" className="form-label text-sm text-defaulttextcolor font-semibold">First Name</label>
                                                 <input
                                                     type="text"
-                                                    className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                                     id="first-name"
                                                     placeholder="First Name"
                                                     value={firstName} // Set the value from the state
@@ -300,13 +300,13 @@ const AdminProfile = () => {
                                             </div>
                                             <div className="xl:col-span-6 col-span-12">
                                                 <label htmlFor="last-name" className="form-label text-sm text-defaulttextcolor font-semibold">Last Name</label>
-                                                <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="last-name" placeholder="Last Name"
+                                                <input type="text" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="last-name" placeholder="Last Name"
                                                     value={lastName} // Set the value from the state
                                                     onChange={(e) => setLastName(e.target.value)} />
                                             </div>
                                             <div className="xl:col-span-6 col-span-12">
                                                 <label htmlFor="full-name" className="form-label text-sm text-defaulttextcolor font-semibold">Full Name</label>
-                                                <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="full-name" placeholder="Full Name"
+                                                <input type="text" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="full-name" placeholder="Full Name"
                                                     value={fullname} // Set the value from the state
                                                     onChange={(e) =>
 
@@ -324,7 +324,7 @@ const AdminProfile = () => {
                                             <div className="xl:col-span-6 col-span-12">
                                                 <label htmlFor="email-address" className="form-label text-sm text-defaulttextcolor font-semibold">Email Address</label>
 
-                                                <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="email-address" placeholder="xyz@gmail.com"
+                                                <input type="text" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="email-address" placeholder="xyz@gmail.com"
                                                     value={email} // Set the value from the state
                                                     onChange={(e) => setEmail(e.target.value)}
 
@@ -335,38 +335,39 @@ const AdminProfile = () => {
                                                 <label htmlFor="mobile-number" className="form-label text-sm text-defaulttextcolor font-semibold">Mobile Number</label>
                                                 <input
                                                     type="text"
-                                                    className={`form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm`}
+                                                    className={`outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] bg-[#e9ecef] form-control-light mt-2 text-sm`}
                                                     id="mobile-number"
                                                     placeholder="contact details"
-                                                    value={mobileno} // Set the value from the state
+                                                    value={mobileno} 
+                                                    readOnly
 
                                                 />
 
                                             </div>
                                             <div className="xl:col-span-6 col-span-12">
                                                 <label htmlFor="dob" className="form-label text-sm text-defaulttextcolor font-semibold">Date of Birth</label>
-                                                <input type="date" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="dob" placeholder="contact details"
-                                                    value={birthdate} // Set the value from the state
+                                                <input type="date" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="dob" placeholder="contact details"
+                                                    value={birthdate}
                                                     onChange={(e) => {
                                                         const selectedDate = e.target.value;
-                                                        setBirthdate(selectedDate); // Update the state with the selected date
-                                                        console.log("Selected Date:", selectedDate); // Log the selected date to the console
+                                                        setBirthdate(selectedDate);
+                                                        console.log("Selected Date:", selectedDate); 
                                                     }}
                                                 />
                                             </div>
                                             <div className="xl:col-span-6 col-span-12">
                                                 <label htmlFor="gender" className="form-label text-sm text-defaulttextcolor font-semibold">Gender</label>
                                                 <select
-                                                    className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                                     id="gender"
-                                                    value={gender} // Bind the selected value to the state
+                                                    value={gender}
                                                     onChange={(e) => {
                                                         const selectedGender = e.target.value;
-                                                        setGender(selectedGender); // Update the state with the selected gender
-                                                        console.log("Selected Gender:", selectedGender); // Log the selected gender to the console
+                                                        setGender(selectedGender); 
+                                                        console.log("Selected Gender:", selectedGender);
                                                     }}
                                                 >
-                                                    <option value="">Select Gender</option> {/* Default option */}
+                                                    <option value="">Select Gender</option> 
                                                     {genders.map((g, index) => (
                                                         <option key={index} value={g.name}>{g.name}</option>
                                                     ))}
@@ -375,7 +376,7 @@ const AdminProfile = () => {
                                             </div>
                                             <div className="xl:col-span-6 col-span-12">
                                                 <label htmlFor="location" className="form-label text-sm text-defaulttextcolor font-semibold">Location</label>
-                                                <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="location" placeholder="Location"
+                                                <input type="text" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="location" placeholder="Location"
                                                     value={location} // Set the value from the state
                                                     onChange={(e) => setLocation(e.target.value)}
                                                 />
@@ -386,7 +387,7 @@ const AdminProfile = () => {
                                                 className="ti-btn ti-btn-primary bg-primary me-3"
                                                 onClick={update_user_details} // Call the update_user_details function on button click
                                             >
-                                                Update profile
+                                                Update
                                             </button>
                                             <button
                                                 type="button"

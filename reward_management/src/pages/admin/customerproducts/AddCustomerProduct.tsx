@@ -170,7 +170,7 @@ const AddCustomerProduct: React.FC = () => {
                                                 <label htmlFor="product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Name</label>
                                                 <input
                                                     type="text"
-                                                    className="form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
                                                     id="product-name-add"
                                                     placeholder="Name"
                                                     value={productName}
@@ -184,7 +184,7 @@ const AddCustomerProduct: React.FC = () => {
                                                 <select
                                                     id="product-sub-category"
                                                     name="product-sub-category"
-                                                    className="w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem]"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem]"
                                                     value={productSubcategory}
                                                     onChange={(e) => setProductSubcategory(e.target.value)}
                                                     required
@@ -203,7 +203,7 @@ const AddCustomerProduct: React.FC = () => {
                                                 <input
                                                     type="file"
                                                     id="file-upload"
-                                                    className="mt-1 block w-full p-2 border rounded-md"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border rounded-[0.5rem]"
                                                     onChange={handleFileChange}
                                                     accept="image/*"
                                                 />
@@ -241,7 +241,7 @@ const AddCustomerProduct: React.FC = () => {
                                                 <select
                                                     id="product-category-add"
                                                     name="product-category-add"
-                                                    className="w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem]"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
                                                     value={productCategory}
                                                     onChange={(e) => setProductCategory(e.target.value)}
                                                     required
@@ -259,7 +259,7 @@ const AddCustomerProduct: React.FC = () => {
                                                 <label htmlFor="product-url" className="form-label text-sm font-semibold text-defaulttextcolor">Product Url</label>
                                                 <input
                                                     type="text"
-                                                    className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
                                                     id="product-url"
                                                     placeholder="Product URL"
                                                     value={productUrl}

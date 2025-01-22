@@ -11,7 +11,6 @@ const SidebarLink = styled(Link)`
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 600;
-  color: rgb(163 174 209 / var(--tw-text-opacity));
   justify-content: space-between;
   margin-bottom: 5px;
   &:hover {
@@ -36,7 +35,6 @@ const DropdownLink = styled(Link)`
   font-size: 0.85rem;
   line-height: 1;
   font-weight: 500;
-  color: rgb(163 174 209 / var(--tw-text-opacity));
   border-radius: 6px;
   &:hover {
     background-color: rgb(255 255 255 / 0.05);

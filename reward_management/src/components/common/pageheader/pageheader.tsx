@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 export default function Pageheader(props: any) {
     console.log("props.currentpage---", props.currentpage);
     return (
-        <Fragment>
-            <div className="block justify-between page-header md:flex mt-5">
+        <>
+            <div className="block justify-between page-header sm:flex mt-5">
                 <div>
                     <h3 className="!text-defaulttextcolor dark:!text-defaulttextcolor/70 dark:text-white dark:hover:text-white text-lg font-semibold">{props.currentpage}</h3>
                 </div>
@@ -27,6 +27,6 @@ export default function Pageheader(props: any) {
                     </li>
                 </ol>
             </div>
-        </Fragment>
+        </>
     );
 }
