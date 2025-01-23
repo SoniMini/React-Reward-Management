@@ -103,7 +103,7 @@ const BoxHeader: React.FC<BoxHeaderProps> = ({ title, onSearch, onAddButtonClick
                     <div className='flex ms-2'>
                         <button
                             type="button"
-                            className="ti-btn card-data border-none !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]"
+                            className="ti-btn table-btn border-none !py-1 !px-2 text-xs !text-white !font-medium "
                             onClick={onAddButtonClick}
                         >
                             {icon && <i className={`${icon} font-semibold align-middle me-1`}></i>}
