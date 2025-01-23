@@ -6,6 +6,8 @@ from frappe.auth import CookieManager, LoginManager
 
 from frappe import local
 from frappe.utils import get_request_session
+from frappe.sessions import clear_sessions
+from frappe.utils import cint
 
 
 # user details-----
@@ -79,6 +81,7 @@ def update_user_details():
             return {"status": "error", "message": f"User {old_email} is disabled. Please contact your System Manager."}
 
         if old_email != new_email:
+            
             user.first_name = user_data.get('first_name', user.first_name)
             user.last_name = user_data.get('last_name', user.last_name)
             user.full_name = user_data.get('full_name', user.full_name)
@@ -223,7 +226,7 @@ def get_customer_details():
     else:
         frappe.throw(_("Customer not found for this email"))
         
-
+# change carpenter profile through carpenter side-------------------
 @frappe.whitelist()
 def update_user_image(name, new_image_url):
     try:
@@ -367,6 +370,11 @@ def update_carpenter_details():
             return {"status": "error", "message": f"User {old_email} is disabled. Please contact your System Manager."}
 
         if old_email != new_email:
+            
+            # Logout and clear session for the old email user before renaming
+            # frappe.local.login_manager.logout(user=old_email)
+            # clear_sessions(user=old_email, force=True)
+            
             user.first_name = user_data.get('first_name', user.first_name)
             user.last_name = user_data.get('last_name', user.last_name)
             user.full_name = user_data.get('full_name', user.full_name)
@@ -374,9 +382,13 @@ def update_carpenter_details():
             user.gender = user_data.get('gender', user.gender)
             user.birth_date = user_data.get('birth_date', user.birth_date)
             user.location = user_data.get('location', user.location)
+            
+            # Clear session for the old email before renaming
+            # frappe.local.login_manager.logout(user=old_email)
+            # clear_sessions(user=old_email, force=True)
             user.save()
             
-               # Check for carpenter document and update it similarly
+            # Check for carpenter document and update it similarly
             if user.mobile_no:
                 carpenter = frappe.get_all(
                     "Carpenter", 
@@ -399,14 +411,13 @@ def update_carpenter_details():
                     
                     carpenter_doc.save()
 
+            # Clear session for the old email before renaming
+            frappe.local.login_manager.logout(user=old_email)
+            clear_sessions(user=old_email, force=True)
+
             # Rename the User document and update the email
             frappe.rename_doc("User", old_email, new_email)
             user.email = new_email
-            
-            # login_user(new_email)
-            # login_token = login_user(new_email)
-            
-
             user.save()
             
             # Return response to trigger reload and cache clear on the frontend
@@ -415,8 +426,6 @@ def update_carpenter_details():
                 "message": "Email changed, reload required.", 
                 "reload_required": False,
                 "username": user.name,
-                # "login_token": login_token,
-               
             }
         
         # If emails match, just update user details
@@ -460,3 +469,79 @@ def update_carpenter_details():
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), _("API Error"))
         return {"status": "error", "message": str(e)}
+    
+    
+# Change Carpenter Profile Image thorugh Admin-------------------------
+@frappe.whitelist()
+def update_carpner_image(name, new_image_url):
+    try:
+        # Fetch User document based on name
+        user = frappe.get_doc("User", {"mobile_no": name})
+
+        # Update user image field
+        user.user_image = new_image_url
+
+        # Save User document changes
+        user.save()
+
+        # Now fetch and update the corresponding Carpenter document using the existing mobile_no
+        if user.mobile_no:
+            carpenter = frappe.get_all(
+                "Carpenter", 
+                filters={"mobile_number": user.mobile_no}, 
+                fields=["name"]
+            )
+
+            if carpenter:
+                carpenter_doc = frappe.get_doc("Carpenter", carpenter[0]["name"])
+
+                # Update Carpenter's image field (assuming 'image' is the field name for the image in Carpenter)
+                carpenter_doc.image = new_image_url
+
+                # Save Carpenter document changes
+                carpenter_doc.save()
+
+        return {"status": "success", "message": "User and Carpenter image updated successfully."}
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), _("API Error"))
+        return {"status": "error", "message": str(e)}
+
+        
+    
+# Remove Carpenter Profile Image through Admin-------------
+@frappe.whitelist()
+def remove_carpenter_image(name):
+    try:
+        # Fetch User document based on name
+        user = frappe.get_doc("User", {"mobile_no": name})
+
+        # Reset or remove user's image
+        user.user_image = None  
+
+        # Save User document changes
+        user.save()
+
+        # Now fetch and update the corresponding Carpenter document using the existing mobile_no
+        if user.mobile_no:
+            carpenter = frappe.get_all(
+                "Carpenter", 
+                filters={"mobile_number": user.mobile_no}, 
+                fields=["name"]
+            )
+
+            if carpenter:
+                carpenter_doc = frappe.get_doc("Carpenter", carpenter[0]["name"])
+
+                # Reset or remove Carpenter's image field (assuming 'image' is the field name for image in Carpenter)
+                carpenter_doc.image = None
+
+                # Save Carpenter document changes
+                carpenter_doc.save()
+
+        return {"status": "success", "message": "User and Carpenter image removed successfully."}
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), _("API Error"))
+        return {"status": "error", "message": str(e)}
+

@@ -1,8 +1,9 @@
 import { Fragment, useState, useEffect } from 'react';
 
-import Header from  '../../components/common/header';
+// import Header from  '../../components/common/header';
 import CustomerHeader from '../../components/common/carpenterheader';
-import Sidebar from '../../components/common/sidebar';import axios from 'axios';
+// import Sidebar from '../../components/common/sidebar';
+import axios from 'axios';
 import Pageheader from '../../components/common/pageheader/pageheader';
 
 
@@ -52,18 +53,11 @@ const Productdetails = () => {
 
   return (
     <Fragment>
-      {carpenterrole === "Carpenter" ? (
-          <div>
-            <Header />
-            <Sidebar isSidebarActive={false} />
-          </div>
-        ) : (
-          <div><CustomerHeader/></div>
-        )}
+      <div><CustomerHeader/></div>
 
-{carpenterrole === "Carpenter" ? (
-         <div className="pl-[16.5rem] px-[1.5rem] bg-body-bg mt-[60px] ">
-          <div className='my-5 pt-3'>
+
+      <div className="lg:mx-20 md:mx-10 mx-5">
+          <div className='my-5'>
                        <Pageheader 
                                       currentpage={"Product Details"} 
                                       activepage={`/sub-category-product/${productcategory}`}
@@ -105,43 +99,6 @@ const Productdetails = () => {
    
    </div>
          </div>
-        ) : (
-          <div className="mt-6 mx-20 ">
-
-
-          <div className='p-3 font-bold text-lg uppercase flex justify-center w-full max-w-xl mx-auto'>
-      <div className="uppercase ti-btn card-data border-none text-white font-semibold w-1/2">  {productName}</div>
-    
-    </div>
-        
-            
-              {/* Display fetched product details as cards */}
-              <div className=" flex justify-center p-5">
-                {productDetails ? (
-                  <div className=" flex flex-col items-center text-center">
-                    <div className='bg-white rounded-[10px] border-defaultborder shadow-lg p-6'>
-                    <img
-                      src={productDetails.product_image}
-                      alt={productDetails.product_name}
-                      className="object-cover rounded-[10px]"
-                    />
-                    </div>
-                   
-                  
-                  </div>
-                ) : (
-                  <div className="text-center">No product details found</div>
-                )}
-              
-    
-            </div>
-    
-    <div className=' p-3 font-bold text-lg uppercase flex justify-center w-full max-w-xl mx-auto'>
-      <button className="uppercase ti-btn card-data border-none text-white font-semibold w-1/2">More Details</button>
-    
-    </div>
-          </div>        )}
-
 
      
     </Fragment>

@@ -33,8 +33,23 @@
     background: rgb(81,126,130);
     background: linear-gradient(90deg, rgba(81,126,130,1) 0%, rgba(114,151,154,1) 35%, rgba(146,175,177,1) 100%);
 }
+.card-data:hover {
+    background: rgb(65, 101, 106); /* Darker shade for hover effect */
+    background: linear-gradient(90deg, rgba(65, 101, 106, 1) 0%, rgba(92, 124, 126, 1) 35%, rgba(117, 146, 149, 1) 100%);
+}
 
 .new-launch{
+    background: rgb(31,42,44) !important;
+    background: linear-gradient(90deg, rgba(31,42,44,1) 0%, rgba(43,62,66,1) 35%, rgba(67,103,112,1) 100%) !important;
+}
+
+
+.table-btn {
+    background: rgb(81,126,130);
+    background: linear-gradient(90deg, rgba(81,126,130,1) 0%, rgba(114,151,154,1) 35%, rgba(146,175,177,1) 100%);
+}
+
+.table-btn:hover {
     background: rgb(31,42,44) !important;
     background: linear-gradient(90deg, rgba(31,42,44,1) 0%, rgba(43,62,66,1) 35%, rgba(67,103,112,1) 100%) !important;
 }

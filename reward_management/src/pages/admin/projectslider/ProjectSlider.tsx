@@ -323,7 +323,7 @@ const handleProjectLinkChange = (index: number, value: string) => {
             </h3>
             <button
             onClick={handleAddNewGuide}
-            className="ti-btn card-data border-none !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]"
+            className="ti-btn table-btn border-none !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]"
           >
             Add New Project
           </button>

@@ -163,9 +163,9 @@ const CarpenterProfile = () => {
 
         if (uploadedFileUrl) {
             try {
-                const response = await axios.post(`/api/method/reward_management_app.api.carpenter_profile.update_user_image`, {
+                const response = await axios.post(`/api/method/reward_management_app.api.carpenter_profile.update_carpner_image`, {
                     new_image_url: uploadedFileUrl,
-                    name: email,
+                    name: mobileno,
                 }, {
 
                 });
@@ -191,8 +191,8 @@ const CarpenterProfile = () => {
             setSelectedImage(face9); // Assuming face9 is the default image you want to set
 
             // Call the API to remove the user image
-            await axios.post(`/api/method/reward_management_app.api.carpenter_profile.remove_user_image`, {
-                name: email,
+            await axios.post(`/api/method/reward_management_app.api.carpenter_profile.remove_carpenter_image`, {
+                name: mobileno,
             });
 
             // Remove the image from localStorage
