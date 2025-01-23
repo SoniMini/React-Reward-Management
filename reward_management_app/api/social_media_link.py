@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_social_media_link():
     social_link = frappe.get_single('Social Media Link')  
 
