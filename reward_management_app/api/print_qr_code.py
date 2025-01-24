@@ -13,14 +13,16 @@ from frappe.utils import now, format_datetime
 @frappe.whitelist()
 def print_qr_code():
     # Fetch fields from the Product QR document
-    qr_docs = frappe.get_all("Product QR", fields=["name", "product_name", "quantity"],order_by="creation desc"
+    qr_docs = frappe.get_all("Product QR", fields=["name", "product_name", "quantity"]
 )
 
     # Fetch child table data linked with qr_table field for each Product QR document
     for qr_doc in qr_docs:
         qr_doc['qr_table_data'] = frappe.get_all("Product QR Table",
                                                  filters={"parent": qr_doc['name']},
-                                                 fields=["product_table_name", "qr_code_image", "product_qr_id", "points","generated_date","generated_time","scanned","product_qr_name","carpenter_id","carpenter_name","mobile_number","redeem_date"])
+                                                 fields=["product_table_name", "name_of_product","qr_code_image", "product_qr_id", "points","generated_date","generated_time","scanned","product_qr_name","carpenter_id","carpenter_name","mobile_number","redeem_date"],
+                                                  order_by="generated_date desc"  # Order child table rows by creation
+)
               # Format date fields as dd-MM-yyyy
         for qr_data in qr_doc['qr_table_data']:
             if qr_data.get('generated_date'):

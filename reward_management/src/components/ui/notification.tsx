@@ -33,7 +33,7 @@ const iconMap = {
 };
 
 const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, toggleDropdown, onNotificationCountChange }) => {
-    const { data, error, isLoading } = useFrappeGetCall('reward_management_app.api.admin_notifications.get_top_ten_notifications_log');
+    const { data, error, isLoading } = useFrappeGetCall('reward_management_app.api.admin_notifications.get_notifications_log');
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [notificationCount, setNotificationCount] = useState<number>(0);
 
@@ -51,7 +51,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, tog
     }, []);
 
     useEffect(() => {
-        if (isLoading) return; // Avoid processing while loading
+        if (isLoading) return; 
         if (error) {
             console.error('Error fetching notifications:', error);
             return;
@@ -63,7 +63,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, tog
             if (Array.isArray(notificationsArray)) {
                 const transformedNotifications = notificationsArray.map((notification: any, index: number) => ({
                     id: notification.name || `${index + 1}`,
-                    color: 'primary',
+                    color: 'primaries',
                     avatarColor: 'bg-primary',
                     icon: notification.icon || 'ti-user', // Fallback icon
                     subjectHTML: notification.subject || 'No Subject',

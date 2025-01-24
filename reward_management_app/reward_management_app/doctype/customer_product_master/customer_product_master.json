@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:product_name",
+ "autoname": "naming_series:",
  "creation": "2025-01-08 19:04:09.058706",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -9,15 +9,20 @@
   "product_name",
   "product_category",
   "product_sub_category",
+  "naming_series",
+  "column_break_lnag",
   "product_url",
+  "category_name",
+  "sub_category_name",
   "product_image"
  ],
  "fields": [
   {
    "fieldname": "product_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Product Name",
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "product_category",
@@ -40,15 +45,38 @@
    "fieldname": "product_image",
    "fieldtype": "Attach Image",
    "label": "Product Image"
+  },
+  {
+   "default": "CUS-PROD.-.YYYY.-.MM.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "CUS-PROD.-.YYYY.-.MM.-.#####"
+  },
+  {
+   "fieldname": "column_break_lnag",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "product_category.category_name",
+   "fieldname": "category_name",
+   "fieldtype": "Data",
+   "label": "Category Name"
+  },
+  {
+   "fetch_from": "product_sub_category.sub_category_name",
+   "fieldname": "sub_category_name",
+   "fieldtype": "Data",
+   "label": "Sub Category Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-09 12:30:56.372266",
+ "modified": "2025-01-24 17:34:26.077753",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Customer Product Master",
- "naming_rule": "By fieldname",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

@@ -20,15 +20,15 @@ const CategoryMaster: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [productCatalogue, setProductCatalogue] = useState("");
+    const [categoryName, setcategoryName] = useState("");
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
-        useState(false);
+    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [showAddCatalogueForm, setShowAddCatalogueForm] = useState(false);
     const [productCategoryToDelete, setProductCategoryToDelete] = useState<ProductCategory | null>(null);
     const [alertTitle, setAlertTitle] = useState("");
-    // const [productCategoryToEdit, setProductCategoryToEdit] =useState<ProductCategory | null>(null);
+    const [productCategoryToEdit, setProductCategoryToEdit] =useState<ProductCategory | null>(null);
     const [filteredData, setFilteredData] = useState<ProductCategory[]>([]);
 
 
@@ -47,6 +47,10 @@ const CategoryMaster: React.FC = () => {
     const { data: productcategoryData, mutate: mutateProductCategory } =
         useFrappeGetDocList<ProductCategory>("Product Category", {
             fields: ["name", "category_name"],
+            orderBy: {
+                field: 'creation',
+                order: 'desc',
+            },
         });
 
     const handleSearch = (value: string) => setSearchQuery(value);
@@ -73,11 +77,12 @@ const CategoryMaster: React.FC = () => {
         }
     }, [showSuccessAlert]);
 
-  
+//   Add New Catefory--------------
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
         const data = {
+            // name :categoryName,
             category_name: productCatalogue,
         };
 
@@ -92,11 +97,12 @@ const CategoryMaster: React.FC = () => {
                 setAlertTitle("Success");
                 setAlertMessage("Product Category added successfully!");
                 // Clear the input fields
-                setProductCatalogue("");
                 
             }
 
             setShowSuccessAlert(true);
+            setProductCatalogue("");
+
             handleCloseModal();
             mutateProductCategory();
         } catch (error) {
@@ -106,15 +112,54 @@ const CategoryMaster: React.FC = () => {
     };
 
 
+    //   Edit Category--------------
+
+
+    const handleEditProductCategory = (category: ProductCategory) => {
+        setProductCategoryToEdit(category);
+        setcategoryName(category.name);  // Set the Category ID
+        setProductCatalogue(category.category_name); // Set the Category Name
+    };
+
+    const handleEditSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+    
+        const updatedData = {
+            name: categoryName,
+            category_name: productCatalogue,
+        };
+    
+        try {
+            await axios.put(`/api/resource/Product Category/${categoryName}`, updatedData, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            // Clear the input fields
+            setAlertTitle("Success");
+            setAlertMessage("Product Category updated successfully!");
+            setShowSuccessAlert(true);
+            setProductCatalogue("");
+
+    
+            // Close the modal and refresh the data
+            handleCloseModal();
+            mutateProductCategory();  
+    
+        } catch (error) {
+            console.error("Error updating the product category:", error);
+            alert("An error occurred while updating the category. Please try again.");
+        }
+    };
+    
+
+// Delete Category-----
     const handleDeleteProductCategory = (item: ProductCategory) => {
         setProductCategoryToDelete(item);
         setIsConfirmDeleteModalOpen(true);
     };
 
-    // const handleEditProductCategory = (category: ProductCategory) => {
-    //     setProductCategoryToEdit(category);
-    //     setShowAddCatalogueForm(true);
-    // };
 
     const confirmDelete = async () => {
         if (!productCategoryToDelete) return;
@@ -167,7 +212,7 @@ const CategoryMaster: React.FC = () => {
         }
     };
     const handleCloseModal = () => {
-        // setProductCategoryToEdit(null);
+        setProductCategoryToEdit(null);
         setShowAddCatalogueForm(false);
     };
 
@@ -200,7 +245,9 @@ const CategoryMaster: React.FC = () => {
                     <div className="box-body m-5">
                         <TableComponent<ProductCategory>
                             columns={[
+                                { header: "Category ID", accessor: "name" },
                                 { header: "Category Name", accessor: "category_name" },
+
                                
                             ]}
                             data={filteredData || []}
@@ -212,8 +259,8 @@ const CategoryMaster: React.FC = () => {
                             handleNextPage={() => setCurrentPage((prev) => prev + 1)}
                             handlePageChange={(page) => setCurrentPage(page)}
                             showProductQR={false}
-                            showEdit={false}
-                            // onEdit={handleEditProductCategory} 
+                            showEdit={true}
+                            onEdit={handleEditProductCategory} 
                             showDelete={true}
                             onDelete={handleDeleteProductCategory}
                             showView={false}
@@ -233,9 +280,6 @@ const CategoryMaster: React.FC = () => {
                                 <div className="ti-modal-header flex justify-between border-b p-4">
                                     <h6 className="modal-title text-1rem font-semibold text-primary">
                                         Add Category
-                                        {/* {productCategoryToEdit
-                                            ? "View Category"
-                                            : "Add Category"} */}
                                     </h6>
                                     <button
                                         onClick={handleCloseModal}
@@ -283,7 +327,99 @@ const CategoryMaster: React.FC = () => {
                                             
                                         >
                                             Submit
-                                            {/* {productCategoryToEdit ? "Update Category" : "Submit"} */}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"
+                                            onClick={handleCloseModal}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
+{productCategoryToEdit && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg shadow-lg w-full max-w-lg">
+                        <div className="ti-modal-content flex flex-col h-full max-h-[80vh]">
+                            <div className="box-header">
+                                <div className="ti-modal-header flex justify-between border-b p-4">
+                                    <h6 className="modal-title text-1rem font-semibold text-primary">
+                                        Edit Category
+                                    </h6>
+                                    <button
+                                        onClick={handleCloseModal}
+                                        type="button"
+                                        className="text-1rem font-semibold text-defaulttextcolor"
+                                    >
+                                        <span className="sr-only">Close</span>
+                                        <i className="ri-close-line"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <form onSubmit={handleEditSubmit}>
+                                <div className="p-4 overflow-auto flex-1">
+                                    <div className="grid grid-cols-12 gap-4">
+                                        <div className="xl:col-span-12 col-span-12">
+                                            <label
+                                                htmlFor="categoryID"
+                                                className="block text-sm text-defaulttextcolor font-semibold mb-1"
+                                            >
+                                                Category Id
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="categoryID"
+                                                className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm border border-[#dadada] outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
+                                                value={
+                                                    categoryName 
+                                                }
+                                                readOnly
+                                                onChange={(e) => setcategoryName(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="xl:col-span-12 col-span-12">
+                                            <label
+                                                htmlFor="categoryName"
+                                                className="block text-sm text-defaulttextcolor font-semibold mb-1"
+                                            >
+                                                Category Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="categoryName"
+                                                className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm border border-[#dadada] outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
+                                                placeholder="Enter Product Category"
+                                                value={
+                                                    productCatalogue 
+                                                }
+                                                onChange={(e) => setProductCatalogue(e.target.value)}
+                                            />
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+
+                                <div className="xl:col-span-12 col-span-12 text-center border-t p-4 border-defaultborder">
+
+
+                                    <div className="flex justify-end">
+                                        <button
+                                            type="submit"
+                                            className="ti-btn ti-btn-primary !font-medium m-1"
+                                            
+                                        >
+                                            Submit
                                         </button>
                                         <button
                                             type="button"

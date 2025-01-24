@@ -60,7 +60,7 @@ def update_registration_request_status(registration_id, status):
             user.first_name = registration.first_name
             user.last_name = registration.last_name
             user.full_name = f"{registration.first_name} {registration.last_name}"
-            user.email = f"{registration.mobile_number}@gmail.com"
+            user.email = f"{registration.mobile_number}@noexit.com"
             user.mobile_no = registration.mobile_number
             user.location = registration.city
             user.role_profile_name = "Carpenter"  # Assigning role as Carpenter
@@ -78,7 +78,7 @@ def update_registration_request_status(registration_id, status):
             new_carpainter.first_name = registration.first_name
             new_carpainter.last_name = registration.last_name
             new_carpainter.full_name = registration.carpainter_name
-            new_carpainter.email = f"{registration.mobile_number}@gmail.com"
+            new_carpainter.email = f"{registration.mobile_number}@noexit.com"
             new_carpainter.mobile_number = registration.mobile_number
             new_carpainter.city = registration.city
 

@@ -34,9 +34,9 @@ const CarpenterDetails: React.FC = () => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [alertTitle, setAlertTitle] = useState('');
-    const { data: userData } = useFrappeGetDocList<User>('User', {
-        fields: ['mobile_no', 'name']
-    });
+    // const { data: userData } = useFrappeGetDocList<User>('User', {
+    //     fields: ['mobile_no', 'name']
+    // });
 
     const { data: carpenterData } = useFrappeGetDocList<Carpenter>('Carpenter', {
         fields: ['name', 'full_name', 'city', 'mobile_number', 'total_points', 'current_points', 'redeem_points', 'enabled','creation','email'],
@@ -48,15 +48,21 @@ const CarpenterDetails: React.FC = () => {
     });
 
     // Extract mobile numbers from User data
-    const validMobileNumbers = userData?.map(user => user.mobile_no) || [];
+    // const validMobileNumbers = userData?.map(user => user.mobile_no) || [];
 
     // Filter Carpenters Data and modify the 'enabled' field
-    const filteredCarpenters = carpenterData?.filter(carpenter =>
-        validMobileNumbers.includes(carpenter.mobile_number)
-    ).map(carpenter => ({
+    // const filteredCarpenters = carpenterData?.filter(carpenter =>
+    //     validMobileNumbers.includes(carpenter.mobile_number)
+    // ).map(carpenter => ({
+    //     ...carpenter, // Spread the original carpenter data
+    //     enabled: carpenter.enabled === 1 ? 'Active' : 'Deactive'
+    // })) || [];
+
+    const filteredCarpenters = carpenterData?.map(carpenter => ({
         ...carpenter, // Spread the original carpenter data
-        enabled: carpenter.enabled === 1 ? 'Active' : 'Deactive'
+        enabled: carpenter.enabled === 1 ? 'Active' : 'Deactive' // Modify 'enabled' field
     })) || [];
+
 
     // Function to filter data based on search query
     const filteredData = filteredCarpenters.filter(carpenter => {
