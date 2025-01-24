@@ -19,7 +19,8 @@ interface ProductQRHistory {
     qr_code_image: string,
     points?: number,
     carpenter_name:string,
-    mobile_number:string
+    mobile_number:string,
+    name_of_product:string
 }
 
 const ProductQRHistory: React.FC = () => {
@@ -92,7 +93,7 @@ const ProductQRHistory: React.FC = () => {
             isWithinDateRange &&
             (
                 item.product_qr_name?.toLowerCase().includes(query) ||
-                item.product_table_name?.toLowerCase().includes(query) ||
+                item.name_of_product?.toLowerCase().includes(query) ||
                 item.carpenter_id?.toLowerCase().includes(query) ||
                 item.points?.toString().toLowerCase().includes(query) ||
                 item.scanned?.toLowerCase().includes(query) ||
@@ -162,7 +163,7 @@ const ProductQRHistory: React.FC = () => {
                             <TableComponent<ProductQRHistory>
                                 columns={[
                                     { header: 'QR ID', accessor: 'product_qr_name' },
-                                    { header: 'Product Name', accessor: 'product_table_name' },
+                                    { header: 'Product Name', accessor: 'name_of_product' },
                                     { header: 'Reward Points', accessor: 'points' },
                                     { header: 'Generated Date', accessor: 'generated_date' },
                                     {

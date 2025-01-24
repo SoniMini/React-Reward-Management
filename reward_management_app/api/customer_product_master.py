@@ -7,7 +7,7 @@ def get_customer_products():
         # Fetch all gift products
         gift_products = frappe.get_all(
             "Customer Product Master", 
-            fields=["name", "product_name", "product_category", "product_sub_category","product_url","product_image"], order_by="creation desc"
+            fields=["name", "product_name", "product_category","sub_category_name","category_name", "product_sub_category","product_url","product_image"], order_by="creation desc"
         )
         
         # if gift_products:
@@ -51,7 +51,7 @@ def get_customer_products():
         
 # Add New Customer Product-------------
 @frappe.whitelist()
-def add_customer_product(new_image_url, productName, productCategory, productSubcategory, productUrl):
+def add_customer_product(new_image_url, productName,productCategoryName, productCategory,subCategoryName, productSubcategory, productUrl):
     # # Ensure the input is a list for new_image_url
     # if not isinstance(new_image_url, list):
     #     return("The 'new_image_url' parameter must be an array of image URLs.")
@@ -61,8 +61,10 @@ def add_customer_product(new_image_url, productName, productCategory, productSub
     product_doc = frappe.get_doc({
         "doctype": "Customer Product Master",
         "product_name": productName,
-        "product_category": productCategory,
-        "product_sub_category": productSubcategory,
+        "product_category": productCategoryName,
+        "category_name": productCategory,
+        "product_sub_category": subCategoryName,
+        "sub_category_name": productSubcategory,
         "product_url": productUrl,
         "product_image": new_image_url
     })
@@ -84,18 +86,21 @@ def add_customer_product(new_image_url, productName, productCategory, productSub
 
         
 @frappe.whitelist()
-def update_customer_product(new_image_url, productName, productCategory, productSubcategory, productUrl):
+def update_customer_product(new_image_url,productID, productName, productCategoryName,productCategory, subCategoryName,productSubcategory, productUrl):
 
     # Fetch the existing Gift Product document by name
-    product_doc = frappe.get_all("Customer Product Master", filters={"product_name": productName}, fields=["name"])
+    product_doc = frappe.get_all("Customer Product Master", filters={"name": productID}, fields=["name"])
 
     if product_doc:
         # If the document exists, get the first match
         product_doc = frappe.get_doc("Customer Product Master", product_doc[0].name)
         
         # Update fields
-        product_doc.product_category = productCategory
-        product_doc.product_sub_category = productSubcategory
+        product_doc.product_name = productName
+        product_doc.product_category = productCategoryName
+        product_doc.category_name = productCategory
+        product_doc.product_sub_category =subCategoryName
+        product_doc.sub_category_name = productSubcategory
         product_doc.product_url = productUrl
         product_doc.product_image = new_image_url
         

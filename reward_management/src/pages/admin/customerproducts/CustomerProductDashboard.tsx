@@ -10,7 +10,9 @@ import {useNavigate } from "react-router-dom";
 interface CustomerProduct {
     name: string,
     product_category: string,
+    category_name:string;
     product_sub_category: string,
+    sub_category_name:string;
     product_name: string,
     product_url: string,
     product_image:  string,
@@ -169,8 +171,8 @@ const CustomerProductMaster: React.FC = () => {
                             columns={[
                                 { header: 'Product ID', accessor: 'name' },
                                 { header: 'Product Name', accessor: 'product_name' },
-                                { header: 'Category', accessor: 'product_category' },
-                                { header: 'Sub Category', accessor: 'product_sub_category' },
+                                { header: 'Category', accessor: 'category_name' },
+                                { header: 'Sub Category', accessor: 'sub_category_name' },
                             ]}
                             data={filteredData || []}
                             currentPage={currentPage}

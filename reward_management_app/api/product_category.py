@@ -23,7 +23,7 @@ def get_product_categories():
     product_category = frappe.get_all("Product Category", fields=["name", "category_name"])
 
     # Fetch all product subcategories
-    product_subcategory = frappe.get_all("Product Sub Category", fields=["name", "category", "sub_category_name", "sub_category_image"])
+    product_subcategory = frappe.get_all("Product Sub Category", fields=["name", "category","category_name", "sub_category_name", "sub_category_image"])
 
     # Prepare separate lists for categories and subcategories
     category_list = []
@@ -41,7 +41,7 @@ def get_product_categories():
         subcategory_list.append({
             "sub_category_name": subcategory["sub_category_name"],
             "sub_category_image": subcategory["sub_category_image"],
-            "category_id": subcategory["category"]
+            "category_id": subcategory["category_name"]
         })
 
     # Return both category and subcategory lists

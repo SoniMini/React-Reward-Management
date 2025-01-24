@@ -16,6 +16,7 @@ interface ProductSubCategory {
     category: string;
     sub_category_name: string;
     sub_category_image: string;
+    category_name: string
 }
 
 interface ProductCategory {
@@ -26,22 +27,21 @@ interface ProductCategory {
 const SubCategoryMaster: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
+    const [productSubCategoryId, setProductSubCategoryId] = useState("");
     const [productSubCategory, setProductSubCategory] = useState("");
+
     const [productCategory, setProductCategory] = useState<{ category_name: string; id: number }[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
     const [existingImages, setExistingImages] = useState<string[]>([]);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [files, setFiles] = useState<FileList | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
-    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
-        useState(false);
+    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [showAddSubCategoryForm, setShowAddSubCategoryForm] = useState(false);
-    const [productSubCategoryToDelete, setProductSubCategoryToDelete] =
-        useState<ProductSubCategory | null>(null);
+    const [productSubCategoryToDelete, setProductSubCategoryToDelete] = useState<ProductSubCategory | null>(null);
     const [alertTitle, setAlertTitle] = useState("");
-    const [productSubCategoryToEdit, setProductSubCategoryToEdit] =
-        useState<ProductSubCategory | null>(null);
+    const [productSubCategoryToEdit, setProductSubCategoryToEdit] = useState<ProductSubCategory | null>(null);
     const [filteredData, setFilteredData] = useState<ProductSubCategory[]>([]);
 
 
@@ -52,19 +52,23 @@ const SubCategoryMaster: React.FC = () => {
             x: 'right',
             y: 'top',
         },
-        duration: 3000, 
+        duration: 3000,
     });
 
 
     // Fetch the product Sub  categories
     const { data: productsubcategoryData, mutate: mutateProductSubCategory } =
         useFrappeGetDocList<ProductSubCategory>("Product Sub Category", {
-            fields: ["name", "sub_category_name","category", "sub_category_image"],
+            fields: ["name", "sub_category_name", "category", "category_name", "sub_category_image"],
+            orderBy: {
+                field: 'creation',
+                order: 'desc',
+            },
         });
 
 
-       // Fetch the product categories
-       const { data: productcategoryData, error } = useFrappeGetDocList<ProductCategory>('Product Category', {
+    // Fetch the product categories
+    const { data: productcategoryData } = useFrappeGetDocList<ProductCategory>('Product Category', {
         fields: ['name', 'category_name']
     });
 
@@ -119,6 +123,9 @@ const SubCategoryMaster: React.FC = () => {
         }
     };
 
+
+
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const fileUrls: string[] = [];
@@ -135,47 +142,38 @@ const SubCategoryMaster: React.FC = () => {
         const updatedProductImage =
             fileUrls.length > 0 ? fileUrls[0] : existingImages[0];
 
+        
+        // Find the selected category by matching category_name
+        const selectedCategory = productcategoryData.find(
+            (category) => category.category_name === productCategory
+        );
+
+        // console.log("Selected Category Object:", selectedCategory);
+
         const data = {
             sub_category_name: productSubCategory,
-            category: productCategory,
+            category: selectedCategory?.name || '', 
+            category_name: productCategory,
             sub_category_image: updatedProductImage,
         };
 
-        try {
-            if (productSubCategoryToEdit) {
-                // Edit existing product category
-                await axios.put(
-                    `/api/resource/Product Sub Category/${productSubCategoryToEdit.name}`,
-                    data,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
-                setAlertTitle("Success");
-                setAlertMessage("Sub Category updated successfully!");
-                // Clear the input fields
-                setProductSubCategory("");
-                // Clear the file previews
-                setPreviews([]);
-                // Clear any existing images
-                setExistingImages([]);
-            } else {
-                // Add new product category
-                await axios.post(`/api/resource/Product Sub Category`, data, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-                setAlertTitle("Success");
-                setAlertMessage("Sub Category added successfully!");
-                // Clear the input fields
-                setProductSubCategory("");
-                setPreviews([]);
-                setExistingImages([]);
-            }
 
+
+        try {
+
+            // Add new product category
+            await axios.post(`/api/resource/Product Sub Category`, data, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            setAlertTitle("Success");
+            setAlertMessage("Sub Category added successfully!");
+            // Clear the input fields
+            setProductSubCategory('');
+            setPreviews([]);
+            setProductCategory([]);
+            setExistingImages([]);
             setShowSuccessAlert(true);
             handleCloseModal();
             mutateProductSubCategory();
@@ -196,14 +194,86 @@ const SubCategoryMaster: React.FC = () => {
         }
     };
 
-    const handleDeleteProductCategory = (item: ProductSubCategory) => {
-        setProductSubCategoryToDelete(item);
-        setIsConfirmDeleteModalOpen(true);
-    };
 
+    // edit sub category------------
     const handleEditProductCategory = (category: ProductSubCategory) => {
         setProductSubCategoryToEdit(category);
         setShowAddSubCategoryForm(true);
+        setProductSubCategoryId(category.name);
+        setProductSubCategory(category.sub_category_name);
+        // setProductCategory(category.category_name);
+    };
+
+
+
+
+    const handleEditSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const fileUrls: string[] = [];
+
+        if (files) {
+            for (const file of Array.from(files)) {
+                const fileUrl = await uploadFile(file);
+                if (fileUrl) {
+                    fileUrls.push(fileUrl);
+                }
+            }
+        }
+
+        const updatedProductImage =
+            fileUrls.length > 0 ? fileUrls[0] : existingImages[0];
+
+        // Find the selected category by matching category_name
+          const selectedCategory = productcategoryData.find(
+            (category) => category.category_name === productCategory
+        );
+
+        const updatedata = {
+            name: productSubCategoryId,
+            sub_category_name: productSubCategory,
+            category: selectedCategory?.name || '', 
+            category_name: productCategory,
+            sub_category_image: updatedProductImage,
+        };
+
+        try {
+
+            // Edit existing product category
+            await axios.put(
+                `/api/resource/Product Sub Category/${productSubCategoryId}`,
+                updatedata,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            setAlertTitle("Success");
+            setAlertMessage("Sub Category updated successfully!");
+            // Clear the input fields
+            setProductSubCategory('');
+            setProductCategory([]);
+            // Clear the file previews
+            setPreviews([]);
+            // Clear any existing images
+            setExistingImages([]);
+
+            setShowSuccessAlert(true);
+            handleCloseModal();
+            mutateProductSubCategory();
+        } catch (error) {
+            console.error("Error submitting the form:", error);
+            alert("An error occurred while submitting the form. Please try again.");
+        }
+    };
+
+
+
+    // delete sub category---------
+
+    const handleDeleteProductCategory = (item: ProductSubCategory) => {
+        setProductSubCategoryToDelete(item);
+        setIsConfirmDeleteModalOpen(true);
     };
 
     const confirmDelete = async () => {
@@ -259,6 +329,10 @@ const SubCategoryMaster: React.FC = () => {
     const handleCloseModal = () => {
         setProductSubCategoryToEdit(null);
         setShowAddSubCategoryForm(false);
+        setProductSubCategory('');
+        setPreviews([]);
+        setProductCategory([]);
+        setExistingImages([]);
     };
 
     const cancelDelete = () => {
@@ -290,8 +364,10 @@ const SubCategoryMaster: React.FC = () => {
                     <div className="box-body m-5">
                         <TableComponent<ProductSubCategory>
                             columns={[
+                                { header: "Sub Category ID", accessor: "name" },
+
                                 { header: "Sub Category", accessor: "sub_category_name" },
-                                { header: "Category", accessor: "category" },
+                                { header: "Category", accessor: "category_name" },
                                 {
                                     header: "Image",
                                     accessor: "sub_category_image",
@@ -319,13 +395,13 @@ const SubCategoryMaster: React.FC = () => {
                             onDelete={handleDeleteProductCategory}
                             showView={false}
                             columnStyles={{
-                                'Sub Category': 'text-[var(--primaries)] font-semibold',
+                                'Sub Category ID': 'text-[var(--primaries)] font-semibold',
                             }}
                         />
                     </div>
                 </div>
             </div>
-
+            {/* show add subcategory */}
             {showAddSubCategoryForm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white rounded-lg shadow-lg w-full max-w-lg">
@@ -333,9 +409,7 @@ const SubCategoryMaster: React.FC = () => {
                             <div className="box-header">
                                 <div className="ti-modal-header flex justify-between border-b p-4">
                                     <h6 className="modal-title text-1rem font-semibold text-primary">
-                                        {productSubCategoryToEdit
-                                            ? "Edit Sub Category"
-                                            : "Add Sub Category"}
+                                        Add Sub Category
                                     </h6>
                                     <button
                                         onClick={handleCloseModal}
@@ -351,6 +425,167 @@ const SubCategoryMaster: React.FC = () => {
                             <form onSubmit={handleSubmit}>
                                 <div className="p-4 overflow-auto flex-1">
                                     <div className="grid grid-cols-12 gap-4">
+                                        {/* Sub category Name */}
+
+                                        <div className="xl:col-span-12 col-span-12">
+                                            <label
+                                                htmlFor="subcategoryName"
+                                                className="block text-sm text-defaulttextcolor font-semibold mb-1"
+                                            >
+                                                Sub Category Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="subcategoryName"
+                                                className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm border border-[#dadada] outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
+                                                placeholder="Enter Product Category"
+                                                value={productSubCategory}
+                                                onChange={(e) => {
+                                                    setProductSubCategory(e.target.value);
+
+                                                }}
+                                            />
+                                        </div>
+
+                                        {/* select category--- */}
+                                        <div className="xl:col-span-12 col-span-12">
+                                            <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor">Category</label>
+
+                                            <select
+                                                id="product-category-add"
+                                                name="product-category-add"
+                                                className="w-full border border-[#dadada] text-defaultsize text-defaulttextcolor rounded-[5px]  outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
+                                                value={productCategory}
+                                                onChange={(e) => setProductCategory(e.target.value)}
+                                                required
+                                            >
+                                                <option value="">Select a category</option>
+                                                {productcategoryData && productcategoryData.map((category) => (
+                                                    <option key={category.name} value={category.category_name}>
+                                                        {category.category_name}
+
+                                                    </option>
+                                                ))}
+                                            </select>
+
+                                        </div>
+                                        {/* end---- */}
+                                        <div className="xl:col-span-12 col-span-12">
+                                            <label
+                                                htmlFor="product-images-add"
+                                                className="block text-sm font-semibold text-defaulttextcolor mb-1"
+                                            >
+                                                Category Image
+                                            </label>
+                                            <input
+                                                type="file"
+                                                multiple
+                                                className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm font-medium p-2 border border-[#dadada] outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
+                                                id="product-images-add"
+                                                onChange={handleFileChange}
+                                            />
+                                            <div className="flex gap-4 mt-2">
+                                                {previews.map((preview, index) => (
+                                                    <img
+                                                        key={index}
+                                                        src={preview}
+                                                        alt={`preview-${index}`}
+                                                        className="w-32 h-32 object-cover"
+                                                    />
+                                                ))}
+                                                {/* {productSubCategoryToEdit?.sub_category_image && (
+                                                    <img
+                                                        src={productSubCategoryToEdit?.sub_category_image}
+                                                        alt="current image"
+                                                        className="w-32 h-32 object-cover"
+                                                    />
+                                                )} */}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="xl:col-span-12 col-span-12 text-center border-t p-4 border-defaultborder">
+
+
+                                    <div className="flex justify-end items-baseline">
+                                        <button
+                                            type="submit"
+                                            className="ti-btn ti-btn-primary-full bg-primary me-2"
+                                        >
+                                            {productSubCategoryToEdit ? "Update" : "Submit"}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"
+                                            onClick={handleCloseModal}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* show edit sub categoty----------------------- */}
+
+
+
+            {productSubCategoryToEdit && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg shadow-lg w-full max-w-lg">
+                        <div className="ti-modal-content flex flex-col h-full max-h-[80vh]">
+                            <div className="box-header">
+                                <div className="ti-modal-header flex justify-between border-b p-4">
+                                    <h6 className="modal-title text-1rem font-semibold text-primary">
+
+                                        Edit Sub Category
+                                    </h6>
+                                    <button
+                                        onClick={handleCloseModal}
+                                        type="button"
+                                        className="text-1rem font-semibold text-defaulttextcolor"
+                                    >
+                                        <span className="sr-only">Close</span>
+                                        <i className="ri-close-line"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <form onSubmit={handleEditSubmit}>
+                                <div className="p-4 overflow-auto flex-1">
+                                    <div className="grid grid-cols-12 gap-4">
+
+                                        {/* Sub Category ID */}
+                                        <div className="xl:col-span-12 col-span-12">
+                                            <label
+                                                htmlFor="subcategoryId"
+                                                className="block text-sm text-defaulttextcolor font-semibold mb-1"
+                                            >
+                                                Sub Category ID
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="subcategoryId"
+                                                className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm border border-[#dadada] outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
+                                                placeholder="Enter Product Category"
+                                                value={
+                                                    productSubCategoryId
+
+                                                }
+                                                onChange={(e) => setProductSubCategoryId(e.target.value)}
+                                                readOnly={!!productSubCategoryToEdit}
+                                            />
+                                        </div>
+
+                                        {/* Sub category Name */}
+
                                         <div className="xl:col-span-12 col-span-12">
                                             <label
                                                 htmlFor="subcategoryName"
@@ -363,38 +598,35 @@ const SubCategoryMaster: React.FC = () => {
                                                 id="subcategoryName"
                                                 className="form-control w-full rounded-[5px] text-defaulttextcolor text-sm border border-[#dadada] outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
                                                 placeholder="Enter Product Category"
-                                                value={
-                                                    productSubCategory ||
-                                                    (productSubCategoryToEdit
-                                                        ? productSubCategoryToEdit.sub_category_name
-                                                        : "")
-                                                }
-                                                onChange={(e) => setProductSubCategory(e.target.value)}
-                                                readOnly={!!productSubCategoryToEdit}
+                                                value={productSubCategory}
+                                                onChange={(e) => {
+                                                    setProductSubCategory(e.target.value);
+
+                                                }}
                                             />
                                         </div>
 
                                         {/* select category--- */}
                                         <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor">Category</label>
-                                                    
-                                                        <select
-                                                            id="product-category-add"
-                                                            name="product-category-add"
-                                                            className="w-full border border-[#dadada] text-defaultsize text-defaulttextcolor rounded-[5px]  outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
-                                                            value={productCategory}
-                                                            onChange={(e) => setProductCategory(e.target.value)}
-                                                            required
-                                                        >
-                                                            <option value="">Select a category</option>
-                                                            {productcategoryData && productcategoryData.map((category) => (
-                                                                <option key={category.name} value={category.category_name}>
-                                                                    {category.category_name}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                   
-                                                </div>
+                                            <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor">Category</label>
+
+                                            <select
+                                                id="product-category-add"
+                                                name="product-category-add"
+                                                className="w-full border border-[#dadada] text-defaultsize text-defaulttextcolor rounded-[5px]  outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
+                                                value={productCategory}
+                                                onChange={(e) => setProductCategory(e.target.value)}
+                                                required
+                                            >
+                                                <option value="">Select a category</option>
+                                                {productcategoryData && productcategoryData.map((category) => (
+                                                    <option key={category.name} value={category.category_name}>
+                                                        {category.category_name}
+                                                    </option>
+                                                ))}
+                                            </select>
+
+                                        </div>
                                         {/* end---- */}
                                         <div className="xl:col-span-12 col-span-12">
                                             <label
