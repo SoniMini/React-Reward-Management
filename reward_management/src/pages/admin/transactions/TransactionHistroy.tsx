@@ -255,7 +255,7 @@ const TransactionHistory: React.FC = () => {
                                     { header: 'Carpenter ID', accessor: 'carpainter_id' },
                                     { header: 'Carpenter Name', accessor: 'carpainter_name' },
                                     { header: 'Mobile Number', accessor: 'mobile_number' },
-                                    { header: 'Transaction Account', accessor: 'transaction_id' },
+                                    { header: 'Reference ID', accessor: 'transaction_id' },
                                     { header: 'Amount', accessor: 'amount' },
                                     { header: 'Transaction Date', accessor: 'transfer_date' },
                                     { header: 'Transaction Time', accessor: 'transfer_time' },

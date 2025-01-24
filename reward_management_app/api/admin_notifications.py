@@ -17,7 +17,7 @@ def get_notifications_log():
             # Fetch notifications for any of the admin users
             notifications = frappe.get_all(
                 "Notification Log",
-                filters={"for_user": ["in", admin_users]},  # Filter for any admin user
+                filters={"for_user": ["in", admin_users],"read": 0},  # Filter for any admin user
                 fields=["name", "subject", "email_content", "document_type", "for_user", "creation"]
             )
             
@@ -32,7 +32,7 @@ def get_notifications_log():
                     # Fetch notifications specifically for that first admin user
                     notifications = frappe.get_all(
                         "Notification Log",
-                        filters={"for_user": first_admin_with_notifications},
+                        filters={"for_user": first_admin_with_notifications,"read": 0},
                         fields=["name", "subject", "email_content", "document_type", "for_user", "creation"]
                     )
                 
@@ -45,7 +45,7 @@ def get_notifications_log():
         # Fetch notifications for the logged-in user
         notifications = frappe.get_all(
             "Notification Log",
-            filters={"for_user": user},
+            filters={"for_user": user,"read": 0},
             fields=["name", "subject", "email_content", "document_type", "for_user", "creation"]
         )
 
@@ -113,34 +113,53 @@ def get_top_ten_notifications_log():
         return notifications
 
 # Notification Updatetion for read notifications----
+
 @frappe.whitelist()
-def mark_notification_as_read(name, read):
+def mark_notification_as_read(name):
     try:
         # Fetch the Notification Log document by its name (ID)
         notification = frappe.get_doc("Notification Log", name)
         
         # Check if the notification exists
         if notification:
-            # Update the 'read' field with the passed value
-            notification.read = read
-            notification.save() 
-            frappe.db.commit()  
-            return {"success":True,"status": "success", "message": "Notification marked as read."}
+            # Mark the notification as read
+            notification.read = 1  # Assuming 1 means 'read'
+            notification.save()
+            frappe.db.commit()
+            return {"success": True, "status": "success", "message": "Notification marked as read."}
         else:
-            return {"success":False,"status": "error", "message": "Notification not found."}
+            return {"success": False, "status": "error", "message": "Notification not found."}
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "Error marking notification as read")
-        return {"success":False,"status": "error", "message": str(e)}
+        return {"success": False, "status": "error", "message": str(e)}
+# @frappe.whitelist()
+# def mark_notification_as_read(name, read):
+#     try:
+#         # Fetch the Notification Log document by its name (ID)
+#         notification = frappe.get_doc("Notification Log", name)
+        
+#         # Check if the notification exists
+#         if notification:
+#             # Update the 'read' field with the passed value
+#             notification.read = read
+#             notification.save() 
+#             frappe.db.commit()  
+#             return {"success":True,"status": "success", "message": "Notification marked as read."}
+#         else:
+#             return {"success":False,"status": "error", "message": "Notification not found."}
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), "Error marking notification as read")
+#         return {"success":False,"status": "error", "message": str(e)}
     
-@frappe.whitelist()
-def show_notification_data():
-    # Fetch all notifications from the Notification Log doctype
-    notifications = frappe.get_all(
-        "Notification Log",
-        fields=["name", "subject", "email_content", "document_type", "for_user", "creation"]
-    )
+# @frappe.whitelist()
+# def show_notification_data():
+#     # Fetch all notifications from the Notification Log doctype
+#     notifications = frappe.get_all(
+#         "Notification Log",
+#         fields=["name", "subject", "email_content", "document_type", "for_user", "creation"]
+#     )
 
-    return notifications
+#     return notifications
 
 
 @frappe.whitelist()

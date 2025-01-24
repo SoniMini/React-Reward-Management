@@ -22,6 +22,7 @@ interface ProductSubCategory {
 const EditCustomerProduct: React.FC = () => {
     const [file, setFile] = useState<File | null>(null);
     const [fileDetails, setFileDetails] = useState<{ url: string, name: string } | null>(null);
+    const [productID, setProductID] = useState('');
     const [productName, setProductName] = useState('');
     const [productCategory, setProductCategory] = useState<{ category_name: string; id: number }[]>([]);
     const [productSubcategory, setProductSubcategory] = useState<{ sub_category_name: string; id: number }[]>([]);
@@ -77,9 +78,10 @@ const EditCustomerProduct: React.FC = () => {
         
                     if (matchedProduct) {
                         console.log("matched gift", matchedProduct);
+                        setProductID(matchedProduct.name);
                         setProductName(matchedProduct.product_name);
-                        setProductCategory(matchedProduct.product_category);
-                        setProductSubcategory(matchedProduct.product_sub_category);
+                        setProductCategory(matchedProduct.category_name);
+                        setProductSubcategory(matchedProduct.sub_category_name);
                         setProductUrl(matchedProduct.product_url);
         
                         // Handle product_image as a string or an array
@@ -194,11 +196,35 @@ const handleSubmit = async (event: React.FormEvent) => {
             return;
         }
 
+
+         // Find the selected subcategory by matching sub_category_name
+         const selectedSubCategory = productSubCategoryData.find(
+            (subcategory) => subcategory.sub_category_name === productSubcategory
+        );
+
+        // Extract the subcategory name
+        const subCategoryName = selectedSubCategory ? selectedSubCategory.name : null;
+
+        
+
+
+         // Find the selected category by matching sub_category_name
+         const selectedCategory = productCategoryData.find(
+            (category) => category.category_name === productCategory
+        );
+
+        // Extract the category name
+        const productCategoryName = selectedCategory ? selectedCategory.name : null;
+
+
         // Prepare data for the API call
         const productData = {
             new_image_url: fileURL,
+            productID :productID,
             productName: productName,
+            productCategoryName : productCategoryName,
             productCategory: productCategory,
+            subCategoryName: subCategoryName, 
             productSubcategory: productSubcategory,
             productUrl: productUrl
         };
@@ -212,7 +238,7 @@ const handleSubmit = async (event: React.FormEvent) => {
         // Handle the response
         if (response.status === 200) {
             setShowSuccessAlert(true);
-            resetForm(); // Reset the form after successful submission
+            resetForm();    
         } else {
             setError('Failed to add the product. Please try again.');
         }
@@ -240,6 +266,21 @@ const handleSubmit = async (event: React.FormEvent) => {
                                 <div className="grid grid-cols-12 md:gap-x-[3rem] gap-0">
                                     <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12">
                                         <div className="grid grid-cols-12 gap-4">
+
+
+                                        <div className="xl:col-span-12 col-span-12">
+                                                <label htmlFor="product-id-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product ID</label>
+                                                <input
+                                                    type="text"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
+                                                    id="product-id-add"
+                                                    placeholder="Product Id"
+                                                    value={productID}
+                                                    onChange={(e) => setProductID(e.target.value)}
+                                                    readOnly
+                                                    
+                                                />
+                                            </div>
                                             <div className="xl:col-span-12 col-span-12">
                                                 <label htmlFor="product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Name</label>
                                                 <input
@@ -249,7 +290,7 @@ const handleSubmit = async (event: React.FormEvent) => {
                                                     placeholder="Name"
                                                     value={productName}
                                                     onChange={(e) => setProductName(e.target.value)}
-                                                    readOnly
+                                                    
                                                 />
                                             </div>
                                             
@@ -272,7 +313,7 @@ const handleSubmit = async (event: React.FormEvent) => {
                                                 </select>
                                             </div>
                                           
-                                            <div className="xl:col-span-12 col-span-12">
+                                            <div className="xl:col-span-12 col-span-12 ">
                                                 <label htmlFor="file-upload" className="block text-sm font-semibold text-defaulttextcolor">Product Image</label>
                                                 <input
                                                     type="file"
@@ -308,7 +349,7 @@ const handleSubmit = async (event: React.FormEvent) => {
                                                 {existingImages.length > 0 && (
                                                     <div>
                                                        
-                                                        <div className="grid grid-cols-4 gap-4 mt-2">
+                                                        <div className="grid grid-cols-4 gap-4 mt-2 ">
                                                             {existingImages.map((image, index) => (
                                                                 <div key={index} className="relative">
                                                                     <img
@@ -362,13 +403,11 @@ const handleSubmit = async (event: React.FormEvent) => {
 
                                 </div>
                                 <div className="px-6 py-4 border-t dark:border-defaultborder sm:flex justify-end">
-                                    {/* <button type="submit" className="ti-btn ti-btn-primary-full bg-primary me-2">
-                                        Add <i className="bi bi-plus-lg ms-2"></i>
-                                    </button> */}
+                                  
                                     <button
                                         type="submit"
                                         className="ti-btn ti-btn-primary !font-medium m-1">
-                                        Add Product<i className="bi bi-plus-lg ms-2"></i>
+                                        Edit Product<i className="bi bi-plus-lg ms-2"></i>
                                     </button>
                                     <button
                                         type="button"

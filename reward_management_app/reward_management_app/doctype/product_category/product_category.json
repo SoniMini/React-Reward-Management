@@ -1,11 +1,12 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:category_name",
+ "autoname": "naming_series:",
  "creation": "2025-01-08 18:58:18.002260",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "naming_series",
   "category_name"
  ],
  "fields": [
@@ -15,16 +16,21 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Category Name",
-   "unique": 1
+   "reqd": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-08 18:59:06.893829",
+ "modified": "2025-01-24 16:39:33.934451",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Product Category",
- "naming_rule": "By fieldname",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -40,7 +46,9 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "category_name"
 }

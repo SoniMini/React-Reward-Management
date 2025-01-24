@@ -128,11 +128,32 @@ const AddCustomerProduct: React.FC = () => {
                 throw new Error('File upload failed');
             }
 
+                 // Find the selected subcategory by matching sub_category_name
+         const selectedSubCategory = productSubCategoryData.find(
+            (subcategory) => subcategory.sub_category_name === productSubcategory
+        );
+
+        // Extract the subcategory name
+        const subCategoryName = selectedSubCategory ? selectedSubCategory.name : null;
+
+        
+
+
+         // Find the selected category by matching sub_category_name
+         const selectedCategory = productCategoryData.find(
+            (category) => category.category_name === productCategory
+        );
+
+        // Extract the category name
+        const productCategoryName = selectedCategory ? selectedCategory.name : null;
+
             // Prepare data for the API call
             const productData = {
                 new_image_url: fileURL,
                 productName: productName,
+                productCategoryName : productCategoryName,
                 productCategory: productCategory,
+                subCategoryName: subCategoryName, 
                 productSubcategory: productSubcategory,
                 productUrl: productUrl
             };
