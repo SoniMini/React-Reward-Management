@@ -266,7 +266,7 @@ const Login = () => {
 
                 if (response.data.message.status === "success") {
                     // console.log("OTP sent successfully:", response);
-                    // const generatedregistrationOtp = response.data.message.otp;
+                    const generatedregistrationOtp = response.data.message.otp;
                     // console.log("otp registration",generatedregistrationOtp);
                     // Show success alert
                     setAlertTitle("Success");
@@ -277,15 +277,15 @@ const Login = () => {
 
                     // Start the timer
                     startTimer();
-                    // axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
-                    //     mobile_number: mobile,
-                    //     otp: generatedregistrationOtp
-                    // }, {
-                    //     headers: {
-                    //         'Content-Type': 'application/json',
+                    axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
+                        mobile_number: mobile,
+                        otp: generatedregistrationOtp
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json',
 
-                    //     }
-                    // });
+                        }
+                    });
 
                     // console.log("SMS API called successfully");
                 } else {
@@ -430,7 +430,7 @@ const Login = () => {
                 });
 
                 if (otpResponse.data.message.status === "success") {
-                    // const generatedOtp = otpResponse.data.message.otp;
+                    const generatedOtp = otpResponse.data.message.otp;
                     setAlertTitle('Success');
                     setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
                     setShowSuccessAlert(true);
@@ -438,15 +438,15 @@ const Login = () => {
                     // Start the timer
                     startTimer();
 
-                    // axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
-                    //     mobile_number: mobilenumber,
-                    //     otp: generatedOtp
-                    // }, {
-                    //     headers: {
-                    //         'Content-Type': 'application/json',
+                    axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
+                        mobile_number: mobilenumber,
+                        otp: generatedOtp
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json',
 
-                    //     }
-                    // });
+                        }
+                    });
 
                     // console.log("SMS API called successfully");
                 } else {
