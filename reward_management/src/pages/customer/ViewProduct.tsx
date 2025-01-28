@@ -29,7 +29,7 @@ const Productdetails = () => {
     productName = productName.replace(/_/g, ' ');
     console.log("Product Name:", productName);
 
-    setProductName(productName);
+    // setProductName(productName);
 
     const fetchProductDetails = async () => {
       try {
@@ -38,7 +38,8 @@ const Productdetails = () => {
         if (response.data.message.products && response.data.message.products) {
           const formattedSubCategory = response.data.message.products.product_sub_category.replace(/ /g, '_');
           setProductDetails(response.data.message.products);
-          setProductCategory(formattedSubCategory)
+          setProductCategory(formattedSubCategory);
+          setProductName(response.data.message.products.product_name);
         } else {
           console.error('No products found in the response');
         }

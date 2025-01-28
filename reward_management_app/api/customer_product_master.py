@@ -7,7 +7,7 @@ def get_customer_products():
         # Fetch all gift products
         gift_products = frappe.get_all(
             "Customer Product Master", 
-            fields=["name", "product_name", "product_category","sub_category_name","category_name", "product_sub_category","product_url","product_image"], order_by="creation desc"
+            fields=["name", "product_name", "product_category","sub_category_name","category_name", "product_sub_category","product_url","product_image"], order_by="creation asc"
         )
         
         # if gift_products:

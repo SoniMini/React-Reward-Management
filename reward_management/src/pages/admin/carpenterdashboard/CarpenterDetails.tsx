@@ -6,6 +6,7 @@ import TableBoxComponent from '@/components/ui/tables/tableboxheader';
 import React, { Fragment, useState, useEffect } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
+import axios from 'axios';
 
 interface Carpenter {
     name: string,
@@ -43,7 +44,7 @@ const CarpenterDetails: React.FC = () => {
         limit: 0,
         orderBy: {
             field: 'creation',
-            order: 'desc',
+            order: 'asc',
         },
     });
 
@@ -143,39 +144,75 @@ const CarpenterDetails: React.FC = () => {
     };
 
 
+    // const handleSaveStatus = async () => {
+    //     if (selectedCarpenter) {
+    //         const enabledValue = updatedStatus === 'Active' ? 1 : 0; // Use 1 for Active and 0 for Deactive
+    //         try {
+    //             const response = await fetch(`/api/resource/Carpenter/${selectedCarpenter.name}`, {
+    //                 method: 'PUT',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify({
+    //                     enabled: enabledValue
+    //                 })
+    //             });
+    
+    //             if (!response.ok) {
+    //                 const responseData = await response.json();
+    //                 throw new Error(`Error: ${responseData.message || response.statusText}`);
+    //             }
+    
+    //             // After updating, update the local data to reflect the change
+    //             setAlertTitle('Status Updated');
+    //             setAlertMessage(`Carpenter ${selectedCarpenter.full_name} status updated successfully!`);
+    //             setShowSuccessAlert(true);
+    
+    //             // Update carpenter data locally
+    //             setSelectedCarpenter(prevState => prevState ? { ...prevState, enabled: updatedStatus } : null);
+    //         } catch (error) {
+    //             console.error('Error updating carpenter status:', error);
+    //             alert('Failed to update carpenter status.');
+    //         }
+    //         handleCloseModal(); 
+    //     }
+    // };
+
     const handleSaveStatus = async () => {
         if (selectedCarpenter) {
-            const enabledValue = updatedStatus === 'Active' ? 1 : 0; // Use 1 for Active and 0 for Deactive
+            // const enabledValue = updatedStatus === 'Active' ? 1 : 0; // Use 1 for Active and 0 for Deactive
             try {
-                const response = await fetch(`/api/resource/Carpenter/${selectedCarpenter.name}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        enabled: enabledValue
-                    })
-                });
+                const response = await axios.put(
+                    `/api/method/reward_management_app.api.carpenter_master.deactivate_carpenter`,
+                    {
+                        selectedCarpenter: selectedCarpenter.name,
+                        status: updatedStatus,
+                    }
+                );
     
-                if (!response.ok) {
-                    const responseData = await response.json();
-                    throw new Error(`Error: ${responseData.message || response.statusText}`);
+                if (response.data && response.data.message.success===true) {
+                    setAlertTitle('Status Updated');
+                    setAlertMessage(
+                        `Carpenter ${selectedCarpenter.full_name} status updated successfully!`
+                    );
+                    setShowSuccessAlert(true);
+    
+                    // Update carpenter data locally
+                    setSelectedCarpenter((prevState) =>
+                        prevState ? { ...prevState, enabled: updatedStatus } : null
+                    );
+                } else {
+                    throw new Error(response.data.message || 'Failed to update status.');
                 }
-    
-                // After updating, update the local data to reflect the change
-                setAlertTitle('Status Updated');
-                setAlertMessage(`Carpenter ${selectedCarpenter.full_name} status updated successfully!`);
-                setShowSuccessAlert(true);
-    
-                // Update carpenter data locally
-                setSelectedCarpenter(prevState => prevState ? { ...prevState, enabled: updatedStatus } : null);
             } catch (error) {
-                console.error('Error updating carpenter status:', error);
+                console.error('Error updating carpenter status:', error.message);
                 alert('Failed to update carpenter status.');
+            } finally {
+                handleCloseModal();
             }
-            handleCloseModal(); 
         }
     };
+    
 
     useEffect(() => {
         document.title = "Carpenter Details";

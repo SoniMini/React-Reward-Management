@@ -3,6 +3,10 @@ import frappe
 from frappe import _
 from datetime import datetime
 from frappe.utils import nowdate
+# from frappe.auth import CookieManager, LoginManager
+from frappe.sessions import clear_sessions
+# from frappe.utils import get_request_session
+
 
 
 
@@ -160,4 +164,54 @@ def update_carpainter_points(product_name, points):
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), f"Error in update_carpainter_points: {e}")
         return {"success":False,"error": f"Server error: {e}"}
+    
 
+# If Deactivate Carpenter Account Logout From All Device -------------------------
+@frappe.whitelist()
+def deactivate_carpenter(selectedCarpenter, status):
+    try:
+        if not selectedCarpenter or status is None:
+            return {
+                "success": False,
+                "message": _("Invalid input: Carpenter and status are required."),
+            }
+
+        # Fetch the Carpenter document
+        carpenter_doc = frappe.get_doc("Carpenter", selectedCarpenter)
+
+        # Convert status to numeric value (1 for Active, 0 for Deactive)
+        enabled_value = 1 if str(status).lower() in ["active", "1"] else 0
+        carpenter_doc.enabled = enabled_value
+
+        # Deactivate carpenter's account (logout if deactivated)
+        if enabled_value == 0:
+            carpenter_email = carpenter_doc.email
+            carpenter_user = frappe.get_doc("User", {"email": carpenter_email})  
+            frappe.local.login_manager.logout(user=carpenter_user.name)  
+            clear_sessions(user=carpenter_user.name, force=True)  
+
+        carpenter_doc.save(ignore_permissions=True)
+
+        return {
+            "success": True,
+            "message": _("Carpenter status updated successfully."),
+            "carpenter_name": selectedCarpenter,
+            "status": "Active" if enabled_value == 1 else "Deactive",
+        }
+
+    except frappe.DoesNotExistError:
+        return {
+            "success": False,
+            "message": _("Carpenter {0} does not exist.").format(selectedCarpenter),
+        }
+    except frappe.ValidationError as e:
+        return {
+            "success": False,
+            "message": _("Validation error: {0}").format(str(e)),
+        }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), _("Error updating carpenter status"))
+        return {
+            "success": False,
+            "message": _("An error occurred: {0}").format(str(e)),
+        }

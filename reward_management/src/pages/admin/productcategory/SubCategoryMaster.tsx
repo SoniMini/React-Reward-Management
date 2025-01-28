@@ -62,7 +62,7 @@ const SubCategoryMaster: React.FC = () => {
             fields: ["name", "sub_category_name", "category", "category_name", "sub_category_image"],
             orderBy: {
                 field: 'creation',
-                order: 'desc',
+                order: 'asc',
             },
         });
 
@@ -142,7 +142,7 @@ const SubCategoryMaster: React.FC = () => {
         const updatedProductImage =
             fileUrls.length > 0 ? fileUrls[0] : existingImages[0];
 
-        
+
         // Find the selected category by matching category_name
         const selectedCategory = productcategoryData.find(
             (category) => category.category_name === productCategory
@@ -152,7 +152,7 @@ const SubCategoryMaster: React.FC = () => {
 
         const data = {
             sub_category_name: productSubCategory,
-            category: selectedCategory?.name || '', 
+            category: selectedCategory?.name || '',
             category_name: productCategory,
             sub_category_image: updatedProductImage,
         };
@@ -207,6 +207,8 @@ const SubCategoryMaster: React.FC = () => {
 
 
 
+
+
     const handleEditSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const fileUrls: string[] = [];
@@ -224,14 +226,14 @@ const SubCategoryMaster: React.FC = () => {
             fileUrls.length > 0 ? fileUrls[0] : existingImages[0];
 
         // Find the selected category by matching category_name
-          const selectedCategory = productcategoryData.find(
+        const selectedCategory = productcategoryData.find(
             (category) => category.category_name === productCategory
         );
 
         const updatedata = {
             name: productSubCategoryId,
             sub_category_name: productSubCategory,
-            category: selectedCategory?.name || '', 
+            category: selectedCategory?.name || '',
             category_name: productCategory,
             sub_category_image: updatedProductImage,
         };
@@ -484,22 +486,16 @@ const SubCategoryMaster: React.FC = () => {
                                                 id="product-images-add"
                                                 onChange={handleFileChange}
                                             />
-                                            <div className="flex gap-4 mt-2">
+                                            <div className="flex gap-4 mt-2 justify-center items-center">
                                                 {previews.map((preview, index) => (
                                                     <img
                                                         key={index}
                                                         src={preview}
                                                         alt={`preview-${index}`}
-                                                        className="w-32 h-32 object-cover"
+                                                        className="w-40 h-40 object-contain"
                                                     />
                                                 ))}
-                                                {/* {productSubCategoryToEdit?.sub_category_image && (
-                                                    <img
-                                                        src={productSubCategoryToEdit?.sub_category_image}
-                                                        alt="current image"
-                                                        className="w-32 h-32 object-cover"
-                                                    />
-                                                )} */}
+
                                             </div>
                                         </div>
                                     </div>
@@ -512,9 +508,7 @@ const SubCategoryMaster: React.FC = () => {
                                         <button
                                             type="submit"
                                             className="ti-btn ti-btn-primary-full bg-primary me-2"
-                                        >
-                                            {productSubCategoryToEdit ? "Update" : "Submit"}
-                                        </button>
+                                        >Submit </button>
                                         <button
                                             type="button"
                                             className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"
@@ -642,20 +636,23 @@ const SubCategoryMaster: React.FC = () => {
                                                 id="product-images-add"
                                                 onChange={handleFileChange}
                                             />
-                                            <div className="flex gap-4 mt-2">
+                                            <div className="flex gap-4 mt-2  justify-center items-center">
+
+
+
                                                 {previews.map((preview, index) => (
                                                     <img
                                                         key={index}
                                                         src={preview}
                                                         alt={`preview-${index}`}
-                                                        className="w-32 h-32 object-cover"
+                                                        className="w-32 h-32 object-contain"
                                                     />
                                                 ))}
                                                 {productSubCategoryToEdit?.sub_category_image && (
                                                     <img
                                                         src={productSubCategoryToEdit?.sub_category_image}
                                                         alt="current image"
-                                                        className="w-32 h-32 object-cover"
+                                                        className="w-32 h-32 object-contain"
                                                     />
                                                 )}
                                             </div>
@@ -671,8 +668,7 @@ const SubCategoryMaster: React.FC = () => {
                                             type="submit"
                                             className="ti-btn ti-btn-primary-full bg-primary me-2"
                                         >
-                                            {productSubCategoryToEdit ? "Update" : "Submit"}
-                                        </button>
+                                            Submit</button>
                                         <button
                                             type="button"
                                             className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"

@@ -47,7 +47,7 @@ const AnnouncementDashboard: React.FC = () => {
         fields: ['name', 'title', 'subject', 'published_on', 'end_date'],
         orderBy: {
             field: 'published_on',
-            order: 'desc',
+            order: 'asc',
         },
     });
 

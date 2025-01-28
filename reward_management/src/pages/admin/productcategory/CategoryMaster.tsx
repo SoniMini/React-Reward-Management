@@ -49,7 +49,7 @@ const CategoryMaster: React.FC = () => {
             fields: ["name", "category_name"],
             orderBy: {
                 field: 'creation',
-                order: 'desc',
+                order: 'asc',
             },
         });
 
