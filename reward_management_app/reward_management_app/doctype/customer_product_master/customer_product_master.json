@@ -72,7 +72,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-24 17:34:26.077753",
+ "modified": "2025-01-27 16:36:30.285823",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Customer Product Master",
@@ -94,5 +94,8 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }

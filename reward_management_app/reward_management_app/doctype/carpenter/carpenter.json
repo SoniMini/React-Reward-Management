@@ -23,7 +23,9 @@
   "email",
   "image",
   "section_break_z17c",
-  "point_history"
+  "point_history",
+  "bonus_history_section",
+  "bonus_history"
  ],
  "fields": [
   {
@@ -133,12 +135,23 @@
    "fieldname": "point_requested",
    "fieldtype": "Float",
    "label": "Point Requested"
+  },
+  {
+   "fieldname": "bonus_history_section",
+   "fieldtype": "Section Break",
+   "label": "Bonus History"
+  },
+  {
+   "fieldname": "bonus_history",
+   "fieldtype": "Table",
+   "label": "Bonus History",
+   "options": "Carpenter Bonus Point Table"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-13 15:25:13.754419",
+ "modified": "2025-01-27 17:12:10.461371",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Carpenter",

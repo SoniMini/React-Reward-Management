@@ -137,6 +137,14 @@ doc_events = {
     },
    "Redeem Request": {
         "on_update": "reward_management_app.api.admin_notifications.send_customer_reward_approved_notification",
+    },
+   
+    "WelCome Bonus History": {
+        "after_insert": "reward_management_app.api.admin_notifications.send_welcome_bonus_points_notification"
+    },
+    
+    "Festival Bonus History": {
+        "after_insert": "reward_management_app.api.admin_notifications.send_festival_bonus_points_notification"
     }
 }
 

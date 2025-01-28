@@ -8,8 +8,8 @@ def get_customer_product(sub_category_name):
     # Fetch products where product_sub_category matches the sub_category_id
     products = frappe.get_all(
         "Customer Product Master", 
-        fields=["name", "product_name", "product_category", "product_sub_category", "product_url", "product_image"],
-        filters={"product_sub_category": sub_category_name}  # Filter by sub_category_id
+        fields=["name", "product_name", "product_category", "product_sub_category","sub_category_name","category_name", "product_url", "product_image"],
+        filters={"product_sub_category": sub_category_name} 
     )
 
     if products:

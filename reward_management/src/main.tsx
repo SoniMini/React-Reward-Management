@@ -42,7 +42,10 @@ import CarpenterProfile from './pages/carpenter/CarpenterProfile.tsx';
 import NotificationDashboard from './pages/admin/adminnotifications/AdminNotification.tsx';
 import SubCategoryProducts from './pages/customer/ViewSubCategoryProduct.tsx';
 import SocialMediaLink from './pages/admin/socialmedialink/SocialMediaLinks.tsx';
-
+import WelcomeBonus from './pages/admin/bonuspages/BonusDashboards.tsx';
+import WelcomeBonusHistory from './pages/admin/bonuspages/WelcomeBonusHistory.tsx';
+import FestivalBonus from './pages/admin/bonuspages/FestivalBonus.tsx';
+import FestivalBonusHistory from './pages/admin/bonuspages/FestivalBonusHistory.tsx';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -175,6 +178,24 @@ const router = createBrowserRouter([
       {
         path: "announcement",
         element: <PrivateRoutes element={<AdminAnnouncement />} />,
+      },
+      {
+        path: "welcome-bonus",
+        element: <PrivateRoutes element={<WelcomeBonus />} />,
+      },
+      {
+        path: "welcome-bonuspoint-history",
+        element: <PrivateRoutes element={<WelcomeBonusHistory />} />,
+      },
+
+      {
+        path: "festival-bonus",
+        element: <PrivateRoutes element={<FestivalBonus />} />,
+      },
+
+      {
+        path: "festival-bonus-history",
+        element: <PrivateRoutes element={<FestivalBonusHistory />} />,
       },
       {
         path: "transaction-history",

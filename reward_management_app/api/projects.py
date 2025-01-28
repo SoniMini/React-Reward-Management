@@ -150,8 +150,50 @@ def add_new_project(new_image_url, image_description):
     
  #Update Selected Project--------- 
 
+    # @frappe.whitelist()
+    # def add_update_project(selected_images, selected_descriptions):
+    #     # Validate inputs
+    #     if not isinstance(selected_images, list):
+    #         frappe.throw("The 'selected_images' parameter must be a list of image URLs.")
+        
+    #     if not isinstance(selected_descriptions, list):
+    #         frappe.throw("The 'selected_descriptions' parameter must be a list of descriptions.")
+
+    #     if len(selected_images) != len(selected_descriptions):
+    #         frappe.throw("The number of images and descriptions must match.")
+
+    #     # Fetch the parent document
+    #     project_doc = frappe.get_doc("Project Slider", "Project Slider")
+        
+    #     # Update only selected images and descriptions
+    #     for idx, (project_image, project_link) in enumerate(zip(selected_images, selected_descriptions)):
+    #         if idx < len(project_doc.project_image_slider):
+    #             # Update existing child rows
+    #             project_doc.project_image_slider[idx].update({
+    #                 "project_image": project_image,
+    #                 "project_link": project_link
+    #             })
+    #         else:
+    #             # Append new rows if more data is provided
+    #             project_doc.append("project_image_slider", {
+    #                 "project_image": project_image,
+    #                 "project_link": project_link
+    #             })
+
+    #     # Save changes
+    #     project_doc.save(ignore_permissions=True)
+    #     frappe.db.commit()
+
+    #     return {
+    #         "status": "success",
+    #         "message": "Selected instructions updated successfully",
+    #         "updated_images": selected_images,
+    #         "updated_descriptions": selected_descriptions
+    #     }
+
+
 @frappe.whitelist()
-def add_update_project(selected_images, selected_descriptions):
+def add_update_project(selected_images, selected_descriptions, old_images, old_descriptions):
     # Validate inputs
     if not isinstance(selected_images, list):
         frappe.throw("The 'selected_images' parameter must be a list of image URLs.")
@@ -162,31 +204,36 @@ def add_update_project(selected_images, selected_descriptions):
     if len(selected_images) != len(selected_descriptions):
         frappe.throw("The number of images and descriptions must match.")
 
-    # Fetch the parent document
+    # Fetch the parent document (Project Slider)
     project_doc = frappe.get_doc("Project Slider", "Project Slider")
-    
-    # Update only selected images and descriptions
-    for idx, (project_image, project_link) in enumerate(zip(selected_images, selected_descriptions)):
-        if idx < len(project_doc.project_image_slider):
-            # Update existing child rows
-            project_doc.project_image_slider[idx].update({
-                "project_image": project_image,
-                "project_link": project_link
-            })
-        else:
-            # Append new rows if more data is provided
-            project_doc.append("project_image_slider", {
-                "project_image": project_image,
-                "project_link": project_link
-            })
 
-    # Save changes
-    project_doc.save(ignore_permissions=True)
-    frappe.db.commit()
+    updated = False  # Flag to track if any update occurred
 
-    return {
-        "status": "success",
-        "message": "Selected instructions updated successfully",
-        "updated_images": selected_images,
-        "updated_descriptions": selected_descriptions
-    }
+    # Loop through the old data (to match and update)
+    for idx, (old_image, old_description) in enumerate(zip(old_images, old_descriptions)):
+        # Try to find the row matching both old_image and old_description
+        matched_row = next((row for row in project_doc.project_image_slider 
+                            if row.project_image == old_image and row.project_link == old_description), None)
+
+        if matched_row:
+            # If a match is found, update the row with new data from selected_images and selected_descriptions
+            matched_row.project_image = selected_images[idx]  # Update image
+            matched_row.project_link = selected_descriptions[idx]  # Update link
+            updated = True  # Mark update flag as True
+
+    # If any updates were made, save the document
+    if updated:
+        project_doc.save(ignore_permissions=True)
+        frappe.db.commit()
+
+        return {
+            "status": "success",
+            "message": "Project updated successfully",
+            "updated_images": selected_images,
+            "updated_descriptions": selected_descriptions
+        }
+    else:
+        return {
+            "status": "failure",
+            "message": "No matching rows found to update."
+        }

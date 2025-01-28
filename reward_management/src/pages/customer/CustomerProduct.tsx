@@ -175,7 +175,7 @@ const CustomerProducts = () => {
                           key={sub.sub_category_name}
                           className="p-3 w-full sm:w-5/12 md:w-4/12 lg:w-3/12 xl:w-2/12 xxl:w-1/12"
                         >
-                          <Link to={`/sub-category-product/${sub.sub_category_name.replace(" ", '_')}`} className="block">
+                          <Link to={`/sub-category-product/${sub.sub_category_id.replace(" ", '_')}`} className="block">
                             <div className="subcategory-item">
                               <div className="text-center">
                                 <img
