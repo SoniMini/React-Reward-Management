@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-27 17:03:05.996883",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "bonus_name",
+  "bonus_earned_date",
+  "bonus_points",
+  "festival_bonus_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "bonus_name",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Bonus Name"
+  },
+  {
+   "fieldname": "bonus_earned_date",
+   "fieldtype": "Date",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Bonus Earned Date"
+  },
+  {
+   "fieldname": "bonus_points",
+   "fieldtype": "Float",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Bonus Points"
+  },
+  {
+   "fieldname": "festival_bonus_id",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Festival Bonus ID",
+   "options": "Festival Bonus"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-01-27 17:40:16.521199",
+ "modified_by": "Administrator",
+ "module": "reward_management_app",
+ "name": "Carpenter Bonus Point Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

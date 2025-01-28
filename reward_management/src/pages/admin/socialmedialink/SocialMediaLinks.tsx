@@ -5,6 +5,11 @@ import React, { Fragment, useState, useEffect } from "react";
 import axios from 'axios';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import { set } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+import Facebook from '../../../assets/images/reward_management/facebook-app-symbol (1).png';
+import WhatsApp from '../../../assets/images/reward_management/15.png';
+import Instagram from '../../../assets/images/reward_management/14.png';
+import GoogleMap from '../../../assets/images/reward_management/16.png';
 
 const SocialMediaLink: React.FC = () => {
     // const [nameLaunch, setNameLaunch] = useState<string>('');
@@ -79,9 +84,9 @@ const SocialMediaLink: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader 
-                currentpage={"Social Media Link"} 
-                activepage={"/social-media-link"} 
+            <Pageheader
+                currentpage={"Social Media Link"}
+                activepage={"/social-media-link"}
                 activepagename="Social Media Link"
             />
             <div className="grid grid-cols-12 gap-x-6 p-6">
@@ -96,17 +101,26 @@ const SocialMediaLink: React.FC = () => {
                             <div className="box-body">
                                 <form onSubmit={handleSubmit}>
                                     <div className="grid grid-cols-12 gap-4">
-                                        <div className="xl:col-span-12 col-span-12">
+                                        <div className="xl:col-span-12 col-span-12 flex">
                                             <input
                                                 type="text"
-                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="outline-none w-full focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 id="setFaceBookLink"
                                                 placeholder="Facebook Link"
                                                 value={facebookLink}
                                                 onChange={(e) => setFaceBookLink(e.target.value)}
                                             />
+                                            <span className="w-[10%] text-blue-500 justify-center  items-center  flex border border-[#949eb7] border-l-0  outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ">
+                                                <Link
+                                                    to="#"
+                                                    onClick={() => window.open(facebookLink, "_blank")}
+                                                    className='rounded-full md:w-7 md:h-7 w-5 h-5  flex items-center justify-center table-btn'
+                                                >
+                                                    <img src={Facebook} alt="Facebook" className='md:w-4 md:h-4 w-3 h-3' />
+                                                </Link>
+                                            </span>
                                         </div>
-                                        <div className="xl:col-span-12 col-span-12">
+                                        <div className="xl:col-span-12 col-span-12 flex">
                                             <input
                                                 type="text"
                                                 className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
@@ -115,8 +129,18 @@ const SocialMediaLink: React.FC = () => {
                                                 value={whatsappLink}
                                                 onChange={(e) => setWhatsAppLink(e.target.value)}
                                             />
+
+                                            <span className="w-[10%] text-blue-500 justify-center  items-center  flex border border-[#949eb7] border-l-0  outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ">
+                                                <Link
+                                                    to="#"
+                                                    onClick={() => window.open(whatsappLink, "_blank")}
+                                                    className='rounded-full md:w-7 md:h-7 w-5 h-5  flex items-center justify-center table-btn'
+                                                >
+                                                    <img src={WhatsApp} alt="Facebook" className='md:w-4 md:h-4 w-3 h-3' />
+                                                </Link>
+                                            </span>
                                         </div>
-                                        <div className="xl:col-span-12 col-span-12">
+                                        <div className="xl:col-span-12 col-span-12 flex">
                                             <input
                                                 type="text"
                                                 className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
@@ -125,8 +149,17 @@ const SocialMediaLink: React.FC = () => {
                                                 value={instaLink}
                                                 onChange={(e) => setInstaLink(e.target.value)}
                                             />
+                                              <span className="w-[10%] text-blue-500 justify-center  items-center  flex border border-[#949eb7] border-l-0  outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ">
+                                                <Link
+                                            to="#"
+                                            onClick={() => window.open(instaLink, "_blank")}
+                                            className='rounded-full md:w-7 md:h-7 w-5 h-5 flex items-center justify-center table-btn'
+                                        >
+                                            <img src={Instagram} alt="Facebook" className='md:w-4 md:h-4 w-3 h-3'/>
+                                        </Link>
+                                            </span>
                                         </div>
-                                        <div className="xl:col-span-12 col-span-12">
+                                        <div className="xl:col-span-12 col-span-12 flex">
                                             <input
                                                 type="text"
                                                 className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
@@ -135,6 +168,15 @@ const SocialMediaLink: React.FC = () => {
                                                 value={googleLink}
                                                 onChange={(e) => setGoogleLink(e.target.value)}
                                             />
+                                              <span className="w-[10%] text-blue-500 justify-center  items-center  flex border border-[#949eb7] border-l-0  outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ">
+                                                <Link
+                                            to="#"
+                                            onClick={() => window.open(googleLink, "_blank")}
+                                            className='rounded-full md:w-7 md:h-7 w-5 h-5 flex items-center justify-center table-btn'
+                                        >
+                                            <img src={GoogleMap} alt="Facebook" className='md:w-4 md:h-4 w-3 h-3'/>
+                                        </Link>
+                                            </span>
                                         </div>
                                         <div className="xl:col-span-12 col-span-12 text-center">
                                             <button

@@ -38,7 +38,7 @@ const ProductMaster: React.FC = () => {
         // limit: 0
         orderBy: {
             field: 'creation',
-            order: 'desc',
+            order: 'asc',
         }
     });
      // Fetch Product QR Data

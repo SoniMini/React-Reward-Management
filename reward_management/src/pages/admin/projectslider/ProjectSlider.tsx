@@ -29,6 +29,9 @@ const AddProject = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [showAddProjectForm, setShowAddProjectForm] = useState(false);
   const [imageAddUrl, setImageAddUrl] = useState<string[]>([]); 
+  const [oldImages, setOldImages] = useState<string[]>([]);
+const [oldDescriptions, setOldDescriptions] = useState<string[]>([]);
+
 
   const notyf = new Notyf({
         position: {
@@ -87,6 +90,7 @@ const AddProject = () => {
     afterChange: (current) => setCurrentSlideIndex(current),
   };
 
+// handle multiple select image------
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
@@ -119,6 +123,43 @@ const AddProject = () => {
     }
   };
 
+
+  // handle one image selected file-------
+  const handleOneFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+  
+      // Ensure only one file is selected
+      if (fileArray.length > 1) {
+        setError('You can only select one image!');
+        return;
+      } else {
+        setError('');
+      }
+  
+      const newFileDetails = fileArray.map((file) => {
+        const reader = new FileReader();
+        return new Promise<{ url: string, name: string }>((resolve) => {
+          reader.onload = (event) => {
+            resolve({
+              url: event.target?.result as string,
+              name: file.name,
+            });
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+  
+      // Replace the existing image details with the newly selected image
+      Promise.all(newFileDetails).then((newDetails) => {
+        setFileDetails(newDetails); // Set the new image, replacing the previous one
+      });
+    }
+  };
+  
+
+  // remove selected image----
   const handleRemoveImage = (indexToRemove: number) => {
     setFileDetails((prevFiles) =>
         prevFiles.filter((_, index) => index !== indexToRemove)
@@ -151,12 +192,50 @@ const AddProject = () => {
       return null;
     }
   };
-// update project------
+
+
+  const handleEditGuide = (instruction: any) => {
+    console.log('Selected project for editing:', instruction);
+  
+    // Set project to edit
+    setProjectToEdit(instruction);
+    
+    // Set image URL and file details
+    setImageUrl(instruction.project_link)
+    
+    // Check if project_image exists and is a valid string
+    const fileName = instruction.product_image ? instruction.product_image.split('/').pop() : 'default_image_name'; 
+  
+    // Set file details for the project
+    setFileDetails([{ url: instruction.product_link, name: fileName }]);
+    setShowAddProjectForm(false);
+  
+    // Store the old images and descriptions in state
+    setOldImages([instruction.product_image]);
+    setOldDescriptions([instruction.product_link]);
+
+
+   // Close the add project form
+    setShowAddProjectForm(false);
+  
+    // console.log("Selected image:", instruction.product_image); 
+    // console.log("Selected descriptions:", instruction.poduct_link);
+  };
+
+  useEffect(() => {
+    console.log('Updated old images:', oldImages);
+    console.log('Updated old descriptions:', oldDescriptions);
+  }, [oldImages, oldDescriptions]); // Depend on the state to log when it changes
+  
+  
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const uploadedFileURLs: string[] = [];
-
+  
+  
+  
     try {
+      // Process the file uploads
       for (const fileDetail of fileDetails) {
         const fileBlob = await fetch(fileDetail.url).then(res => res.blob());
         const file = new File([fileBlob], fileDetail.name, { type: fileBlob.type });
@@ -165,24 +244,27 @@ const AddProject = () => {
           uploadedFileURLs.push(fileURL);
         }
       }
-
+  
+      // Prepare data to send to the backend
       const data = {
         selected_images: uploadedFileURLs,
-        selected_descriptions: [imageUrl],
+        selected_descriptions: [imageUrl],  
+        old_images: oldImages,  
+        old_descriptions: oldDescriptions,  
       };
-
-      const response = await axios.post('/api/method/reward_management_app.api.projects.add_update_project', data, {
+  
+      // Send the data to the backend API
+      const response = await axios.put('/api/method/reward_management_app.api.projects.add_update_project', data, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
       });
-
+  
       const result = response.data;
-
+  
       if (result.message && result.message.status === 'success') {
         setAlertMessage("Project Update successfully!");
-
         setShowSuccessAlert(true);
         setFileDetails([]);
         setImageUrl('');
@@ -194,17 +276,10 @@ const AddProject = () => {
       alert("An error occurred. Please try again.");
     }
   };
+  
 
-//   handle edit project
 
-  const handleEditGuide = (instruction: any) => {
-    setProjectToEdit(instruction);
-    setImageUrl(instruction.image_description);
-    setFileDetails([{ url: instruction.project_link, name: instruction.project_image.split('/').pop() }]);
-    setShowAddProjectForm(false);
-
-  }
-
+// close model-------
   const handleCloseModal = () => {
     setProjectToEdit(null);
     setShowAddProjectForm(false);
@@ -338,7 +413,13 @@ const handleProjectLinkChange = (index: number, value: string) => {
                     <h3 className="text-defaulttextcolor box-title text-[.9375rem] font-bold mb-4 ">
                                                 Project Image
                                             </h3>
-                      <button onClick={() => handleEditGuide(project)} className="ti-btn !py-1 ti-btn-primary border-none !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]">Edit</button>
+                      <div className="flex ">
+                      <button onClick={() => handleEditGuide(project)} className="ti-btn !py-1 ti-btn-primary border-none !px-2 text-xs !text-white !font-medium bg-[var(--primaries)] mr-2 ">Edit</button>
+
+{/* <button onClick={() => handleEditGuide(project)} className="ti-btn !py-1 ti-btn-primary border-none !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]">Add Project </button> */}
+                      </div>
+                    
+
                       
                     </div>
                   <div className="flex justify-center">
@@ -369,80 +450,81 @@ const handleProjectLinkChange = (index: number, value: string) => {
       {/* show add new project model------ */}
 
       {showAddProjectForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-lg">
-            <div className="flex justify-between items-center border-b border-defaultborder pb-2 p-4">
-              <h6 className="text-primary font-semibold">Add Project</h6>
-              <button onClick={handleCloseModal} className="text-defaulttextcolor">
-                <i className="ri-close-line text-2xl"></i>
-              </button>
-            </div>
-            <form onSubmit={handleAddSubmit} className="mt-4">
-              <div className="p-4">
-                <div>
-                  <label
-                    htmlFor="file-upload"
-                    className="block text-sm text-defaulttextcolor font-semibold"
-                  >
-                    Project Image
-                  </label>
-                  <input
-                    type="file"
-                    multiple
-                    id="file-upload"
-                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border border-[#dadada] rounded-[5px]"
-                    onChange={handleFileChange}
-                  />
-                  {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-                </div>
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white rounded-lg shadow-lg w-full max-w-lg max-h-[80vh] overflow-y-auto">
+      <div className="flex justify-between items-center border-b border-defaultborder pb-2 p-4 sticky top-0 bg-white z-10">
+        <h6 className="text-primary font-semibold">Add New Project </h6>
+        <button onClick={handleCloseModal} className="text-defaulttextcolor">
+          <i className="ri-close-line text-2xl"></i>
+        </button>
+      </div>
+      <form onSubmit={handleAddSubmit} className="mt-4">
+        <div className="p-4">
+          <div>
+            <label
+              htmlFor="file-upload"
+              className="block text-sm text-defaulttextcolor font-semibold"
+            >
+              Project Image
+            </label>
+            <input
+              type="file"
+              multiple
+              id="file-upload"
+              className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border border-[#dadada] rounded-[5px]"
+              onChange={handleFileChange}
+            />
+            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+          </div>
 
-                <div className="grid grid-cols-1 gap-5 mt-4">
-                  {fileDetails.map((file, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={file.url}
-                        alt={file.name}
-                        className="w-full h-40 object-contain rounded-lg"
-                      />
-                      <button
-                        onClick={() => handleRemoveImage(index)}
-                        className="absolute top-[-10px] right-[50px] bg-red-600 text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
-                      >
-                        <i className="ri-close-line text-primary text-lg font-bold"></i>
-                      </button>
-                      {/* URL input for each image */}
-                      <label className="block text-sm text-defaulttextcolor font-semibold"> Project Link</label>
-                      <input
-                   type="text"
-                   placeholder="Project Link"
-                   value={imageAddUrl[index] || ''}  
-                   onChange={(e) => handleProjectLinkChange(index, e.target.value)} 
-                   className="mt-2 block w-full p-2  border border-[#dadada] rounded-[5px] text-sm"
-                 />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4 flex justify-end gap-2 border-t border-defaultborder p-4 items-baseline">
+          <div className="grid grid-cols-1 gap-5 mt-4">
+            {fileDetails.map((file, index) => (
+              <div key={index} className="relative group">
+                <img
+                  src={file.url}
+                  alt={file.name}
+                  className="w-full h-40 object-contain rounded-lg"
+                />
                 <button
-                  type="submit"
-                  className="ti-btn ti-btn-primary-full bg-primary me-2"
+                  onClick={() => handleRemoveImage(index)}
+                  className="absolute top-[-10px] right-[50px] bg-red-600 text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
                 >
-                  Add Project
+                  <i className="ri-close-line text-primary text-lg font-bold"></i>
                 </button>
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"
-                >
-                  Cancel
-                </button>
+                {/* URL input for each image */}
+                <label className="block text-sm text-defaulttextcolor font-semibold">Project Link</label>
+                <input
+                  type="text"
+                  placeholder="Project Link"
+                  value={imageAddUrl[index] || ''}  
+                  onChange={(e) => handleProjectLinkChange(index, e.target.value)} 
+                  className="mt-2 block w-full p-2  border border-[#dadada] rounded-[5px] text-sm"
+                />
               </div>
-            </form>
+            ))}
           </div>
         </div>
-      )}
+
+        <div className="mt-4 flex justify-end gap-2 border-t border-defaultborder p-4 items-baseline">
+          <button
+            type="submit"
+            className="ti-btn ti-btn-primary-full bg-primary me-2"
+          >
+            Add Project
+          </button>
+          <button
+            type="button"
+            onClick={handleCloseModal}
+            className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
 
       {/* show edit project model------ */}
 
@@ -457,6 +539,7 @@ const handleProjectLinkChange = (index: number, value: string) => {
                 <i className="ri-close-line text-2xl"></i>
               </button>
             </div>
+            
             <form onSubmit={handleSubmit} className="mt-4">
               <div className="p-4">
               <div>
@@ -468,14 +551,14 @@ const handleProjectLinkChange = (index: number, value: string) => {
                   multiple
                   id="file-upload"
                   className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border border-[#dadada] rounded-[5px]"
-                  onChange={handleFileChange}
+                  onChange={handleOneFileChange}
                 />
                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
               </div>
 
-              <div className="grid grid-cols-3 gap-5 mt-4">
+              <div className=" mt-4">
                 {fileDetails.map((file, index) => (
-                  <div key={index} className="relative group">
+                  <div key={index} className="relative group flex justofy-cenetr items-center">
                     <img
                       src={file.url}
                       alt={file.name}
@@ -483,7 +566,7 @@ const handleProjectLinkChange = (index: number, value: string) => {
                     />
                     <button
                       onClick={() => handleRemoveImage(index)}
-                      className="absolute top-[-10px] right-[-10px] bg-red-600 text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
+                      className="absolute top-[-10px] right-0 bg-red-600 text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
                     >
                        <i className="ri-close-line text-primary text-lg font-bold "></i>
                     </button>

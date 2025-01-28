@@ -56,7 +56,7 @@ const CarpenterRegistration: React.FC = () => {
         limit: 0,
         orderBy: {
             field: 'creation',
-            order: 'desc',
+            order: 'asc',
         }
     });
 

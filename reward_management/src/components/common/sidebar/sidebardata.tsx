@@ -25,6 +25,7 @@ import { MdOutlineCategory } from "react-icons/md";
 import CustomerProduct from '../../../assets/images/reward_management/customer-loyalty.png'
 import { SiOpenproject } from "react-icons/si";
 import SocialMediaLink from '../../../assets/images/reward_management/network.png';
+import BonusIcon from '../../../assets/images/reward_management/bonus.png';
 
 
 
@@ -116,6 +117,42 @@ export const SidebarData = [
     title: 'Transaction History',
     path: '/transaction-history',
     icon: <IconCashRegister className='sidebaricon' />
+  },
+  {
+    title: 'Bonus Dashboard',
+    // path: '/carpenter-dashboard',
+    icon: (
+      <img
+        src={BonusIcon}
+        alt="View Bonus"
+        className="sidebaricon"
+      />
+    ),     
+    iconClosed:<SlArrowRight  style={iconStyle} /> ,
+    iconOpened: <SlArrowDown  style={iconStyle} />,
+
+    subNav: [
+      {
+        title: 'Welcome Bonus Point',
+        path: '/welcome-bonus',
+        icon: <VscCircle />
+      },
+      {
+        title: 'Welcome Bonus History',
+        path: '/welcome-bonuspoint-history',
+        icon: <VscCircle  />
+      },
+      {
+        title: 'Festival Bonus',
+        path: '/festival-bonus',
+        icon: <VscCircle  />
+      },
+      {
+        title: 'Festival Bonus History',
+        path: '/festival-bonus-history',
+        icon: <VscCircle  />
+      }
+    ]
   },
   {
     title: 'Announcement',

@@ -39,9 +39,12 @@ def get_product_categories():
     # Loop through each product subcategory and add it to subcategory_list
     for subcategory in product_subcategory:
         subcategory_list.append({
+            "sub_category_id": subcategory["name"],
             "sub_category_name": subcategory["sub_category_name"],
             "sub_category_image": subcategory["sub_category_image"],
-            "category_id": subcategory["category_name"]
+            "category_name": subcategory["category_name"],
+            "category_id": subcategory["category"]
+
         })
 
     # Return both category and subcategory lists
