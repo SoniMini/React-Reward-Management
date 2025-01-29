@@ -69,7 +69,7 @@ def create_festival_bonus_history(festival_bonus_id, festival_name, bonus_points
 
         # Create a Festival  Bonus History for each active carpenter
         for carpenter in active_carpenters:
-            festival_bonus_history = frappe.new_doc("Fastival Bonus History")
+            festival_bonus_history = frappe.new_doc("Festival Bonus History")
             festival_bonus_history.festival_bonus_id = festival_bonus_id
             festival_bonus_history.name_of_festival = festival_name
             festival_bonus_history.bonus_points = bonus_points

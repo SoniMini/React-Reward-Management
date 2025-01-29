@@ -80,7 +80,11 @@ const SubCategoryMaster: React.FC = () => {
     useEffect(() => {
         if (productsubcategoryData) {
             const filteredData = productsubcategoryData.filter((item) =>
-                item.sub_category_name.toLowerCase().includes(searchQuery.toLowerCase())
+                item.sub_category_name.toLowerCase().includes(searchQuery.toLowerCase())  ||
+               item.category_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+               item.name.toLowerCase().includes(searchQuery.toLowerCase())
+
+
             );
             setFilteredData(filteredData);
         }
@@ -201,13 +205,8 @@ const SubCategoryMaster: React.FC = () => {
         setShowAddSubCategoryForm(true);
         setProductSubCategoryId(category.name);
         setProductSubCategory(category.sub_category_name);
-        // setProductCategory(category.category_name);
+        setProductCategory(category.category_name);
     };
-
-
-
-
-
 
     const handleEditSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

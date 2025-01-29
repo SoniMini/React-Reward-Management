@@ -1,0 +1,29 @@
+{
+ "attach_print": 0,
+ "channel": "System Notification",
+ "creation": "2025-01-29 10:32:12.930466",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Fastival Bonus History",
+ "enabled": 0,
+ "event": "New",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "<p>  Dear{{doc.carpenter_name}},<br>\n {{doc.mobile_number}},<br>\n            {{doc.bonus_message}},<br>\n            You have been awarded a bonus of {{doc.bonus_points}} points.</p>",
+ "message_type": "HTML",
+ "modified": "2025-01-29 10:36:32.983662",
+ "modified_by": "Administrator",
+ "module": "reward_management_app",
+ "name": "Festival Bonus Notification",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_document_field": "",
+   "receiver_by_role": "Carpenter"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "subject": "Congratulations! You have Earned a Festival Bonus"
+}
