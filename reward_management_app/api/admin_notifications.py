@@ -320,70 +320,46 @@ def send_welcome_bonus_points_notification(doc, method=None):
 # send system notification to carpenter for festival bonus ---------
 @frappe.whitelist()
 def send_festival_bonus_points_notification(doc, method=None):
-    # Check if this is a new record and not an update
-    # if doc.is_new():
-        try:
-            # Fetch the festival Bonus History document (which contains the carpenter information)
-            carpenter = frappe.get_doc("Fastival Bonus History", doc.name)
-        except frappe.DoesNotExistError:
-            return {
-                "success": False,
-                "message": f"Festival Bonus History {doc.name} not found"
-            }
+    try:
+        # Fetch the Festival Bonus History document
+        carpenter = frappe.get_doc("Festival Bonus History", doc.name)
+    except frappe.DoesNotExistError:
+        frappe.log_error(f"Festival Bonus History {doc.name} not found")
+        return {"success": False, "message": f"Festival Bonus History {doc.name} not found"}
 
-        # Get the carpenter's mobile number
-        carpenter_mobile = carpenter.mobile_number
+    # Get the carpenter's mobile number
+    carpenter_mobile = carpenter.mobile_number
+    if not carpenter_mobile:
+        return {"success": False, "message": "Carpenter does not have a mobile number"}
 
-        if not carpenter_mobile:
-            return {
-                "success": False,
-                "message": "Carpenter does not have a mobile number"
-            }
+    # Find the corresponding User by matching the mobile number
+    user = frappe.db.get_value("User", {"mobile_no": carpenter_mobile}, "name")
+    if not user:
+        return {"success": False, "message": f"No user found with mobile number {carpenter_mobile}"}
 
-        # Find the corresponding User by matching the mobile number
-        user = frappe.db.get_value("User", {"mobile_no": carpenter_mobile}, "name")
-        
-        if not user:
-            return {
-                "success": False,
-                "message": f"No user found with mobile number {carpenter_mobile}"
-            }
+    # Check if the user has the "Carpenter" role
+    user_roles = frappe.get_roles(user)
+    if "Carpenter" not in user_roles:
+        return {"success": False, "message": f"User with mobile number {carpenter_mobile} does not have the Carpenter role"}
 
-        # Verify if the user has the "Carpenter" role
-        user_roles = frappe.get_roles(user)
-        if "Carpenter" not in user_roles:
-            return {
-                "success": False,
-                "message": f"User with mobile number {carpenter_mobile} does not have the Carpenter role"
-            }
+    # Create a notification log entry for the Carpenter
+    notification = frappe.get_doc({
+        'doctype': 'Notification Log',
+        'for_user': user,
+        'subject': 'Congratulations! You have Earned a Festival Bonus',
+        'type': 'Alert',
+        'email_content': f"""
+            Dear {carpenter.carpenter_name},<br>
+            {doc.bonus_message},<br>
+            You have been awarded a bonus of {doc.bonus_points} points.
+        """,
+        'document_type': 'Festival Bonus History',
+        'document_name': doc.name
+    })
+    notification.insert(ignore_permissions=True)
+    frappe.db.commit()
 
-        # Create a new notification log entry for the matched Carpenter
-        notification = frappe.get_doc({
-            'doctype': 'Notification Log',
-            'for_user': user,
-            'subject': 'Congratulations! You have Earned a Festival Bonus',
-            'type': 'Alert',
-            'email_content': f"""
-                Dear {carpenter.carpenter_name},<br>
-                {doc.bonus_message},<br>
-                you have been awarded a bonus of {doc.bonus_points} points.
-            """,
-            'document_type': 'Fastival Bonus History',
-            'document_name': doc.name
-        })
-        notification.insert(ignore_permissions=True)
-        frappe.db.commit()
-
-        return {
-            "success": True,
-            "message": "Notification sent successfully to the Carpenter"
-        }
-    # else:
-    #     return {
-    #         "success": False,
-    #         "message": "This is not a newly created document."
-    #     }
-
+    return {"success": True, "message": "Notification sent successfully to the Carpenter"}
 
 
  

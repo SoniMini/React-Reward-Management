@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Pageheader from '../../../components/common/pageheader/pageheader';
-import {useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import 'suneditor/dist/css/suneditor.min.css';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import axios from 'axios';
+import { Notyf } from "notyf";
+import "notyf/notyf.min.css";
 
 interface ProductCategory {
     name: string,
@@ -30,7 +32,14 @@ const EditCustomerProduct: React.FC = () => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [existingImages, setExistingImages] = useState<{ url: string, name: string }[]>([]);
 
-    const [error, setError] = useState('');
+    // const [error, setError] = useState('');
+    const notyf = new Notyf({
+        position: {
+            x: "right",
+            y: "top",
+        },
+        duration: 5000,
+    })
     const navigate = useNavigate();
 
 
@@ -55,27 +64,27 @@ const EditCustomerProduct: React.FC = () => {
     useEffect(() => {
         document.title = 'Edit Customer Product';
 
-         // Extract gift product ID from pathname
-         const pathSegments = location.pathname.split('/');
-         let ProductId = pathSegments[pathSegments.length - 1];
-         ProductId = ProductId.replace(/_/g, ' ');
-         console.log("Product Name:", ProductId);
+        // Extract gift product ID from pathname
+        const pathSegments = location.pathname.split('/');
+        let ProductId = pathSegments[pathSegments.length - 1];
+        ProductId = ProductId.replace(/_/g, ' ');
+        console.log("Product Name:", ProductId);
 
 
-           // console.log("Extracted Product ID:", ProductId);
-           const fetchProducts = async () => {
+        // console.log("Extracted Product ID:", ProductId);
+        const fetchProducts = async () => {
             try {
                 const response = await axios.get(
                     `/api/method/reward_management_app.api.customer_product_master.get_customer_products?url_name=${ProductId}`
                 );
                 const productData = response.data.message?.data;
-        
+
                 if (response.data.message?.status === "success" && productData) {
                     const matchedProduct = productData.find(
                         (product: { name: string }) =>
                             product.name.toLowerCase() === ProductId?.toLowerCase()
                     );
-        
+
                     if (matchedProduct) {
                         console.log("matched gift", matchedProduct);
                         setProductID(matchedProduct.name);
@@ -83,7 +92,10 @@ const EditCustomerProduct: React.FC = () => {
                         setProductCategory(matchedProduct.category_name);
                         setProductSubcategory(matchedProduct.sub_category_name);
                         setProductUrl(matchedProduct.product_url);
-        
+
+                        // console.log("Matched Product Category:", matchedProduct.category_name); // Log for debugging
+                        // console.log("Category Options:", productCategoryData);
+
                         // Handle product_image as a string or an array
                         if (Array.isArray(matchedProduct.product_image)) {
                             const imageDetails = matchedProduct.product_image.map((image: { product_image: string }) => ({
@@ -109,7 +121,7 @@ const EditCustomerProduct: React.FC = () => {
                 console.error("Error fetching products:", err);
             }
         };
-        
+
 
         if (ProductId) {
             fetchProducts();
@@ -124,7 +136,7 @@ const EditCustomerProduct: React.FC = () => {
             }, 3000);
             return () => clearTimeout(timer);
         }
-    }, [showSuccessAlert, navigate,location]);
+    }, [showSuccessAlert, navigate, location,productCategoryData]);
 
     // Handle file selection
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,104 +162,189 @@ const EditCustomerProduct: React.FC = () => {
     };
 
     // Upload file function
-  // Upload file function
-  const uploadFile = async (file: File): Promise<string | null> => {
-    const formData = new FormData();
-    formData.append('file', file, file.name);
-    formData.append('is_private', '0');
-    formData.append('folder', '');
-    formData.append('file_name', file.name);
+    // Upload file function
+    const uploadFile = async (file: File): Promise<string | null> => {
+        const formData = new FormData();
+        formData.append('file', file, file.name);
+        formData.append('is_private', '0');
+        formData.append('folder', '');
+        formData.append('file_name', file.name);
 
-    try {
-        const response = await axios.post('/api/method/upload_file', formData, {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'multipart/form-data'
+        try {
+            const response = await axios.post('/api/method/upload_file', formData, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            if (response.data.message?.file_url) {
+                return response.data.message.file_url;
+            } else {
+                notyf.error('File URL not found in response:');
+
+                console.error('File URL not found in response:', response.data);
+                return null;
             }
-        });
-
-        if (response.data.message?.file_url) {
-            return response.data.message.file_url;
-        } else {
-            console.error('File URL not found in response:', response.data);
+        } catch (error) {
+            console.error('Error uploading file:', error);
             return null;
         }
-    } catch (error) {
-        console.error('Error uploading file:', error);
-        return null;
-    }
-};
+    };
 
-// Handle form submission
-const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+    // Handle form submission
+    // const handleSubmit = async (event: React.FormEvent) => {
+    //     event.preventDefault();
 
-    // Check if a file is selected
-    if (!file) {
-        setError('Please upload an image!');
-        return;
-    }
+    //     // Check if a file is selected
+    //     if (!file) {
+    //         notyf.error('Please upload an image!');
 
-    try {
-        // Upload the file and get the URL
-        const fileURL = await uploadFile(file);
-        if (!fileURL) {
-            setError('File upload failed. Please try again.');
+    //         // setError('Please upload an image!');
+    //         return;
+    //     }
+
+    //     try {
+    //         // Upload the file and get the URL
+    //         const fileURL = await uploadFile(file);
+    //         if (!fileURL) {
+    //             notyf.error('File upload failed. Please try again.');
+
+    //             // setError('File upload failed. Please try again.');
+    //             return;
+    //         }
+
+
+    //         // Find the selected subcategory by matching sub_category_name
+    //         const selectedSubCategory = productSubCategoryData.find(
+    //             (subcategory) => subcategory.sub_category_name === productSubcategory
+    //         );
+
+    //         // Extract the subcategory name
+    //         const subCategoryName = selectedSubCategory ? selectedSubCategory.name : null;
+
+
+
+
+    //         // Find the selected category by matching sub_category_name
+    //         const selectedCategory = productCategoryData.find(
+    //             (category) => category.category_name === productCategory
+    //         );
+
+    //         // Extract the category name
+    //         const productCategoryName = selectedCategory ? selectedCategory.name : null;
+
+
+    //         // Prepare data for the API call
+    //         const productData = {
+    //             new_image_url: fileURL,
+    //             productID: productID,
+    //             productName: productName,
+    //             productCategoryName: productCategoryName,
+    //             productCategory: productCategory,
+    //             subCategoryName: subCategoryName,
+    //             productSubcategory: productSubcategory,
+    //             productUrl: productUrl
+    //         };
+
+    //         // Make the API call to add a new product
+    //         const response = await axios.put(
+    //             '/api/method/reward_management_app.api.customer_product_master.update_customer_product',
+    //             productData
+    //         );
+
+    //         // Handle the response
+    //         if (response.status === 200) {
+    //             setShowSuccessAlert(true);
+    //             resetForm();
+    //         } else {
+    //             notyf.error('Failed to add the product. Please try again.');
+
+    //             // setError('Failed to add the product. Please try again.');
+    //         }
+    //     } catch (err) {
+    //         notyf.error('Something went wrong. Please try again later.');
+
+    //         // setError('Something went wrong. Please try again later.');
+    //         console.error('Error:', err);
+    //     }
+    // };
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+    
+        // If no file is selected, use the old image URL
+        let fileURL = '';
+    
+        // Check if a file is selected
+        if (file) {
+            // If a new file is selected, upload it and get the URL
+            try {
+                fileURL = await uploadFile(file);
+                if (!fileURL) {
+                    notyf.error('File upload failed. Please try again.');
+                    return;
+                }
+            } catch (err) {
+                notyf.error('Something went wrong during file upload. Please try again later.');
+                console.error('Error:', err);
+                return;
+            }
+        } else if (existingImages.length > 0) {
+            // If no new file is selected, use the existing image URL
+            fileURL = existingImages[0].url;  
+        } else {
+            notyf.error('Please upload an image or ensure there is an existing image.');
             return;
         }
-
-
-         // Find the selected subcategory by matching sub_category_name
-         const selectedSubCategory = productSubCategoryData.find(
+    
+        // Find the selected subcategory by matching sub_category_name
+        const selectedSubCategory = productSubCategoryData.find(
             (subcategory) => subcategory.sub_category_name === productSubcategory
         );
-
+    
         // Extract the subcategory name
         const subCategoryName = selectedSubCategory ? selectedSubCategory.name : null;
-
-        
-
-
-         // Find the selected category by matching sub_category_name
-         const selectedCategory = productCategoryData.find(
+    
+        // Find the selected category by matching category_name
+        const selectedCategory = productCategoryData.find(
             (category) => category.category_name === productCategory
         );
-
+    
         // Extract the category name
         const productCategoryName = selectedCategory ? selectedCategory.name : null;
-
-
+    
         // Prepare data for the API call
         const productData = {
-            new_image_url: fileURL,
-            productID :productID,
+            new_image_url: fileURL,  
+            productID: productID,
             productName: productName,
-            productCategoryName : productCategoryName,
+            productCategoryName: productCategoryName,
             productCategory: productCategory,
-            subCategoryName: subCategoryName, 
+            subCategoryName: subCategoryName,
             productSubcategory: productSubcategory,
             productUrl: productUrl
         };
-
-        // Make the API call to add a new product
-        const response = await axios.put(
-            '/api/method/reward_management_app.api.customer_product_master.update_customer_product',
-            productData
-        );
-
-        // Handle the response
-        if (response.status === 200) {
-            setShowSuccessAlert(true);
-            resetForm();    
-        } else {
-            setError('Failed to add the product. Please try again.');
+    
+        // Make the API call to update the product
+        try {
+            const response = await axios.put(
+                '/api/method/reward_management_app.api.customer_product_master.update_customer_product',
+                productData
+            );
+    
+            // Handle the response
+            if (response.status === 200) {
+                setShowSuccessAlert(true);
+                resetForm(); 
+            } else {
+                notyf.error('Failed to update the product. Please try again.');
+            }
+        } catch (err) {
+            notyf.error('Something went wrong. Please try again later.');
+            console.error('Error:', err);
         }
-    } catch (err) {
-        setError('Something went wrong. Please try again later.');
-        console.error('Error:', err);
-    }
-};
-
+    };
+    
 
     return (
         <>
@@ -267,8 +364,8 @@ const handleSubmit = async (event: React.FormEvent) => {
                                     <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12">
                                         <div className="grid grid-cols-12 gap-4">
 
-
-                                        <div className="xl:col-span-12 col-span-12">
+                                            {/* product id */}
+                                            <div className="xl:col-span-12 col-span-12">
                                                 <label htmlFor="product-id-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product ID</label>
                                                 <input
                                                     type="text"
@@ -278,9 +375,11 @@ const handleSubmit = async (event: React.FormEvent) => {
                                                     value={productID}
                                                     onChange={(e) => setProductID(e.target.value)}
                                                     readOnly
-                                                    
+
                                                 />
                                             </div>
+                                            {/* end of id */}
+                                            {/* product name */}
                                             <div className="xl:col-span-12 col-span-12">
                                                 <label htmlFor="product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Name</label>
                                                 <input
@@ -290,10 +389,11 @@ const handleSubmit = async (event: React.FormEvent) => {
                                                     placeholder="Name"
                                                     value={productName}
                                                     onChange={(e) => setProductName(e.target.value)}
-                                                    
+
                                                 />
                                             </div>
-                                            
+                                            {/* end of product name */}
+                                            {/* product subcategory  */}
                                             <div className="xl:col-span-12 col-span-12">
                                                 <label htmlFor="product-sub-category" className="form-label text-sm font-semibold text-defaulttextcolor">Product Sub Category</label>
                                                 <select
@@ -312,17 +412,19 @@ const handleSubmit = async (event: React.FormEvent) => {
                                                     ))}
                                                 </select>
                                             </div>
-                                          
+                                            {/* end of sub category */}
+                                            {/* image */}
                                             <div className="xl:col-span-12 col-span-12 ">
                                                 <label htmlFor="file-upload" className="block text-sm font-semibold text-defaulttextcolor">Product Image</label>
                                                 <input
                                                     type="file"
                                                     id="file-upload"
                                                     className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border rounded-[0.5rem]"
+                                                    
                                                     onChange={handleFileChange}
                                                     accept="image/*"
                                                 />
-                                                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+                                                {/* {error && <p className="text-red-500 text-sm mt-1">{error}</p>} */}
                                             </div>
                                             {fileDetails && (
                                                 <div className="my-2">
@@ -334,47 +436,53 @@ const handleSubmit = async (event: React.FormEvent) => {
                                                     >
                                                         <i className="ri-close-line text-primary text-lg font-bold "></i>
                                                     </button>
-
+                                                    <div className='flex justify-center items-center'>
                                                     <img
                                                         src={fileDetails.url}
                                                         alt={fileDetails.name}
-                                                        className=" object-contain rounded-md"
+                                                        className=" object-contain"
                                                     />
+                                                    </div>
+
+                                                 
 
 
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="col-span-12 mt-4 pb-3">
-                                                {existingImages.length > 0 && (
-                                                    <div>
-                                                       
-                                                        <div className="grid grid-cols-4 gap-4 mt-2 ">
-                                                            {existingImages.map((image, index) => (
-                                                                <div key={index} className="relative">
-                                                                    <img
-                                                                        src={image.url}
-                                                                        alt={image.name}
-                                                                        className="max-w-full h-auto border border-defaultborder rounded-md"
-                                                                    />
-                                                                    <p className="text-sm text-center mt-1">{image.name}</p>
-                                                                </div>
-                                                            ))}
-                                                        </div>
+                                        {/* preview */}
+                                        <div className="flex justify-center items-center mt-4 pb-3">
+                                            {existingImages.length > 0 && (
+                                                <div>
+
+                                                    <div className=" mt-2 ">
+                                                        {existingImages.map((image, index) => (
+                                                            <div key={index} className="relative">
+                                                                <img
+                                                                    src={image.url}
+                                                                    alt={image.name}
+                                                                    className="w-1/2 h-1/2"
+                                                                />
+                                                                {/* <p className="text-sm text-center mt-1">{image.name}</p> */}
+                                                            </div>
+                                                        ))}
                                                     </div>
-                                                )}
-                                            </div>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
+                                    {/* end image */}
+                                    {/* category */}
 
                                     <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12 gap-4">
-                                    <div className="grid grid-cols-12 gap-4">
-                                    <div className="xl:col-span-12 col-span-12">
-                                                <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Category</label>
+                                        <div className="grid grid-cols-12 gap-4">
+                                            <div className="xl:col-span-12 col-span-12">
+                                                <label htmlFor="product-category" className="form-label text-sm font-semibold text-defaulttextcolor">Product Category</label>
                                                 <select
-                                                    id="product-category-add"
-                                                    name="product-category-add"
+                                                    id="product-category"
+                                                    name="product-category"
                                                     className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
-                                                    value={productCategory}
+                                                    value={productCategory} 
                                                     onChange={(e) => setProductCategory(e.target.value)}
                                                     required
                                                 >
@@ -399,11 +507,11 @@ const handleSubmit = async (event: React.FormEvent) => {
                                             </div>
 
                                         </div>
-                                        </div>
+                                    </div>
 
                                 </div>
                                 <div className="px-6 py-4 border-t dark:border-defaultborder sm:flex justify-end">
-                                  
+
                                     <button
                                         type="submit"
                                         className="ti-btn ti-btn-primary !font-medium m-1">

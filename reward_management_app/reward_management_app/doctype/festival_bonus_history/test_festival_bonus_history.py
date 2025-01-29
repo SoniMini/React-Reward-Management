@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestFastivalBonusHistory(FrappeTestCase):
+class TestFestivalBonusHistory(FrappeTestCase):
 	pass
