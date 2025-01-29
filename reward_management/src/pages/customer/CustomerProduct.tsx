@@ -9,6 +9,11 @@ import { Link } from 'react-router-dom';
 import CustomerHeader from '../../components/common/carpenterheader';
 import Pageheader from '../../components/common/pageheader/pageheader';
 
+// Import Swiper and its styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 interface Product {
   product_image: string;
@@ -17,18 +22,12 @@ interface Product {
 }
 
 const CustomerProducts = () => {
-  // const [fullScreen, setFullScreen] = useState(false);
   const [newLaunch, setNewLaunch] = useState<string>('');
   const [url, setUrl] = useState<string>('');
   const [category, setCategory] = useState<any[]>([]);
-  // const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [subcategory, setSubcategory] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [productsData, setProductsData] = useState<Product[]>([]);
-
-  const carpenterrole = localStorage.getItem('carpenterrole');
-  console.log(carpenterrole);
-
 
   useEffect(() => {
     document.title = 'Category Products';
@@ -37,8 +36,6 @@ const CustomerProducts = () => {
         const response = await axios.get(
           `/api/method/reward_management_app.api.projects.get_project`
         );
-
-        console.log("Project Response:", response.data);
 
         const products = Array.isArray(response.data.message.product)
           ? response.data.message.product
@@ -60,7 +57,6 @@ const CustomerProducts = () => {
         const response = await axios.get(
           `/api/method/reward_management_app.api.new_launch.get_new_launch`
         );
-        console.log("new launch Response:", response.data);
         setNewLaunch(response.data.message.launch_name);
         setUrl(response.data.message.url);
       } catch (error) {
@@ -68,25 +64,19 @@ const CustomerProducts = () => {
       }
     };
 
-    // Fetch category and subcategory data
     const fetchCategoryAndSubCategory = async () => {
       try {
-        setLoading(true); // Start loading
+        setLoading(true);
 
-
-        // Fetch subcategory data
         const subcategoryResponse = await axios.get(`/api/method/reward_management_app.api.product_category.get_product_categories`);
-        console.log("Subcategory Response:", subcategoryResponse);
         if (subcategoryResponse.data.message.success) {
-          // Set categories and subcategories
           setCategory(subcategoryResponse.data.message.categories);
           setSubcategory(subcategoryResponse.data.message.subcategories);
         }
 
-
       } catch (error) {
         console.error("Error fetching category and subcategory data:", error);
-        setLoading(false); // End loading
+        setLoading(false);
       }
     };
 
@@ -95,79 +85,82 @@ const CustomerProducts = () => {
     fetchCategoryAndSubCategory();
   }, []);
 
-
-
   const newLunchHandle = () => {
     if (url) {
       window.location.href = url;
-    } else {
-      console.log("URL not available");
     }
   };
 
-  //   // Show loading spinner if loading
-  //   if (loading) {
-  //     return <div className="loading">Loading...</div>;
-  // }
-
-
   return (
     <Fragment>
-
       <div><CustomerHeader /></div>
 
-
-      <div className="lg:mx-20 md:mx-10 mx-5 ">
+      <div className="lg:mx-20 md:mx-10 mx-5">
         <div className='my-5'>
           <Pageheader
             currentpage={"Customer Products"}
             activepage={"/customer-product"}
             activepagename="Customer Products"
-
           />
         </div>
 
-        <div className="grid grid-cols-12 gap-x-6">
-          <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 md:col-span-12 col-span-12">
-            <div className="grid grid-cols-12 gap-x-6">
-              {productsData.map((product, index) => (
-                <div
-                  className="xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12"
-                  key={index}
-                >
-                  <div className="box product-card">
+        {/* Swiper for products */}
+        <div className="my-6">
+          <Swiper
+            spaceBetween={10}
+            slidesPerView={2} 
+            loop={productsData.length > 1} 
+            autoplay={{ delay: 2000 }} 
+            breakpoints={{
+
+              300:{
+                slidesPerView: 1,
+              },
+             
+              768: {
+                slidesPerView: 2, 
+              },
+            }}
+          >
+            {productsData.length > 0 ? (
+              productsData.map((product, index) => (
+                <SwiperSlide key={index}>
+                  <div className="product-card">
                     <div className="box-body">
                       <Link to="#" className="product-image">
                         <img
                           src={product.product_image}
-                          className="card-img mb-3 rounded-[5px] h-[500px]"
+                          className="card-img mb-3 rounded-[5px] md:h-[500px] h-[350px]"
                           alt={`Product ${index}`}
                         />
                       </Link>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                </SwiperSlide>
+              ))
+            ) : (
+              <SwiperSlide>
+                <div>No products available</div>
+              </SwiperSlide>
+            )}
+          </Swiper>
         </div>
 
+        {/* New launch button */}
         <div className='p-3 font-bold text-lg uppercase flex justify-center w-full max-w-xl mx-auto border-none'>
-          <button className="uppercase ti-btn new-launch border-none text-white font-semibold w-1/2" onClick={newLunchHandle}>  {newLaunch}</button>
-
+          <button className="uppercase ti-btn new-launch border-none text-white font-semibold w-1/2" onClick={newLunchHandle}>
+            {newLaunch}
+          </button>
         </div>
-
 
         {/* Render categories with their subcategories */}
-        <div className="mt-6 flex justify-center flex-col">
-          <div className="categories-list ">
+        <div className="mt-6 flex justify-center flex-col mb-6">
+          <div className="categories-list">
             {category.map((cat) => (
               <div key={cat.category_id} className="category-item mt-6">
                 <h3 className='mb-4 text-center text-defaulttextcolor text-md font-semibold'>{cat.category_name}</h3>
                 <div className='bg-white border-defaultborder rounded-[10px] shadow-lg p-5'>
-
-
-                  <div className="subcategory-list flex flex-row gap-6 items-center flex-wrap ">
+                  <div className="subcategory-list flex flex-row gap-6 items-center flex-wrap">
                     {subcategory
                       .filter(sub => sub.category_id === cat.category_id)
                       .map((sub) => (
@@ -195,12 +188,7 @@ const CustomerProducts = () => {
             ))}
           </div>
         </div>
-
-
       </div>
-
-
-
     </Fragment>
   );
 };
