@@ -106,11 +106,11 @@ const SubCategoryProducts = () => {
                                         className="overflow-hidden flex flex-col"
                                     >
                                         {/* Product Image */}
-                                        <div className="bg-white rounded-[10px] border-defaultborder shadow-lg flex items-center justify-center p-4 aspect-square">
+                                        <div className="bg-white rounded-[10px] border-defaultborder shadow-lg flex items-center justify-center p-4 aspect-square h-[80%] ">
                                             <img
                                                 src={product.product_image}
                                                 alt={product.product_name}
-                                                className="object-cover  w-full h-full rounded-[10px] "
+                                                className="object-cover rounded-[10px] h-[80%] "
                                             />
                                         </div>
 
