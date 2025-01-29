@@ -223,7 +223,7 @@ const Login = () => {
         }
     };
 
-    // Handle Carpernter  Login Form------------
+    // Handle Carpernter Registration Login Form------------
     const handleCarpenterLogin = (e: React.FormEvent) => {
         e.preventDefault();
         if (mobilenumber.length !== 10 || !/^\d+$/.test(mobilenumber)) {

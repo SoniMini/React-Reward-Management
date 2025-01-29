@@ -38,7 +38,7 @@ const CarpenterDashboard: React.FC = () => {
         const fetchCarpenterData = async () => {
             try {
                 const response = await axios.get(`/api/method/reward_management_app.api.carpenter_master.get_carpainter_data`);
-                console.log("API Response:", response);
+                console.log("Carpenter Dashboard API Response:", response);
 
                 // Access the data within the message field
                 const data = response.data.message.data;
