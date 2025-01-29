@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class FastivalBonusHistory(Document):
+class FestivalBonusHistory(Document):
 	pass
