@@ -7,18 +7,13 @@ from frappe.utils import nowdate
 from frappe.sessions import clear_sessions
 # from frappe.utils import get_request_session
 
-
-
-
-
-# get carpainter data with child table-----
+# # get carpainter data with child table-----
 @frappe.whitelist()
 def get_carpainter_data():
     try:
         # Access request headers
         api_key = frappe.local.request.headers.get('API-Key')
         api_secret = frappe.local.request.headers.get('API-Secret')
-        csrf_token = frappe.local.request.headers.get('X-CSRF-Token')
 
         # Get the logged-in user info
         logged_in_user = frappe.session.user
@@ -26,7 +21,7 @@ def get_carpainter_data():
         user_info = frappe.get_doc("User", logged_in_user)
 
         # If headers are provided, validate them
-        if api_key and api_secret and csrf_token:
+        if api_key and api_secret:
             # Validate API Key and API Secret with User Doctype
             if user_info.api_key != api_key or user_info.api_secret != api_secret:
                 return {
@@ -34,14 +29,11 @@ def get_carpainter_data():
                     "message": "Invalid API Key or API Secret.",
                     "status": 401
                 }
-
-            # Validate CSRF Token (optional, based on your use case)
-            if user_info.csrf_token != csrf_token:
-                return {
-                    "success": False, 
-                    "message": "CSRF Token mismatch.",
-                    "status": 403
-                }
+                
+        if not api_key and api_secret:
+            return{
+                "logged user":logged_in_user
+            }
 
         # Continue with the rest of the logic (no need to validate headers if not provided)
         user_mobile_no = user_info.mobile_no
