@@ -37,7 +37,15 @@ const CarpenterDashboard: React.FC = () => {
     useEffect(() => {
         const fetchCarpenterData = async () => {
             try {
-                const response = await axios.get(`/api/method/reward_management_app.api.carpenter_master.get_carpainter_data`);
+                const response = await axios.get(`/api/method/reward_management_app.api.carpenter_master.get_carpainter_data`,
+                    {
+                        headers: {
+                            "Accept": "application/json",
+                            // "Authorization": "token 01a0a46721cbc35:e48ec29404169f8",
+                            "Content-Type": "application/json"
+                        }
+                    }
+                );
                 console.log("Carpenter Dashboard API Response:", response);
 
                 // Access the data within the message field
