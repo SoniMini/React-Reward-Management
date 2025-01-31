@@ -42,7 +42,7 @@ def get_notifications_log():
         else:
             return []
     else:
-        # Fetch notifications for the logged-in user
+        # Fetch notifications for the logged-in user carpenter
         notifications = frappe.get_all(
             "Notification Log",
             filters={"for_user": user,"read": 0},
@@ -291,11 +291,9 @@ def send_welcome_bonus_points_notification(doc, method=None):
         notification = frappe.get_doc({
             'doctype': 'Notification Log',
             'for_user': user,
-            'subject': 'Welcome Bonus Points',
+            'subject':'Welcome Bonus Points',
             'type': 'Alert',
-            'email_content': f"""
-                Dear {carpenter.carpenter_name},<br>
-                Thank you for joining us! {carpenter.bonus_points} bonus points have been added to your account as a welcome reward.
+            'email_content': f"""Dear {carpenter.carpenter_name},<br>Thank you for joining us! {carpenter.bonus_points} bonus points have been added to your account as a welcome reward.
             """,
             'document_type': 'WelCome Bonus History',
             'document_name': doc.name
@@ -346,12 +344,9 @@ def send_festival_bonus_points_notification(doc, method=None):
     notification = frappe.get_doc({
         'doctype': 'Notification Log',
         'for_user': user,
-        'subject': 'Congratulations! You have Earned a Festival Bonus',
+        'subject':'Congratulations! You have Earned a Festival Bonus',
         'type': 'Alert',
-        'email_content': f"""
-            Dear {carpenter.carpenter_name},<br>
-            {doc.bonus_message},<br>
-            You have been awarded a bonus of {doc.bonus_points} points.
+        'email_content': f"""Dear {carpenter.carpenter_name},<br>{doc.bonus_message},<br>You have been awarded a bonus of {doc.bonus_points} points.
         """,
         'document_type': 'Festival Bonus History',
         'document_name': doc.name

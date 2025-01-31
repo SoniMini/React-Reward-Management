@@ -19,8 +19,8 @@ def get_bank_history_details():
                 if entry.get('transfer_date'):
                     entry['transfer_date'] = frappe.utils.formatdate(entry['transfer_date'], 'dd-MM-yyyy')
                 
-            return {"data": bank_history}
+            return {"data": bank_history,"status":200}
         else:
-            return {"data": [], "error": "Customer not found"}
+            return {"data": [], "error": "Customer not found","status":401}
     except Exception as e:
         return {"data": [], "error": str(e)}

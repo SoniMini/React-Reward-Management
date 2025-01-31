@@ -5,122 +5,47 @@ from datetime import datetime
 from frappe.utils import nowdate
 # from frappe.auth import CookieManager, LoginManager
 from frappe.sessions import clear_sessions
-# from frappe.utils import get_request_session
 
-# # get carpainter data with child table-----
+# Get Carpenter Data---------------
 @frappe.whitelist()
 def get_carpainter_data():
     try:
-        # Access request headers
-        api_key = frappe.local.request.headers.get('API-Key')
-        api_secret = frappe.local.request.headers.get('API-Secret')
-
-        # Get the logged-in user info
         logged_in_user = frappe.session.user
-        frappe.logger().info(f"Logged user: {logged_in_user}")
+        frappe.logger().info(f"Logged user data\n\n\n\n: {logged_in_user}")
+
         user_info = frappe.get_doc("User", logged_in_user)
-
-        # If headers are provided, validate them
-        if api_key and api_secret:
-            # Validate API Key and API Secret with User Doctype
-            if user_info.api_key != api_key or user_info.api_secret != api_secret:
-                return {
-                    "success": False, 
-                    "message": "Invalid API Key or API Secret.",
-                    "status": 401
-                }
-                
-        if not api_key and api_secret:
-            return{
-                "logged user":logged_in_user
-            }
-
-        # Continue with the rest of the logic (no need to validate headers if not provided)
         user_mobile_no = user_info.mobile_no
+        
         if not user_mobile_no:
-            return {
-                "success": False, 
-                "message": "Mobile number not found for logged-in user.",
-                "status": 404
-            }
+            return {"success":False,"status": 401, "message": "Mobile number not found for logged-in user."}
 
         carpainters = frappe.get_list(
             "Carpenter",
             filters={"mobile_number": user_mobile_no},
-            fields=["name", "first_name", "full_name", "last_name", "city", "total_points", "mobile_number", "current_points", "redeem_points", "point_requested", "email"]
+            fields=["name", "first_name", "full_name", "last_name", "city", "total_points", "mobile_number", "current_points", "redeem_points","point_requested", "email"]
         )
 
-        # Fetch point history for each carpenter
         for carpainter in carpainters:
+            # Fetch child table data for each Carpainter
             point_history = frappe.get_all(
                 "Carpainter Product Detail",
-                filters={"parent": carpainter["name"]},
+                filters={"parent": carpainter["name"]}, 
                 fields=["earned_points", "date", "product_name", "product", "product_category"],
                 order_by="creation desc"
             )
-
+            
             # Format the date for each entry in point_history
             for point in point_history:
                 if point.get('date'):
                     point['date'] = frappe.utils.formatdate(point['date'], 'dd-MM-yyyy')
-
+            
             carpainter["point_history"] = point_history
 
-        return {
-            "success": True,
-            "data": carpainters,
-            "status": 200
-        }
-
-    except Exception as e:
-        # Log the error and return a custom error message with an error code
-        frappe.logger().error(f"Error fetching Carpainter Registrations: {str(e)}")
-        return {
-            "success": False,
-            "message": f"Internal server error: {str(e)}",
-            "status": 500
-        }
-
-
-# @frappe.whitelist()
-# def get_carpainter_data():
-#     try:
-#         logged_in_user = frappe.session.user
-#         frappe.logger().info(f"Logged user data\n\n\n\n: {logged_in_user}")
-
-#         user_info = frappe.get_doc("User", logged_in_user)
-#         user_mobile_no = user_info.mobile_no
-        
-#         if not user_mobile_no:
-#             return {"success":False,"status": "failed", "message": "Mobile number not found for logged-in user."}
-
-#         carpainters = frappe.get_list(
-#             "Carpenter",
-#             filters={"mobile_number": user_mobile_no},
-#             fields=["name", "first_name", "full_name", "last_name", "city", "total_points", "mobile_number", "current_points", "redeem_points","point_requested", "email"]
-#         )
-
-#         for carpainter in carpainters:
-#             # Fetch child table data for each Carpainter
-#             point_history = frappe.get_all(
-#                 "Carpainter Product Detail",
-#                 filters={"parent": carpainter["name"]}, 
-#                 fields=["earned_points", "date", "product_name", "product", "product_category"],
-#                 order_by="creation desc"
-#             )
-            
-#             # Format the date for each entry in point_history
-#             for point in point_history:
-#                 if point.get('date'):
-#                     point['date'] = frappe.utils.formatdate(point['date'], 'dd-MM-yyyy')
-            
-#             carpainter["point_history"] = point_history
-
-#         return {"success":True,"status": "success", "data": carpainters}
+        return {"success":True,"status":200, "data": carpainters}
     
-#     except Exception as e:
-#         frappe.logger().error(f"Error fetching Carpainter Registrations: {str(e)}")
-#         return {"success":False,"status": "failed", "message": str(e)}
+    except Exception as e:
+        frappe.logger().error(f"Error fetching Carpainter Registrations: {str(e)}")
+        return {"success":False,"status": "failed", "message": str(e)}
   
   
     
@@ -138,9 +63,9 @@ def show_total_points():
                                     fields=["name", "total_points", "redeem_points","current_points"])
 
         if carpainter:
-            return carpainter[0]  # Return the first match
+            return carpainter[0] 
         else:
-            return {"success":False,"status": "failed", "message": "Carpainter not found for this user."}
+            return {"success":False,"status": 401, "message": "Carpainter not found for this user."}
 
             # frappe.throw(_("Carpainter not found for this user"))
     except Exception as e:
@@ -161,12 +86,11 @@ def get_customer_details():
     if customer:
         return customer[0]  # Return the first match
     else:
-        return {"success":False,"status": "failed", "message": "Carpainter not found for this email."}
+        return {"success":False,"status": 401, "message": "Carpainter not found for this email."}
         # frappe.throw(_("Customer not found for this email"))
         
         
-        
-        
+           
 
 # update carpainter points-----------
 @frappe.whitelist()
@@ -184,7 +108,7 @@ def update_customer_points(points):
     # Fetch the customer record using the mobile number
     customer = frappe.get_list("Carpenter", filters={'mobile_number': user_mobile_no}, fields=['name', 'total_points','current_points'])
     if not customer:
-        return {"success":False,"status": "failed", "message": "Carpainter not found."}
+        return {"success":False,"status": 401, "message": "Carpainter not found."}
         # frappe.throw(_("Customer not found"))
 
     # Assuming there's only one customer with this mobile number
@@ -212,7 +136,7 @@ def update_carpainter_points(product_name, points):
         carpainter = frappe.get_list("Carpenter", filters={'mobile_number': user_mobile_no}, fields=['name'])
 
         if not carpainter:
-            return {"success":False,"status": "failed", "message": "Carpainter not found for."}
+            return {"success":False,"status": 401, "message": "Carpainter not found for."}
             # frappe.throw(_("Carpainter not found"))
 
         # Assuming there's only one Carpainter with this mobile number
