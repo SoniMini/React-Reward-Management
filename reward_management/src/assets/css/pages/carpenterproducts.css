@@ -43,4 +43,11 @@
     display: flex; /* Show icons on hover */
   }
 
+  @media (max-width: 650px) {
+    .box-body {
+        padding: 0.2rem;
+        color: rgb(var(--default-text-color));
+    }
+}
+
   

@@ -105,7 +105,7 @@ const CustomerProducts = () => {
         </div>
 
         {/* Swiper for products */}
-        <div className="my-6">
+        <div className="md:my-6 my-3">
           <Swiper
             spaceBetween={10}
             slidesPerView={2} 
@@ -130,7 +130,7 @@ const CustomerProducts = () => {
                       <Link to="#" className="product-image">
                         <img
                           src={product.product_image}
-                          className="card-img mb-3 rounded-[5px] md:h-[500px] h-[350px]"
+                          className="card-img md:mb-3 rounded-[5px] md:h-[500px] h-[350px]"
                           alt={`Product ${index}`}
                         />
                       </Link>
@@ -147,26 +147,26 @@ const CustomerProducts = () => {
         </div>
 
         {/* New launch button */}
-        <div className='p-3 font-bold text-lg uppercase flex justify-center w-full max-w-xl mx-auto border-none'>
-          <button className="uppercase ti-btn new-launch border-none text-white font-semibold w-1/2" onClick={newLunchHandle}>
+        <div className='md:p-3 font-bold text-lg uppercase flex justify-center w-full md:max-w-xl max-w-full sm:px-4 mx-auto border-none'>
+          <button className="uppercase ti-btn new-launch border-none text-white font-semibold md:w-1/2 w-full" onClick={newLunchHandle}>
             {newLaunch}
           </button>
         </div>
 
         {/* Render categories with their subcategories */}
-        <div className="mt-6 flex justify-center flex-col mb-6">
+        <div className="md:mt-6 mt-4 flex justify-center flex-col mb-6">
           <div className="categories-list">
             {category.map((cat) => (
-              <div key={cat.category_id} className="category-item mt-6">
-                <h3 className='mb-4 text-center text-defaulttextcolor text-md font-semibold'>{cat.category_name}</h3>
+              <div key={cat.category_id} className="category-item md:mt-6 mt-3">
+                <h3 className='mb-4 text-center text-defaulttextcolor md:text-lg text-lg font-semibold'>{cat.category_name}</h3>
                 <div className='bg-white border-defaultborder rounded-[10px] shadow-lg p-5'>
-                  <div className="subcategory-list flex flex-row gap-6 items-center flex-wrap">
+                  <div className="subcategory-list flex flex-row md:gap-1 lg:items-start flex-wrap">
                     {subcategory
                       .filter(sub => sub.category_id === cat.category_id)
                       .map((sub) => (
                         <div
                           key={sub.sub_category_name}
-                          className="p-3 w-full sm:w-5/12 md:w-4/12 lg:w-3/12 xl:w-2/12 xxl:w-1/12"
+                          className="p-3 w-full ssm:w-5/12 sm:3/12 md:w-2/12 lg:w-3/12 xl:w-2/12 xxl:w-1/12"
                         >
                           <Link to={`/sub-category-product/${sub.sub_category_id.replace(" ", '_')}`} className="block">
                             <div className="subcategory-item">
@@ -177,7 +177,7 @@ const CustomerProducts = () => {
                                   className="rounded-full w-20 h-20 bg-slate-400 shadow-sm mx-auto"
                                 />
                               </div>
-                              <div className="text-center">{sub.sub_category_name}</div>
+                              <div className="text-center sm:text-lg text-defaultsize">{sub.sub_category_name}</div>
                             </div>
                           </Link>
                         </div>

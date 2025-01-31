@@ -632,11 +632,11 @@ const Login = () => {
 
     return (
         <Fragment>
-            <div className=" h-[100vh] bg-white flex items-center justify-center text-defaultsize text-defaulttextcolor ">
-                <div className="grid grid-cols-12 gap-4 b ">
+            <div className=" ssm:h-[100vh] h-auto ssm:bg-white flex items-center justify-center text-defaultsize text-defaulttextcolor overflow-y-scroll  ">
+                <div className="grid grid-cols-12 gap-4 ">
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-3 sm:col-span-2"></div>
-                    <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12   max-w-[420px] w-[420px] ">
-                        <Card className="p-8  rounded-[10px] bg-[var(--body-bg)]">
+                    <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12 sm:max-w-[420px] sm:w-[420px] max-w-[300px] w-[300px] ">
+                        <Card className="sm:p-8 p-6 rounded-[10px] bg-[var(--body-bg)]">
                             <div className="flex justify-center mb-8">
                                 {/* <img src={desktoplogo} alt="logo" className="w-28" /> */}
                                 <img src={logo} alt="logo" className="w-20" />
@@ -685,11 +685,11 @@ const Login = () => {
                                 </Callout.Root>
                             )}
 
-                            <div className="mt-6">
+                            <div className="mt-6 sm:w-full">
                                 {currentForm === "login" && (
                                     <form
                                         onSubmit={handleLogin}
-                                        className="max-w-[350px] w-[350px]"
+                                        className="sm:max-w-[350px] sm:w-[350px] max-w-[250px] w-[250px] "
                                     >
                                         <Box className="mb-4">
                                             <Text
@@ -705,7 +705,7 @@ const Login = () => {
                                                 placeholder="Username"
                                                 onChange={(e) => setUsername(e.target.value)}
                                                 value={username}
-                                                className="bg-white border-none shadow-md rounded-[5px] p-2 mt-2 text-xs w-full text-primary outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
+                                                className="bg-white border-none shadow-md rounded-[5px] p-2 mt-2 text-xs sm:w-full w-[250px] text-primary outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground "
                                             />
                                         </Box>
                                         <Box className="mb-4 ">
@@ -716,14 +716,14 @@ const Login = () => {
                                             >
                                                 Password
                                             </Text>
-                                            <div className="relative">
+                                            <div className="relative sm:max-w-full sm:w-full max-w-[250px] w-[250px]">
                                                 <input
                                                     id="password"
                                                     type={passwordShow ? "text" : "password"}
                                                     placeholder="******"
                                                     onChange={(e) => setPassword(e.target.value)}
                                                     value={password}
-                                                    className="bg-white border-none shadow-md p-2 pt-2 mt-2 rounded-[5px] w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
+                                                    className="bg-white border-none shadow-md p-2 pt-2 mt-2 rounded-[5px] sm:w-full w-[250px]  outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
                                                 />
                                                 <button
                                                     type="button"
@@ -736,7 +736,7 @@ const Login = () => {
                                         </Box>
                                         <Button
                                             type="submit"
-                                            className="w-full mb-2 ti-btn new-launch !bg-primary !text-white !font-medium border-none shadow-md "
+                                            className="sm:w-full w-[250px] mb-2 ti-btn new-launch !bg-primary !text-white !font-medium border-none shadow-md "
                                         >
                                             Login
                                         </Button>
@@ -745,7 +745,7 @@ const Login = () => {
 
                                 {currentForm === "register" && (
                                     <form onSubmit={handleRegister}>
-                                        <Box className="mb-4 max-w-[350px] w-[350px]">
+                                        <Box className="mb-4 sm:max-w-[350px] sm:w-[350px] max-w-[250px] w-[250px]">
                                             <Box className="xl:col-span-12 col-span-12 mb-3">
                                                 <Text
                                                     as="label"
@@ -757,7 +757,7 @@ const Login = () => {
                                                 <input
                                                     type="text"
                                                     name="firstName"
-                                                    className="bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
+                                                    className="bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs sm:w-full w-[250px]  outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
                                                     onChange={changeHandler}
                                                     value={firstName}
                                                     placeholder="First Name"
@@ -776,7 +776,7 @@ const Login = () => {
                                                 <input
                                                     type="text"
                                                     name="lastName"
-                                                    className="bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
+                                                    className="bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs sm:w-full w-[250px] outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
                                                     onChange={changeHandler}
                                                     value={lastName}
                                                     placeholder="Last Name"
@@ -795,7 +795,7 @@ const Login = () => {
                                                 <input
                                                     type="text"
                                                     name="city"
-                                                    className="bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
+                                                    className="bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs sm:w-full w-[250px] outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
                                                     onChange={changeHandler}
                                                     value={city}
                                                     placeholder="City"
@@ -814,7 +814,7 @@ const Login = () => {
                                                 <input
                                                     type="tel"
                                                     name="mobile"
-                                                    className={`bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground ${mobile.length !== 10 || !/^\d+$/.test(mobile)
+                                                    className={`bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs sm:w-full w-[250px] outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground ${mobile.length !== 10 || !/^\d+$/.test(mobile)
                                                         ? "border-red-500"
                                                         : ""
                                                         }`}
@@ -843,7 +843,7 @@ const Login = () => {
                                                         <input
                                                             type="number"
                                                             name="otp"
-                                                            className="bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
+                                                            className="bg-white form-control form-control-lg border-none shadow-md rounded-[5px] p-2 mt-2 text-xs sm:w-full w-[250px] outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
                                                             onChange={changeHandler}
                                                             value={otp}
                                                             placeholder="OTP"
@@ -912,7 +912,7 @@ const Login = () => {
                                 {currentForm === "carpenterLogin" && (
                                     <form
                                         onSubmit={handleCarpenterLogin}
-                                        className="max-w-[350px] w-[350px]"
+                                        className="sm:max-w-[350px] sm:w-[350px] max-w-[300px] w-[300px]]"
                                     >
                                         <Box className="mb-4 ">
                                             <Text
