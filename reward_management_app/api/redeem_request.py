@@ -93,7 +93,9 @@ def create_redeem_request(customer_id, redeemed_points):
         print(f"Creation Date: {redeem_request.creation}")
 
         # Return success message
-        return _("Redeem Request created successfully. Points have been deducted.","status":200)
+        return {"success": True, "message": "Redeem Request created successfully. Points have been deducted.","status":200}
+
+        # return _("Redeem Request created successfully. Points have been deducted.","status":200)
 
     except Exception as e:
         # Log error and raise exception
