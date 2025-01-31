@@ -21,9 +21,9 @@ def get_redeem_request_details():
                 if request.get('approved_on'):
                     request['approved_on'] = frappe.utils.formatdate(request['approved_on'], 'dd-MM-yyyy')
             
-            return {"message": redeem_requests}
+            return {"message": redeem_requests,"status":200}
         else:
-            return {"message": [], "error": "Customer not found"}
+            return {"message": [], "error": "Customer not found","status":401}
     except Exception as e:
         return {"message": [], "error": str(e)}
 
