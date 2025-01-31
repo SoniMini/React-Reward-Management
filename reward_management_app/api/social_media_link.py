@@ -11,6 +11,7 @@ def get_social_media_link():
     google_url = social_link.google_map_url
 
     return {
+        "status":200,
         "success": True,
         'facebook_url': facebook_url,
         'insta_url': insta_url,

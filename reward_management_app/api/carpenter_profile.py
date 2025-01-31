@@ -18,9 +18,9 @@ def get_users():
         
         # Check if users were retrieved
         if users:
-            return {"status": "success", "message": users}
+            return {"status": "success", "message": users,"status":200}
         else:
-            return {"status": "error", "message": "No users found."}
+            return {"status": "error", "message": "No users found.","status":401}
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), _("API Error"))
@@ -40,6 +40,7 @@ def get_user_details(name):
         if user:
             # Return relevant user details as JSON
             return {
+                "status":200,
                 "name": user.get("name"),
                 "email": user.get("email"),
                 "first_name": user.get("first_name"),
@@ -52,7 +53,11 @@ def get_user_details(name):
                 "user_image": user.get("user_image" or "")
             }
         else:
-            frappe.throw(_("User not found for email: {0}").format(name))
+            return{
+                "status":401,
+                "message":"User not found for email: {}".format(name)
+            }
+            # frappe.throw(_("User not found for email: {0}").format(name))
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), _("API Error"))
