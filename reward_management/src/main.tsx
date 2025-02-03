@@ -46,6 +46,7 @@ import WelcomeBonus from './pages/admin/bonuspages/BonusDashboards.tsx';
 import WelcomeBonusHistory from './pages/admin/bonuspages/WelcomeBonusHistory.tsx';
 import FestivalBonus from './pages/admin/bonuspages/FestivalBonus.tsx';
 import FestivalBonusHistory from './pages/admin/bonuspages/FestivalBonusHistory.tsx';
+import ViewCarpenterPointHistory from './pages/admin/carpenterdashboard/ViewCarpenterPointHistory.tsx';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -138,6 +139,10 @@ const router = createBrowserRouter([
       {
         path: "carpenter/:carpenterId",
         element: <PrivateRoutes element={<Carpenter />} />,
+      },
+      {
+        path: "view-point-history/:carpenterId",
+        element: <PrivateRoutes element={<ViewCarpenterPointHistory />} />,
       },
       {
         path: "category-master",

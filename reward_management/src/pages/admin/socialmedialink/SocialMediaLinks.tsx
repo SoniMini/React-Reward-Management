@@ -10,6 +10,7 @@ import Facebook from '../../../assets/images/reward_management/facebook-app-symb
 import WhatsApp from '../../../assets/images/reward_management/15.png';
 import Instagram from '../../../assets/images/reward_management/14.png';
 import GoogleMap from '../../../assets/images/reward_management/16.png';
+import GoogleReview from '../../../assets/images/reward_management/customer-satisfaction.png'
 
 const SocialMediaLink: React.FC = () => {
     // const [nameLaunch, setNameLaunch] = useState<string>('');
@@ -17,6 +18,8 @@ const SocialMediaLink: React.FC = () => {
     const [instaLink, setInstaLink] = useState<string>('');
     const [whatsappLink, setWhatsAppLink] = useState<string>('');
     const [googleLink, setGoogleLink] = useState<string>('');
+    const [googleReviewLink, setGoogleReviewLink] = useState<string>('');
+
 
 
 
@@ -43,6 +46,7 @@ const SocialMediaLink: React.FC = () => {
                     setInstaLink(response.data.message.insta_url);
                     setWhatsAppLink(response.data.message.whatsapp_url);
                     setGoogleLink(response.data.message.google_url);
+                    setGoogleReviewLink(response.data.message.google_reviews)
                 }
             } catch (error) {
                 console.error("Error fetching API data:", error);
@@ -60,6 +64,7 @@ const SocialMediaLink: React.FC = () => {
             instagram_url: instaLink,
             whatsapp_url: whatsappLink,
             google_map_url: googleLink,
+            google_reviews   : googleReviewLink
         };
 
         try {
@@ -159,6 +164,8 @@ const SocialMediaLink: React.FC = () => {
                                         </Link>
                                             </span>
                                         </div>
+                                         {/* google map */}
+                                       
                                         <div className="xl:col-span-12 col-span-12 flex">
                                             <input
                                                 type="text"
@@ -178,6 +185,29 @@ const SocialMediaLink: React.FC = () => {
                                         </Link>
                                             </span>
                                         </div>
+                                        {/* end of google map */}
+                                        {/* google review link--- */}
+
+                                        <div className="xl:col-span-12 col-span-12 flex">
+                                            <input
+                                                type="text"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                id="setgooglereviewLink"
+                                                placeholder="Google Reviews"
+                                                value={googleReviewLink}
+                                                onChange={(e) => setGoogleReviewLink(e.target.value)}
+                                            />
+                                              <span className="w-[10%] text-blue-500 justify-center  items-center  flex border border-[#949eb7] border-l-0  outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ">
+                                                <Link
+                                            to="#"
+                                            onClick={() => window.open(googleReviewLink, "_blank")}
+                                            className='rounded-full md:w-7 md:h-7 w-5 h-5 flex items-center justify-center table-btn'
+                                        >
+                                            <img src={GoogleReview} alt="Google Review" className='md:w-5 md:h-5 w-3 h-3'/>
+                                        </Link>
+                                            </span>
+                                        </div>
+                                        {/* end of google review */}
                                         <div className="xl:col-span-12 col-span-12 text-center">
                                             <button
                                                 id='submit'

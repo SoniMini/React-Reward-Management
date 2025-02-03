@@ -22,6 +22,7 @@ interface ViewModalProps {
     setAmount: (value: string) => void;
     showTransactionId: boolean;
     showAmount: boolean;
+
 }
 
 const RewardRequestEdit: React.FC<ViewModalProps> = ({
@@ -47,6 +48,9 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
     showTransactionId,
     showAmount
 }) => {
+    // Disable "Pending" option if status is already "Approved" or "Cancel"
+    const isStatusDisabled = status === 'Approved' || status === 'Cancel';
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white rounded-lg shadow-lg w-full max-w-lg">
@@ -90,38 +94,39 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
                             >
-                              
-                                <option value="Pending">Pending</option>
+                                <option value="Pending" disabled={isStatusDisabled}>Pending</option>
+
+                                {/* <option value="Pending">Pending</option> */}
                                 <option value="Approved">Approved</option>
                                 <option value="Cancel">Cancel</option>
                             </select>
                         </div>
                         {showTransactionId && (
-                        <div className="xl:col-span-12 col-span-12 mb-4">
-                            <label htmlFor="transactionid" className="form-label text-sm text-defaulttextcolor font-semibold">{transactionIdLabel}</label>
-                            <input
-                                type="text"
-                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
-                                placeholder="Enter Transaction ID here"
-                                id="transactionid"
-                                value={transactionId}
-                                onChange={(e) => setTransactionId(e.target.value)}
-                            />
-                        </div>
-                         )}
-                            {showAmount && (
-                        <div className="xl:col-span-12 col-span-12 mb-4">
-                            <label htmlFor="amount" className="form-label text-sm text-defaulttextcolor font-semibold">{amountLabel}</label>
-                            <input
-                                type="text"
-                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
-                                placeholder="Enter Amount here"
-                                id="amount"
-                                value={amount}
-                                onChange={(e) => setAmount(e.target.value)}
-                            />
-                        </div>
-                           )}
+                            <div className="xl:col-span-12 col-span-12 mb-4">
+                                <label htmlFor="transactionid" className="form-label text-sm text-defaulttextcolor font-semibold">{transactionIdLabel}</label>
+                                <input
+                                    type="text"
+                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                    placeholder="Enter Transaction ID here"
+                                    id="transactionid"
+                                    value={transactionId}
+                                    onChange={(e) => setTransactionId(e.target.value)}
+                                />
+                            </div>
+                        )}
+                        {showAmount && (
+                            <div className="xl:col-span-12 col-span-12 mb-4">
+                                <label htmlFor="amount" className="form-label text-sm text-defaulttextcolor font-semibold">{amountLabel}</label>
+                                <input
+                                    type="text"
+                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                    placeholder="Enter Amount here"
+                                    id="amount"
+                                    value={amount}
+                                    onChange={(e) => setAmount(e.target.value)}
+                                />
+                            </div>
+                        )}
                     </div>
                     <div className='border-t border-defaultborder p-4 flex justify-end'>
                         <button onClick={onSubmit} className="ti-btn ti-btn-primary bg-primary me-3">Submit</button>

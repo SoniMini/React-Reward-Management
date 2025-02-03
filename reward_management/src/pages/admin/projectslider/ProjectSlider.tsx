@@ -330,10 +330,8 @@ const handleProjectLinkChange = (index: number, value: string) => {
       }
 
 
-    if(uploadedFileURLs.length <2 || imageAddUrl.length <2) {
-        notyf.error("Please add at least two image and two project link.");
-
-
+    if(uploadedFileURLs.length <2) {
+        notyf.error("Please add at least two images.");
         // setError('Please add two images and url!');
         return;
     }
@@ -341,7 +339,7 @@ const handleProjectLinkChange = (index: number, value: string) => {
   
      
       if (uploadedFileURLs.length !== imageAddUrl.length) {
-        setError('The number of images must match the number of descriptions!');
+        notyf.error('please add project link')
         return;
       }
   
@@ -362,7 +360,7 @@ const handleProjectLinkChange = (index: number, value: string) => {
   
       // Handle the response from the server
       const result = response.data;
-      if (result.message && result.message.status === 'success') {
+      if (result.message && result.message.status ===200) {
         setAlertMessage("Project Added successfully!");
         setShowSuccessAlert(true); 
         setFileDetails([]);  
@@ -499,6 +497,8 @@ const handleProjectLinkChange = (index: number, value: string) => {
                   value={imageAddUrl[index] || ''}  
                   onChange={(e) => handleProjectLinkChange(index, e.target.value)} 
                   className="mt-2 block w-full p-2  border border-[#dadada] rounded-[5px] text-sm"
+                  required
+                  
                 />
               </div>
             ))}
@@ -587,6 +587,7 @@ const handleProjectLinkChange = (index: number, value: string) => {
                   className="mt-1 p-2 w-full border border-[#dadada] rounded-[5px] text-sm"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
+                  required
                 />
               </div>
               </div>

@@ -76,7 +76,7 @@ const CustomerProductMaster: React.FC = () => {
             const query = searchQuery.toLowerCase();
             return (
                 product.product_name?.toLowerCase().includes(query) ||
-                product.product_category?.toLowerCase().includes(query) ||
+                product.category_name?.toLowerCase().includes(query) ||
                 product.product_sub_category?.toString().includes(query) // Convert points to string for comparison
             );
         });
