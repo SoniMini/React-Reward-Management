@@ -18,6 +18,7 @@ import Facebook from '../../assets/images/reward_management/facebook-app-symbol 
 import WhatsApp from '../../assets/images/reward_management/15.png';
 import Instagram from '../../assets/images/reward_management/14.png';
 import GoogleMap from '../../assets/images/reward_management/16.png';
+import GoogleReview from '../../assets/images/reward_management/customer-satisfaction.png';
 
 
 const CarpenterDashboard: React.FC = () => {
@@ -31,7 +32,7 @@ const CarpenterDashboard: React.FC = () => {
     const [instagramlink, setInstagramLink] = useState<string | null>(null);
     const [whatsapplink, setWhatsAppLink] = useState<string | null>(null);
     const [googlemaplink, setGoogleMapLink] = useState<string | null>(null);
-
+    const [googleReviewLink , setGoogleReviewLink] =  useState<string | null>(null);
 
 
     useEffect(() => {
@@ -80,6 +81,7 @@ const CarpenterDashboard: React.FC = () => {
                     setInstagramLink(response.data.message.insta_url);
                     setWhatsAppLink(response.data.message.whatsapp_url);
                     setGoogleMapLink(response.data.message.google_url);
+                    setGoogleReviewLink(response.data.message.google_reviews);
                 } else {
                     console.log("No data available");
                 }
@@ -291,7 +293,7 @@ const CarpenterDashboard: React.FC = () => {
 
                                 {/* social media cards------------ */}
                                 <div className="flex justify-center items-center lg:mt-40 md:mt-16 sm:mt-14 mt-14  lg:mb-1 md:mb-4 sm:mb-4 mb-4 ">
-                                <div className='grid grid-cols-4 gap-5'>
+                                <div className='grid grid-cols-5 gap-5'>
                                     {/* facebook link----- */}
                                     <div className="flex items-center md:w-16 md:h-16 w-8 h-8 justify-center bg-white rounded-full hover:bg-primary">
                                         <Link
@@ -333,6 +335,17 @@ const CarpenterDashboard: React.FC = () => {
                                             className='rounded-full md:w-10 md:h-10 w-5 h-5  flex items-center justify-center'
                                         >
                                             <img src={GoogleMap} alt="Google Map" />
+                                        </Link>
+                                    </div>
+
+                                    {/* google reviews----- */}
+                                    <div className="flex items-center md:w-16 md:h-16 w-8 h-8 justify-center bg-white rounded-full hover:bg-primary">
+                                        <Link
+                                            to="#"
+                                            onClick={() => window.open(googleReviewLink, "_blank")}
+                                            className='rounded-full md:w-10 md:h-10 w-5 h-5  flex items-center justify-center'
+                                        >
+                                            <img src={GoogleReview} alt="Google Map" />
                                         </Link>
                                     </div>
                                     </div>

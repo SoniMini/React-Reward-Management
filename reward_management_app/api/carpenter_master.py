@@ -71,8 +71,64 @@ def show_total_points():
     except Exception as e:
         frappe.log_error(f"Error in show_total_points: {str(e)}")
         return {"success":False,"error": str(e)}
-  
-  
+    
+    
+
+@frappe.whitelist()
+def get_points_data(carpenter_id):
+    try:
+        carpainters = frappe.get_list(
+            "Carpenter",
+            filters={"name": carpenter_id},
+            fields=["name", "full_name", 
+                    "mobile_number"]
+        )
+
+        for carpainter in carpainters:
+            # Fetch child table data (Product Earned Points)
+            point_history = frappe.get_all(
+                "Carpainter Product Detail",
+                filters={"parent": carpainter["name"]}, 
+                fields=["earned_points", "date", "product_name", "product", "product_category"],
+                order_by="creation desc"
+            )
+            
+            # Fetch Bonus Points
+            bonus_history = frappe.get_all(
+                "Carpenter Bonus Point Table",
+                filters={"parent": carpainter["name"]},
+                fields=["bonus_name", "bonus_earned_date", "bonus_points", "festival_bonus_id"],
+                order_by="creation desc"
+            )
+
+            
+            # Format the data to match the unified structure
+            formatted_point_history = [{
+                "name": point.get("product"),
+                "points": point.get("earned_points"),
+                "date": frappe.utils.formatdate(point.get("date"), "dd-MM-yyyy") if point.get("date") else None,
+            } for point in point_history]
+
+            formatted_bonus_history = [{
+                "name": bonus.get("bonus_name"),
+                "points": bonus.get("bonus_points"),
+                "date": frappe.utils.formatdate(bonus.get("bonus_earned_date"), "dd-MM-yyyy") if bonus.get("bonus_earned_date") else None,
+            } for bonus in bonus_history]
+
+            # Merge the two lists
+            merged_history = formatted_point_history + formatted_bonus_history
+
+            # Sort by date in descending order
+            merged_history = sorted(merged_history, key=lambda x: frappe.utils.getdate(x["date"]), reverse=True)
+
+            # Attach to carpenter data
+            carpainter["point_history"] = merged_history
+
+        return {"success": True, "status": 200, "data": carpainters}
+
+    except Exception as e:
+        frappe.logger().error(f"Error fetching Carpenter Points Data: {str(e)}")
+        return {"success": False, "status": "failed", "message": str(e)}
     
 # get logged carpenter data-------------  
     

@@ -117,13 +117,19 @@ def add_new_project(new_image_url, image_description):
 
     # Ensure the lists have the same length
     if len(new_image_url) != len(image_description):
-        frappe.throw("The number of image URLs must match the number of descriptions.")
+        return{
+            "success":False,
+            "message":"The number of image URLs must match the number of descriptions."
+        }
 
     # Fetch the parent document
     try:
         project_doc = frappe.get_doc("Project Slider", "Project Slider")
     except frappe.DoesNotExistError:
-        frappe.throw("The 'Project Slider' document does not exist.")
+        return{
+            "success":False,
+            "message":"The 'Project Slider' document does not exist."
+        }
 
     # Clear existing rows in the child table
     project_doc.project_image_slider = []
@@ -140,7 +146,8 @@ def add_new_project(new_image_url, image_description):
     frappe.db.commit()
 
     return {
-        "status": "success",
+        "status": 200,
+        "success":True,
         "message": "All existing data cleared, and new instruction images and descriptions added successfully",
         "added_images": new_image_url,
         "added_link": image_description

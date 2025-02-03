@@ -8,7 +8,8 @@
   "facebook_url",
   "instagram_url",
   "whatsapp_url",
-  "google_map_url"
+  "google_map_url",
+  "google_reviews"
  ],
  "fields": [
   {
@@ -30,12 +31,17 @@
    "fieldname": "google_map_url",
    "fieldtype": "Data",
    "label": "Google Map Url"
+  },
+  {
+   "fieldname": "google_reviews",
+   "fieldtype": "Data",
+   "label": "Google Reviews"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-01-10 18:31:02.527247",
+ "modified": "2025-02-03 11:19:46.157562",
  "modified_by": "Administrator",
  "module": "reward_management_app",
  "name": "Social Media Link",

@@ -48,16 +48,6 @@ const CarpenterDetails: React.FC = () => {
         },
     });
 
-    // Extract mobile numbers from User data
-    // const validMobileNumbers = userData?.map(user => user.mobile_no) || [];
-
-    // Filter Carpenters Data and modify the 'enabled' field
-    // const filteredCarpenters = carpenterData?.filter(carpenter =>
-    //     validMobileNumbers.includes(carpenter.mobile_number)
-    // ).map(carpenter => ({
-    //     ...carpenter, // Spread the original carpenter data
-    //     enabled: carpenter.enabled === 1 ? 'Active' : 'Deactive'
-    // })) || [];
 
     const filteredCarpenters = carpenterData?.map(carpenter => ({
         ...carpenter, // Spread the original carpenter data
@@ -143,40 +133,6 @@ const CarpenterDetails: React.FC = () => {
         setUpdatedStatus(e.target.value);
     };
 
-
-    // const handleSaveStatus = async () => {
-    //     if (selectedCarpenter) {
-    //         const enabledValue = updatedStatus === 'Active' ? 1 : 0; // Use 1 for Active and 0 for Deactive
-    //         try {
-    //             const response = await fetch(`/api/resource/Carpenter/${selectedCarpenter.name}`, {
-    //                 method: 'PUT',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //                 body: JSON.stringify({
-    //                     enabled: enabledValue
-    //                 })
-    //             });
-    
-    //             if (!response.ok) {
-    //                 const responseData = await response.json();
-    //                 throw new Error(`Error: ${responseData.message || response.statusText}`);
-    //             }
-    
-    //             // After updating, update the local data to reflect the change
-    //             setAlertTitle('Status Updated');
-    //             setAlertMessage(`Carpenter ${selectedCarpenter.full_name} status updated successfully!`);
-    //             setShowSuccessAlert(true);
-    
-    //             // Update carpenter data locally
-    //             setSelectedCarpenter(prevState => prevState ? { ...prevState, enabled: updatedStatus } : null);
-    //         } catch (error) {
-    //             console.error('Error updating carpenter status:', error);
-    //             alert('Failed to update carpenter status.');
-    //         }
-    //         handleCloseModal(); 
-    //     }
-    // };
 
     const handleSaveStatus = async () => {
         if (selectedCarpenter) {
@@ -267,10 +223,15 @@ const CarpenterDetails: React.FC = () => {
                                 handlePrevPage={handlePrevPage}
                                 handleNextPage={handleNextPage}
                                 handlePageChange={handlePageChange}
-                                showProductQR={false} 
+                                showProductQR={true} 
+                                showProductQREdit={false}
+                                showProductQRDelete={false} 
+                                showProductQRView={true}
+                                productQRViewLink="/view-point-history/:name"
                                 showEdit={true}
                                 onEdit={handleEdit}
                                 editHeader="Update"
+                                editProductQR = "View Point History"
                                 columnStyles={{
                                     'Carpenter ID': 'text-[var(--primaries)] font-semibold',
 
