@@ -279,7 +279,7 @@ const CarpenterRewardRequest: React.FC = () => {
                     questionLabel="Request ID"
                     answerLabel="Amount"
                     statusLabel="Action"
-                    transactionIdLabel="Transaction ID"
+                    transactionIdLabel="Reference ID"
                     amountLabel="Amount"
                     question={selectedRewardRequest.name} 
                     answer={selectedRewardRequest.redeemed_points || ''} 

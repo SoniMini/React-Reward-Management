@@ -14,10 +14,17 @@ interface TableProps<T> {
     handleNextPage: () => void;
     handlePageChange: (pageNumber: number) => void;
     showProductQR?: boolean;
+    showProductQREdit?: boolean;
+    showProductQRDelete?: boolean;
+    showProductQRView?: boolean;
+    productQREditLink?: string;
+    productQRDeleteLink?: string;
+    productQRViewLink?: string;
     showEdit?: boolean;
     showDelete?: boolean;
     showView?: boolean;
     editHeader?: string;
+    editProductQR? :string;
     columnStyles?: { [key: string]: string };
     getColumnColorClass?: (value: string, columnAccessor: boolean) => any;
     onEdit?: (item: T) => void;
@@ -50,10 +57,17 @@ const TableComponent = <T,>({
     handleNextPage,
     handlePageChange,
     showProductQR = true,
+    showProductQREdit = true,
+    showProductQRDelete = true,
+    showProductQRView = true,
     showEdit = true,
     showDelete = false,
     showView = false,
     editHeader = "Edit",
+    editProductQR = "Product QR",
+    productQREditLink,
+    productQRDeleteLink,
+    productQRViewLink,
     columnStyles = {},
     getColumnColorClass = () => '',
     onEdit,
@@ -84,7 +98,7 @@ const TableComponent = <T,>({
                                 </th>
                             ))}
                             {showProductQR && (
-                                <th className="text-start px-3 py-[6px] text-sm text-defaulttextcolor font-semibold border border-gray-300">Product QR</th>
+                                <th className="text-start px-3 py-[6px] text-sm text-defaulttextcolor font-semibold border border-gray-300">{editProductQR}</th>
                             )}
                             {(showEdit || showDelete || showView) && (
                                 <th className="text-start px-3 py-[6px] text-sm text-defaulttextcolor font-semibold border border-gray-300">{editHeader}</th>
@@ -114,7 +128,7 @@ const TableComponent = <T,>({
                                             <Link
                                                 to={column.link.replace(/:(\w+)/g, (_, key) => {
                                                     const value = item[key];
-                                                    return value ? value.replace(/\s+/g, '_') : key;  
+                                                    return value ? value.replace(/\s+/g, '_') : key;
                                                 })}
                                                 className="text-defaulttextcolor hover:underline hover:text-primary"
                                             >
@@ -126,6 +140,28 @@ const TableComponent = <T,>({
                                     </td>
                                 ))}
                                 {showProductQR && (
+                                    <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300 text-center">
+                                        {showProductQREdit && (
+                                            <Link aria-label="anchor" to={productQREditLink} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] px-[11px] py-[10px]  rounded-full mr-2">
+                                                <i className={iconsConfig.editIcon || "ri-edit-line"}></i>
+                                            </Link>
+                                        )}
+                                        {showProductQRDelete && (
+                                            <Link aria-label="anchor" to={productQRDeleteLink} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] px-[11px] py-[10px] rounded-full mr-2">
+                                                <i className={iconsConfig.deleteIcon || "ri-delete-bin-line"}></i>
+                                            </Link>
+                                        )}
+                                        {showProductQRView && (
+                                            <Link aria-label="anchor"   
+                                            to={productQRViewLink?.replace(":name", item["name"]?.replace(/\s+/g, '_'))} 
+                                            className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] px-[11px] py-[10px] rounded-full mr-2">
+                                                <i className={iconsConfig.viewIcon || "ti ti-eye-check"}></i>
+                                            </Link>
+                                        )}
+                                    </td>
+                                )}
+
+                                {/* {showProductQR && (
                                     <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300 ">
                                         <Link aria-label="anchor" to="#" className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-[6px] px-[10px] rounded-full mr-2">
                                             <i className={iconsConfig.editIcon || "ri-edit-line"}></i>
@@ -137,7 +173,7 @@ const TableComponent = <T,>({
                                             <i className={iconsConfig.viewIcon || "ti ti-eye-check"}></i>
                                         </Link>
                                     </td>
-                                )}
+                                )} */}
                                 {(showEdit || showDelete || showView) && (
                                     <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">
                                         {showEdit && (
@@ -188,7 +224,7 @@ const TableComponent = <T,>({
                     </tbody>
                 </table>
             </div>
-{/* table numbers------ */}
+            {/* table numbers------ */}
             <div className="box-footer p-4   ">
                 <div className="sm:flex items-center">
                     <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 font-normal text-defaultsize">

@@ -3,7 +3,7 @@ from frappe.model.document import Document
 
 @frappe.whitelist(allow_guest=True)
 def get_product_subcategory():
-    product_subcategory = frappe.get_all("Product Sub Category", fields=["name", "category", "sub_category_name","sub_category_image"])
+    product_subcategory = frappe.get_all("Product Sub Category", fields=["name", "category", "sub_category_name","sub_category_image"],order_by="creation asc")
     if product_subcategory:
         return  {
             "success": True,
@@ -20,10 +20,11 @@ def get_product_subcategory():
 @frappe.whitelist(allow_guest=True)
 def get_product_categories():
     # Fetch all product categories
-    product_category = frappe.get_all("Product Category", fields=["name", "category_name"])
+    product_category = frappe.get_all("Product Category", fields=["name", "category_name"],order_by="creation asc"
+                                      )
 
     # Fetch all product subcategories
-    product_subcategory = frappe.get_all("Product Sub Category", fields=["name", "category","category_name", "sub_category_name", "sub_category_image"])
+    product_subcategory = frappe.get_all("Product Sub Category", fields=["name", "category","category_name", "sub_category_name", "sub_category_image"],  order_by="creation asc")
 
     # Prepare separate lists for categories and subcategories
     category_list = []
@@ -60,10 +61,10 @@ def get_product_categories():
 @frappe.whitelist(allow_guest=True)
 def get_product_category():
     # Fetch all product categories
-    product_category = frappe.get_all("Product Category", fields=["name", "category_name"])
+    product_category = frappe.get_all("Product Category", fields=["name", "category_name"],order_by="creation asc")
 
     # Fetch all product subcategories
-    product_subcategory = frappe.get_all("Product Sub Category", fields=["name", "category", "sub_category_name", "sub_category_image"])
+    product_subcategory = frappe.get_all("Product Sub Category", fields=["name", "category", "sub_category_name", "sub_category_image"],order_by="creation asc")
 
     # Create a dictionary to group subcategories by category
     category_data = {}
