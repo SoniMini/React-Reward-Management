@@ -358,7 +358,7 @@ const TransactionHistory: React.FC = () => {
                                     <label htmlFor="transectionAccount" className="form-label text-sm text-defaulttextcolor font-semibold">Reference ID</label>
                                     <input
                                         className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
-                                        placeholder="Enter Transaction Account"
+                                        placeholder="Enter Reference ID"
                                         id="transectionAccount"
                                         value={transectionAccount || ''}
                                         onChange={(e) => setTransectionAccount(e.target.value)}
