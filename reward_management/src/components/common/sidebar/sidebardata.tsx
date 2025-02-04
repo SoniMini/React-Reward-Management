@@ -25,7 +25,7 @@ import { MdOutlineCategory } from "react-icons/md";
 import CustomerProduct from '../../../assets/images/reward_management/customer-loyalty.png'
 import { SiOpenproject } from "react-icons/si";
 import SocialMediaLink from '../../../assets/images/reward_management/network.png';
-import BonusIcon from '../../../assets/images/reward_management/bonus.png';
+import BonusIcon from '../../../assets/images/reward_management/business.png';
 
 
 

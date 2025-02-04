@@ -118,6 +118,158 @@
     transition-duration: 0.05s;
     transition-timing-function: linear;
 }
+
+/* @media (max-width: 991px) {
+    .side-menu.wide .main-sidebar-header {
+        position: fixed;
+        z-index: 9;
+        display: flex;
+        height: 3.75rem;
+        width: 5rem;
+        align-items: center;
+        justify-content: center;
+        border-bottom-width: 1px;
+        border-inline-end-width: 1px;
+        border-bottom-color: rgb(255 255 255 / 0.1);
+        border-inline-end-color: rgb(255 255 255 / 0.1);
+        padding-top: 0.813rem;
+        padding-bottom: 0.813rem;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+        transition-duration: 0.05s;
+        transition-timing-function: linear;
+    }
+
+    
+    
+} */
+
+/* Narrow sidebar for screens less than 992px */
+/* @media (max-width: 991px) {
+    .side-menu.wide {
+        width: 5rem !important;  
+    }
+    .sidebar-menu-item .menu-text {
+        display: none; 
+    }
+    .sidebar-menu-item .icon {
+        font-size: 2rem; 
+    }
+    .sidebar-menu-item .eucmYG {
+        display: none ;
+    }
+    .main-sidebar{
+        width: 5rem;
+    }
+    .menulistcollapsed {
+        display: none ;
+
+    } */
+
+   /* Existing styles for the sidebar */
+/* .side-menu { */
+    /* width: 5rem; Default width */
+    /* background-color: rgb(17 ,28 ,67); */
+    /* background-color: rgb(5 ,74 ,82);
+    color: white;
+    transition: width 0.3s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1000;
+    font-family: 'Montserrat', sans-serif;
+} */
+
+/* .side-menu:hover{
+    width: 15rem !important;
+    background-color: rgb(5 ,74 ,82);
+    color: white;
+    transition: width 0.3s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1000; 
+    font-family: 'Montserrat', sans-serif;
+} */
+
+
+    /* Show text when sidebar is hovered */
+    /* .side-menu:hover .sidebar-menu-item  {
+        display: flex !important ;
+    } */
+
+      /* Show text when sidebar is hovered */
+      /* .side-menu:hover .eucmYG {
+        display: block !important;
+    } */
+   /* .side-menu.wide  :hover .menulistcollapsed{
+        display:flex !important;
+    } */
+     /* Show text when sidebar is hovered */
+     /* .side-menu:hover .menu-text {
+        display: block !important; */
+    /* } */
+    /* .main-sidebar:hover{
+        width: 15rem; */
+    /* } */
+    /* .menulistcollapsed:hover {
+        display: block ;
+
+    } */
+   /* .main-sidebar:hover .side-menu.wide .main-sidebar-header{
+    position: fixed !important;
+    z-index: 9;
+    display: flex;
+    height: 3.75rem;
+    width: 15rem !important;
+    align-items: center;
+    justify-content: center;
+    border-bottom-width: 1px;
+    border-inline-end-width: 1px;
+    border-bottom-color: rgb(255 255 255 / 0.1);
+    border-inline-end-color: rgb(255 255 255 / 0.1);
+    padding-top: 0.813rem;
+    padding-bottom: 0.813rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    transition-duration: 0.05s;
+    transition-timing-function: linear;
+   } */
+    /* .side-menu.wide .main-sidebar-header:hover {
+        position: fixed;
+        z-index: 9;
+        display: flex;
+        height: 3.75rem;
+        width: 15rem;
+        align-items: center;
+        justify-content: center;
+        border-bottom-width: 1px;
+        border-inline-end-width: 1px;
+        border-bottom-color: rgb(255 255 255 / 0.1);
+        border-inline-end-color: rgb(255 255 255 / 0.1);
+        padding-top: 0.813rem;
+        padding-bottom: 0.813rem;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+        transition-duration: 0.05s;
+        transition-timing-function: linear;
+    }
+    
+} */
+
+
+
 .main-sidebar {
     display: flex;
     position: relative;

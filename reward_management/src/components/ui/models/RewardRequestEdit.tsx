@@ -107,7 +107,7 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
                                 <input
                                     type="text"
                                     className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
-                                    placeholder="Enter Transaction ID here"
+                                    placeholder="Enter Reference ID "
                                     id="transactionid"
                                     value={transactionId}
                                     onChange={(e) => setTransactionId(e.target.value)}
