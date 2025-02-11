@@ -115,6 +115,12 @@ const NotificationsDashboard = () => {
 
             
         } catch (err) {
+            if (err.response && err.response.status === 403) {
+                window.location.href = '/';
+            } else {
+                console.error("Error fetching user data:", err);
+            }
+
             console.error('Error marking notification as read:', err);
         }
     };
