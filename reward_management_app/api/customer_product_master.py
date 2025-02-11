@@ -1,7 +1,7 @@
 import frappe
 from frappe.model.document import Document
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_customer_products():
     try:
         # Fetch all gift products
