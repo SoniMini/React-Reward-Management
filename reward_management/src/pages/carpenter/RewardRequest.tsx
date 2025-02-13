@@ -300,8 +300,8 @@ const RedeemRequest: React.FC = () => {
                                         header: 'Action',
                                         accessor: 'request_status',
                                     },
-                                    { header: 'Approve Date', accessor: 'approved_on' },
-                                    { header: 'Approve Time', accessor: 'approve_time' },
+                                    { header: 'Approve/Cancel Date', accessor: 'approved_on' },
+                                    { header: 'Approve/Cancel Time', accessor: 'approve_time' },
                                 ]}
                                 data={filteredData || []}
                                 currentPage={currentPage}

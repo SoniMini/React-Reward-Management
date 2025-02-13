@@ -136,7 +136,7 @@ const EditCustomerProduct: React.FC = () => {
             }, 3000);
             return () => clearTimeout(timer);
         }
-    }, [showSuccessAlert, navigate, location,productCategoryData]);
+    }, [showSuccessAlert, navigate, location, productCategoryData]);
 
     // Handle file selection
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,6 +159,10 @@ const EditCustomerProduct: React.FC = () => {
     const handleRemoveImage = () => {
         setFile(null);
         setFileDetails(null);
+        const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = ''; // Reset the input value
+        }
     };
 
     // Upload file function
@@ -271,10 +275,10 @@ const EditCustomerProduct: React.FC = () => {
     // };
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-    
+
         // If no file is selected, use the old image URL
         let fileURL = '';
-    
+
         // Check if a file is selected
         if (file) {
             // If a new file is selected, upload it and get the URL
@@ -291,31 +295,31 @@ const EditCustomerProduct: React.FC = () => {
             }
         } else if (existingImages.length > 0) {
             // If no new file is selected, use the existing image URL
-            fileURL = existingImages[0].url;  
+            fileURL = existingImages[0].url;
         } else {
             notyf.error('Please upload an image or ensure there is an existing image.');
             return;
         }
-    
+
         // Find the selected subcategory by matching sub_category_name
         const selectedSubCategory = productSubCategoryData.find(
             (subcategory) => subcategory.sub_category_name === productSubcategory
         );
-    
+
         // Extract the subcategory name
         const subCategoryName = selectedSubCategory ? selectedSubCategory.name : null;
-    
+
         // Find the selected category by matching category_name
         const selectedCategory = productCategoryData.find(
             (category) => category.category_name === productCategory
         );
-    
+
         // Extract the category name
         const productCategoryName = selectedCategory ? selectedCategory.name : null;
-    
+
         // Prepare data for the API call
         const productData = {
-            new_image_url: fileURL,  
+            new_image_url: fileURL,
             productID: productID,
             productName: productName,
             productCategoryName: productCategoryName,
@@ -324,18 +328,18 @@ const EditCustomerProduct: React.FC = () => {
             productSubcategory: productSubcategory,
             productUrl: productUrl
         };
-    
+
         // Make the API call to update the product
         try {
             const response = await axios.put(
                 '/api/method/reward_management_app.api.customer_product_master.update_customer_product',
                 productData
             );
-    
+
             // Handle the response
             if (response.status === 200) {
                 setShowSuccessAlert(true);
-                resetForm(); 
+                resetForm();
             } else {
                 notyf.error('Failed to update the product. Please try again.');
             }
@@ -344,7 +348,7 @@ const EditCustomerProduct: React.FC = () => {
             console.error('Error:', err);
         }
     };
-    
+
 
     return (
         <>
@@ -379,8 +383,104 @@ const EditCustomerProduct: React.FC = () => {
                                                 />
                                             </div>
                                             {/* end of id */}
-                                            {/* product name */}
+                                            {/* product category start */}
                                             <div className="xl:col-span-12 col-span-12">
+                                                <label htmlFor="product-category" className="form-label text-sm font-semibold text-defaulttextcolor">Product Category</label>
+                                                <select
+                                                    id="product-category"
+                                                    name="product-category"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
+                                                    value={productCategory}
+                                                    onChange={(e) => setProductCategory(e.target.value)}
+                                                    required
+                                                >
+                                                    <option value="">Select a category</option>
+                                                    {productCategoryData && productCategoryData.map((category) => (
+                                                        <option key={category.name} value={category.category_name}>
+                                                            {category.category_name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            {/* end of product category */}
+                                           
+                                              {/* image */}
+                                              <div className="xl:col-span-12 col-span-12 ">
+                                                <label htmlFor="file-upload" className="block text-sm font-semibold text-defaulttextcolor">Product Image</label>
+                                                <input
+                                                    type="file"
+                                                    id="file-upload"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border rounded-[0.5rem]"
+
+                                                    onChange={handleFileChange}
+                                                    accept="image/*"
+                                                />
+                                                {/* {error && <p className="text-red-500 text-sm mt-1">{error}</p>} */}
+                                            </div>
+                                            {fileDetails && (
+                                                <div className="my-2 xl:col-span-12 col-span-12 flex justify-center items-center relative">
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleRemoveImage}
+                                                        className="absolute top-2 right-2 text-primary opacity-100 group-hover:opacity-100 transition"
+                                                    >
+                                                        <i className="ri-close-line text-primary text-lg font-bold "></i>
+                                                    </button>
+                                                    <div className=" w-full aspect-square">
+                                                        <img
+                                                            src={fileDetails.url}
+                                                            alt={fileDetails.name}
+                                                            className="object-fill w-full aspect-square"
+                                                        />
+                                                    </div>
+                                                    {/* <div className='flex justify-center items-center'>
+                                                        <img
+                                                            src={fileDetails.url}
+                                                            alt={fileDetails.name}
+                                                            className=" object-contain"
+                                                        />
+                                                    </div> */}
+
+
+
+
+                                                </div>
+                                            )}
+                                             {/* preview */}
+                                        <div className="flex justify-center items-center mt-4 pb-3 xl:col-span-12 col-span-12">
+                                            {existingImages.length > 0 && (
+                                                <div>
+
+                                                    
+                                                        {existingImages.map((image, index) => (
+
+                                                            
+                                                            
+                                                            <div key={index} className="relative  w-full aspect-square">
+                                                                <img
+                                                                    src={image.url}
+                                                                    alt={image.name}
+                                                                    className="object-fill w-full aspect-square"
+                                                                />
+                                                                {/* <p className="text-sm text-center mt-1">{image.name}</p> */}
+                                                            </div>
+                                                            
+                                                        ))}
+                                                    </div>
+                                            )}
+                                        </div>
+                                          
+                                        </div>
+                                       
+                                    </div>
+                                    {/* end image */}
+                                    {/* category */}
+
+                                    <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12 gap-4">
+                                        <div className="grid grid-cols-12 gap-4">
+                                             {/* product name */}
+                                             <div className="xl:col-span-12 col-span-12">
                                                 <label htmlFor="product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Name</label>
                                                 <input
                                                     type="text"
@@ -393,8 +493,9 @@ const EditCustomerProduct: React.FC = () => {
                                                 />
                                             </div>
                                             {/* end of product name */}
-                                            {/* product subcategory  */}
-                                            <div className="xl:col-span-12 col-span-12">
+
+                                             {/* product subcategory  */}
+                                             <div className="xl:col-span-12 col-span-12">
                                                 <label htmlFor="product-sub-category" className="form-label text-sm font-semibold text-defaulttextcolor">Product Sub Category</label>
                                                 <select
                                                     id="product-sub-category"
@@ -413,87 +514,8 @@ const EditCustomerProduct: React.FC = () => {
                                                 </select>
                                             </div>
                                             {/* end of sub category */}
-                                            {/* image */}
-                                            <div className="xl:col-span-12 col-span-12 ">
-                                                <label htmlFor="file-upload" className="block text-sm font-semibold text-defaulttextcolor">Product Image</label>
-                                                <input
-                                                    type="file"
-                                                    id="file-upload"
-                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border rounded-[0.5rem]"
-                                                    
-                                                    onChange={handleFileChange}
-                                                    accept="image/*"
-                                                />
-                                                {/* {error && <p className="text-red-500 text-sm mt-1">{error}</p>} */}
-                                            </div>
-                                            {fileDetails && (
-                                                <div className="my-2">
-
-                                                    <button
-                                                        type="button"
-                                                        onClick={handleRemoveImage}
-                                                        className="text-primary opacity-1 group-hover:opacity-100 transition"
-                                                    >
-                                                        <i className="ri-close-line text-primary text-lg font-bold "></i>
-                                                    </button>
-                                                    <div className='flex justify-center items-center'>
-                                                    <img
-                                                        src={fileDetails.url}
-                                                        alt={fileDetails.name}
-                                                        className=" object-contain"
-                                                    />
-                                                    </div>
-
-                                                 
-
-
-                                                </div>
-                                            )}
-                                        </div>
-                                        {/* preview */}
-                                        <div className="flex justify-center items-center mt-4 pb-3">
-                                            {existingImages.length > 0 && (
-                                                <div>
-
-                                                    <div className=" mt-2 ">
-                                                        {existingImages.map((image, index) => (
-                                                            <div key={index} className="relative">
-                                                                <img
-                                                                    src={image.url}
-                                                                    alt={image.name}
-                                                                    className="w-1/2 h-1/2"
-                                                                />
-                                                                {/* <p className="text-sm text-center mt-1">{image.name}</p> */}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    {/* end image */}
-                                    {/* category */}
-
-                                    <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12 gap-4">
-                                        <div className="grid grid-cols-12 gap-4">
-                                            <div className="xl:col-span-12 col-span-12">
-                                                <label htmlFor="product-category" className="form-label text-sm font-semibold text-defaulttextcolor">Product Category</label>
-                                                <select
-                                                    id="product-category"
-                                                    name="product-category"
-                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
-                                                    value={productCategory} 
-                                                    onChange={(e) => setProductCategory(e.target.value)}
-                                                    required
-                                                >
-                                                    <option value="">Select a category</option>
-                                                    {productCategoryData && productCategoryData.map((category) => (
-                                                        <option key={category.name} value={category.category_name}>
-                                                            {category.category_name}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </div>
+                                          
+                                            
                                             <div className="xl:col-span-12 col-span-12 ">
                                                 <label htmlFor="product-url" className="form-label text-sm font-semibold text-defaulttextcolor">Product Url</label>
                                                 <input
@@ -506,8 +528,13 @@ const EditCustomerProduct: React.FC = () => {
                                                 />
                                             </div>
 
+                                            
+
                                         </div>
                                     </div>
+
+
+                                 
 
                                 </div>
                                 <div className="px-6 py-4 border-t dark:border-defaultborder sm:flex justify-end">
@@ -538,7 +565,7 @@ const EditCustomerProduct: React.FC = () => {
                     showCollectButton={false}
                     showAnotherButton={false}
                     showMessagesecond={false}
-                    message="New Product Added successfully!"
+                    message="Product Update successfully!"
                     onClose={() => { }}
                     onCancel={() => { }}
                 />
