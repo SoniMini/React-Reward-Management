@@ -46,7 +46,7 @@ const RedeemptionHistory: React.FC = () => {
     const [toDate, setToDate] = useState<Date | null>(null);
 
     const { data: rewardrequesthistoryData } = useFrappeGetDocList<RewardRequestHistory>('Redeem Request', {
-        fields: ['name', 'customer_id', 'total_points', 'current_point_status','full_name', 'redeemed_points','mobile_number' ,'received_date', 'received_time', 'request_status', 'approved_on', 'approve_time', 'transection_id', 'amount'],
+        fields: ['name', 'customer_id', 'total_points',  'current_point_status','full_name', 'redeemed_points','mobile_number' ,'received_date', 'received_time', 'request_status', 'approved_on', 'approve_time', 'transection_id', 'amount'],
         limit: 0,
         orderBy: {
             field: 'approved_on',
@@ -94,6 +94,7 @@ const RedeemptionHistory: React.FC = () => {
                     request.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     request.customer_id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     (request.redeemed_points !== undefined && request.redeemed_points.toString().toLowerCase().includes(searchQuery)) ||
+                    (request.request_status?.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()))||
                     (request.approved_on !== undefined && request.approved_on.toString().toLowerCase().includes(searchQuery)) ||
                     (request.approve_time !== undefined && request.approve_time.toString().toLowerCase().includes(searchQuery)) ||
                     (request.current_point_status !== undefined && request.current_point_status.toString().toLowerCase().includes(searchQuery)) ||
@@ -178,8 +179,9 @@ const RedeemptionHistory: React.FC = () => {
                 
                                     { header: 'Current Points', accessor: 'current_point_status' },
                                     { header: 'Redeem Request Points', accessor: 'redeemed_points' },
-                                    { header: 'Approved Date', accessor: 'approved_on' },
-                                    { header: 'Approved Time', accessor: 'approve_time' },
+                                    { header: 'Request Status', accessor: 'request_status' },
+                                    { header: 'Approved/Cancel Date', accessor: 'approved_on' },
+                                    { header: 'Approved/Cancel Time', accessor: 'approve_time' },
                                   
                                    
                                  

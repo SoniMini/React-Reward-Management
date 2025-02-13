@@ -84,6 +84,10 @@ const AddCustomerProduct: React.FC = () => {
     const handleRemoveImage = () => {
         setFile(null);
         setFileDetails(null);
+        const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = ''; // Reset the input value
+        }
     };
 
     // Upload file function
@@ -128,32 +132,32 @@ const AddCustomerProduct: React.FC = () => {
                 throw new Error('File upload failed');
             }
 
-                 // Find the selected subcategory by matching sub_category_name
-         const selectedSubCategory = productSubCategoryData.find(
-            (subcategory) => subcategory.sub_category_name === productSubcategory
-        );
+            // Find the selected subcategory by matching sub_category_name
+            const selectedSubCategory = productSubCategoryData.find(
+                (subcategory) => subcategory.sub_category_name === productSubcategory
+            );
 
-        // Extract the subcategory name
-        const subCategoryName = selectedSubCategory ? selectedSubCategory.name : null;
-
-        
+            // Extract the subcategory name
+            const subCategoryName = selectedSubCategory ? selectedSubCategory.name : null;
 
 
-         // Find the selected category by matching sub_category_name
-         const selectedCategory = productCategoryData.find(
-            (category) => category.category_name === productCategory
-        );
 
-        // Extract the category name
-        const productCategoryName = selectedCategory ? selectedCategory.name : null;
+
+            // Find the selected category by matching sub_category_name
+            const selectedCategory = productCategoryData.find(
+                (category) => category.category_name === productCategory
+            );
+
+            // Extract the category name
+            const productCategoryName = selectedCategory ? selectedCategory.name : null;
 
             // Prepare data for the API call
             const productData = {
                 new_image_url: fileURL,
                 productName: productName,
-                productCategoryName : productCategoryName,
+                productCategoryName: productCategoryName,
                 productCategory: productCategory,
-                subCategoryName: subCategoryName, 
+                subCategoryName: subCategoryName,
                 productSubcategory: productSubcategory,
                 productUrl: productUrl
             };
@@ -199,7 +203,7 @@ const AddCustomerProduct: React.FC = () => {
                                                     required
                                                 />
                                             </div>
-                                           
+
                                             <div className="xl:col-span-12 col-span-12">
                                                 <label htmlFor="product-sub-category" className="form-label text-sm font-semibold text-defaulttextcolor">Product Sub Category</label>
                                                 <select
@@ -218,46 +222,16 @@ const AddCustomerProduct: React.FC = () => {
                                                     ))}
                                                 </select>
                                             </div>
-                                           
-                                            <div className="xl:col-span-12 col-span-12 pb-3">
-                                                <label htmlFor="file-upload" className="block text-sm font-semibold text-defaulttextcolor">Product Image</label>
-                                                <input
-                                                    type="file"
-                                                    id="file-upload"
-                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border rounded-[0.5rem]"
-                                                    onChange={handleFileChange}
-                                                    accept="image/*"
-                                                />
-                                                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-                                            </div>
-                                            {fileDetails && (
-                                                <div className="my-2">
-
-                                                    <button
-                                                        type="button"
-                                                        onClick={handleRemoveImage}
-                                                        className="text-primary opacity-1 group-hover:opacity-100 transition"
-                                                    >
-                                                        <i className="ri-close-line text-primary text-lg font-bold "></i>
-                                                    </button>
-
-                                                    <img
-                                                        src={fileDetails.url}
-                                                        alt={fileDetails.name}
-                                                        className=" object-contain rounded-md"
-                                                    />
 
 
-                                                </div>
-                                            )}
                                         </div>
                                     </div>
 
 
                                     <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12 gap-4">
-                                    <div className="grid grid-cols-12 gap-4">
+                                        <div className="grid grid-cols-12 gap-4">
 
-                                    <div className="xl:col-span-12 col-span-12">
+                                            <div className="xl:col-span-12 col-span-12">
                                                 <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Category</label>
                                                 <select
                                                     id="product-category-add"
@@ -288,7 +262,53 @@ const AddCustomerProduct: React.FC = () => {
                                                 />
                                             </div>
                                         </div>
+                                    </div>
+                                    {/* product image div */}
+                                    <div className='xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12 gap-4'>
+                                        <div className="grid grid-cols-12 gap-4">
+                                            <div className="xl:col-span-12 col-span-12 pb-3">
+                                                <label htmlFor="file-upload" className="block text-sm font-semibold text-defaulttextcolor">Product Image</label>
+                                                <input
+                                                    type="file"
+                                                    id="file-upload"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border rounded-[0.5rem]"
+                                                    onChange={handleFileChange}
+                                                    accept="image/*"
+                                                />
+                                                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+                                            </div>
+                                            {fileDetails && (
+                                                <div className="my-2 xl:col-span-12 col-span-12 flex justify-center items-center relative">
+
+                                                    {/* Button at top-right */}
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleRemoveImage}
+                                                        className="absolute top-2 right-2 text-primary opacity-100 group-hover:opacity-100 transition"
+                                                    >
+                                                        <i className="ri-close-line text-primary text-lg font-bold "></i>
+                                                    </button>
+
+                                                    {/* Image
+                                                    <img
+                                                        src={fileDetails.url}
+                                                        alt={fileDetails.name}
+                                                        className="object-contain w-[500px] h-[500px]"
+                                                    /> */}
+                                                    {/* Image with aspect ratio 6:9 */}
+                                                    <div className="aspect-square">
+                                                        <img
+                                                            src={fileDetails.url}
+                                                            alt={fileDetails.name}
+                                                            className="object-cover aspect-square"
+                                                        />
+                                                    </div>
+
+                                                </div>
+
+                                            )}
                                         </div>
+                                    </div>
                                 </div>
                                 <div className="px-6 py-4 border-t dark:border-defaultborder sm:flex justify-end">
                                     {/* <button type="submit" className="ti-btn ti-btn-primary-full bg-primary me-2">

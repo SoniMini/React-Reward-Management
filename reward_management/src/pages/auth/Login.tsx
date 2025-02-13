@@ -431,6 +431,7 @@ const Login = () => {
 
                 if (otpResponse.data.message.status === "success") {
                     const generatedOtp = otpResponse.data.message.otp;
+                    console.log("login otp",generatedOtp);
                     setAlertTitle('Success');
                     setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
                     setShowSuccessAlert(true);
@@ -448,7 +449,7 @@ const Login = () => {
                         }
                     });
 
-                    // console.log("SMS API called successfully");
+                    // console.log("SMS API called successfully",);
                 } else {
                     setLoginError(checkResponse.data.message.message);
                 }
