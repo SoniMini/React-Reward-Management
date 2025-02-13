@@ -105,7 +105,7 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
         if request_action == 'Approved' and action == 'Cancel':
             # print(f"\n\nHandling Cancel after Approved for Request: {request_id}")
             carpainter.current_points += redeem_request.redeemed_points
-            carpainter.point_requested = (carpainter.point_requested or 0) - redeem_request.redeemed_points
+            # carpainter.point_requested = (carpainter.point_requested or 0) - redeem_request.redeemed_points
             carpainter.redeem_points = (carpainter.redeem_points or 0) - redeem_request.redeemed_points
             redeem_request.current_point_status = carpainter.current_points
         
@@ -113,7 +113,7 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
         elif request_action == 'Cancel' and action == 'Approved':
             # print(f"\n\nHandling Approval after Cancel for Request: {request_id}")
             carpainter.current_points -= redeem_request.redeemed_points
-            carpainter.point_requested = (carpainter.point_requested or 0) + redeem_request.redeemed_points
+            # carpainter.point_requested = (carpainter.point_requested or 0) + redeem_request.redeemed_points
             carpainter.redeem_points = (carpainter.redeem_points or 0) + redeem_request.redeemed_points
             redeem_request.current_point_status = carpainter.current_points
             redeem_request.total_points = carpainter.total_points
@@ -122,6 +122,7 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
         # Handling New Approvals
         elif action == "Approved":
             # print(f"\n\nHandling New Approval for Request: {request_id}")
+            carpainter.point_requested = (carpainter.point_requested or 0) - redeem_request.redeemed_points
             carpainter.redeem_points = (carpainter.redeem_points or 0) + redeem_request.redeemed_points
             create_bank_balance(redeem_request.name, redeem_request.redeemed_points, transaction_id)
         
