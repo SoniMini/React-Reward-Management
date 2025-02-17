@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import App from './App.tsx';
 import PrivateRoutes from './routes/private-routes';
 import Login from './pages/auth/Login';
-
+import ForgetPassword from './pages/auth/forgot_password.tsx';
 import AdminDashboard from './pages/admin/admindashboards/AdminDashboard.tsx';
 import ProductMaster from './pages/admin/productdashboards/ProductMaster.tsx';
 import ProductQRHistory from './pages/admin/productdashboards/ProductQRHistory.tsx';
@@ -56,6 +56,18 @@ const router = createBrowserRouter([
         siteName={import.meta.env.VITE_SITE_NAME}
       >
         <Login />
+      </FrappeProvider>
+    ),
+  },
+
+  {
+    path:"/forgot-password",
+    element: (
+      <FrappeProvider
+        socketPort={import.meta.env.VITE_SOCKET_PORT}
+        siteName={import.meta.env.VITE_SITE_NAME}
+      >
+        <ForgetPassword />
       </FrappeProvider>
     ),
   },

@@ -2,7 +2,7 @@ import React, { useState, Fragment, useEffect } from "react";
 
 import { Box, Button, Callout, Card, Text } from "@radix-ui/themes";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link} from "react-router-dom";
 
 import desktoplogo from "@/assets/images/01.png";
 
@@ -11,17 +11,26 @@ import { useFrappeAuth } from "frappe-react-sdk";
 
 import "../../assets/css/style.css";
 import SuccessAlert from "../../components/ui/alerts/SuccessAlert";
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
 
 const Login = () => {
     const { login } = useFrappeAuth();
 
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [mobileNo, setMobileNo] = useState<string>("");
     const [loginError, setLoginError] = useState<string>("");
     const [isTimerActive, setIsTimerActive] = React.useState(false);
     const [timer, setTimer] = React.useState(60);
     const [currentForm, setCurrentForm] = useState<"login" | "register" | "carpenterLogin">("login");
     const [passwordShow, setPasswordShow] = useState<boolean>(false);
+    // admin otp verification state---
+    const [generatedadminOtp, setGeneratedadminOtp] = useState(""); // Store OTP from backend
+    const [isLoginButtonVisible, setIsLoginButtonVisible] = useState(false);
+    const [adminOtp, setAdminOtp] = useState("");
+
+    // carpenter verification state----
     const [isOtpVisible, setIsOtpVisible] = useState(false);
     const [isloginOtpVisible, setIsloginOtpVisible] = useState(false);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -29,6 +38,16 @@ const Login = () => {
     const [alertTitle, setAlertTitle] = useState("");
     const [logo, setLogo] = useState(null);
     const [loading, setLoading] = useState(true);
+
+
+    const notyf = new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        },
+        duration: 3000,
+    });
+
 
 
 
@@ -77,12 +96,73 @@ const Login = () => {
             );
             return response.data;
         } catch (error) {
-            console.error("Error fetching roles:", error);
+            console.log("Error fetching roles:", error);
             throw error;
         }
     };
 
     // Handle Admin Login Form--------
+    const handleAdminGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
+        try {
+            const response = await axios.post("/api/method/reward_management_app.api.mobile_number.generate_or_update_otp", {
+                mobile_number: mobileNo,
+            }, {
+                headers: { "Content-Type": "application/json" },
+            });
+
+            if (response.data.message.status === "success") {
+                const generatedOtp = response.data.message.otp;
+                console.log("login otp", generatedOtp);
+
+                setAlertTitle('Success');
+                setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
+                setShowSuccessAlert(true);
+                setIsOtpVisible(true);
+                setIsTimerActive(true);
+                setIsLoginButtonVisible(false);
+                setGeneratedadminOtp(generatedOtp);
+
+                let timeLeft = 30;
+                setTimer(timeLeft);
+
+                const interval = setInterval(() => {
+                    timeLeft -= 1;
+                    setTimer(timeLeft);
+
+                    if (timeLeft <= 0) {
+                        clearInterval(interval);
+                        setIsTimerActive(false);
+                        setIsOtpVisible(false);
+                        setAdminOtp("");
+                    }
+                }, 1000);
+
+                // Send OTP via SMS API
+                await axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
+                    mobile_number: mobileNo,
+                    otp: generatedOtp
+                }, {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                console.log("SMS API called successfully");
+            } else {
+                notyf.error("Failed to generate OTP. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error generating OTP:", error);
+            notyf.error(`Error generating OTP: ${error.message}`);
+        }
+    };
+    //admin otp verification ------
+    const handleOtpVerification = () => {
+        if (adminOtp === generatedadminOtp) {
+            setIsLoginButtonVisible(true);
+            setIsOtpVisible(false);
+        } else {
+            notyf.error("Invalid OTP. Please try again.")
+        }
+    };
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -120,7 +200,8 @@ const Login = () => {
             }
         } catch (err) {
             console.error("Login error:", err);
-            setLoginError("Invalid Username or Password.");
+            notyf.error("Invalid Username or Password.")
+            // setLoginError("Invalid Username or Password.");
         }
     };
 
@@ -301,87 +382,6 @@ const Login = () => {
         }
     };
 
-    // // Handle or Generate Registration OTP Logic---------
-    // const handleGetOtp = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     try {
-    //         const response = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
-    //             mobile_number: mobile
-    //         }, {
-    //             headers: {
-
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-
-    //         if (response.data.message.status === "success") {
-    //             console.log("otp data", response);
-    //             // alert("Otp has been sent to you mobile number !!!");
-    //             setAlertTitle('Success');
-    //             setAlertMessage("Otp has been sent to you mobile number !!!");
-    //             setShowSuccessAlert(true);
-
-    //             setIsOtpVisible(true);
-    //         } else {
-    //             setLoginError('Failed to send OTP. Please try again.');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error generating OTP:', error);
-    //         setLoginError('An error occurred while generating OTP.');
-    //     }
-    // };
-
-    // handdle carpenter login otp form--------
-    // const handleloginGetOtp = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-
-    //     if (mobilenumber.length !== 10 || !/^\d+$/.test(mobilenumber)) {
-    //         alert("Mobile number must be exactly 10 digits.");
-    //         return;
-    //     }
-
-    //     try {
-    //         // First, check if the user is registered
-    //         const checkResponse = await axios.get(`/api/method/reward_management_app.api.create_new_user.check_user_registration`, {
-    //             params: { mobile_number: mobilenumber },
-
-    //         });
-
-    //         localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
-
-    //         console.log('Check Response Data:', checkResponse.data.message.role_profile_name);
-    //         // var carpenterrole = checkResponse.data.role_profile_name;
-
-    //         if (checkResponse.data.message && checkResponse.data.message.registered) {
-    //             // If registered, call the OTP generation API
-    //             const otpResponse = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
-    //                 mobile_number: mobilenumber
-    //             }, {
-    //                 headers: { 'Content-Type': 'application/json' }
-    //             });
-
-    //             // localStorage.setItem('verfied carpenter role', checkResponse.data.message.role_profile_name);
-
-    //             console.log('OTP Response Data:', otpResponse.data); // Log the OTP response data
-
-    //             if (otpResponse.data.message.status === "success") {
-    //                 // alert("OTP has been sent to your mobile number!");
-    //                 setAlertTitle('Success');
-    //                 setAlertMessage("OTP has been sent to your mobile number!");
-    //                 setShowSuccessAlert(true);
-    //                 setIsloginOtpVisible(true);
-    //             } else {
-    //                 setLoginError('Failed to send OTP. Please try again.');
-    //             }
-    //         } else {
-    //             setLoginError('User not registered. Please register first.');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error handling login OTP:', error);
-    //         setLoginError('An error occurred while processing your request.');
-    //     }
-    // };
-
 
     // Start time for otp ------
     const startTimer = () => {
@@ -431,7 +431,7 @@ const Login = () => {
 
                 if (otpResponse.data.message.status === "success") {
                     const generatedOtp = otpResponse.data.message.otp;
-                    console.log("login otp",generatedOtp);
+                    console.log("login otp", generatedOtp);
                     setAlertTitle('Success');
                     setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
                     setShowSuccessAlert(true);
@@ -461,62 +461,6 @@ const Login = () => {
             setLoginError('An error occurred while processing your request.');
         }
     };
-
-    // const handleloginGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
-    //     e.preventDefault();
-
-    //     if (mobilenumber.length !== 10 || !/^\d+$/.test(mobilenumber)) {
-    //         alert("Mobile number must be exactly 10 digits.");
-    //         return;
-    //     }
-
-    //     try {
-    //         // Check if the user is registered
-    //         const checkResponse = await axios.get(`/api/method/reward_management_app.api.create_new_user.check_user_registration`, {
-    //             params: { mobile_number: mobilenumber },
-    //         });
-
-    //         localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
-
-    //         if (checkResponse.data.message && checkResponse.data.message.registered) {
-    //             // Call the OTP generation API
-    //             const otpResponse = await axios.post(`/api/method/reward_management_app.api.mobile_number.generate_or_update_otp`, {
-    //                 mobile_number: mobilenumber
-    //             }, {
-    //                 headers: { 'Content-Type': 'application/json' }
-    //             });
-
-    //             if (otpResponse.data.message.status === "success") {
-    //                 const generatedOtp = otpResponse.data.message.otp;
-    //                 setAlertTitle('Success');
-    //                 setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
-    //                 setShowSuccessAlert(true);
-    //                 setIsloginOtpVisible(true);
-    //                 // Start the timer
-    //                 startTimer();
-
-    //                 axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
-    //                     mobile_number: mobilenumber,
-    //                     otp: generatedOtp
-    //                 }, {
-    //                     headers: {
-    //                         'Content-Type': 'application/json',
-
-    //                     }
-    //                 });
-
-    //                 console.log("SMS API called successfully");
-    //             } else {
-    //                 setLoginError('Failed to send OTP. Please try again.');
-    //             }
-    //         } else {
-    //             setLoginError('User not registered. Please register first.');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error handling login OTP:', error);
-    //         setLoginError('An error occurred while processing your request.');
-    //     }
-    // };
 
     const handlelogincarpenter: any = async (e: React.FocusEvent) => {
         e.preventDefault();
@@ -655,7 +599,7 @@ const Login = () => {
                                         "Please login as a Customer"}
                                     {currentForm === "register" &&
                                         "Please enter details to register"}
-                                    
+
                                 </p>
                             </div>
 
@@ -709,7 +653,7 @@ const Login = () => {
                                                 className="bg-white border-none shadow-md rounded-[5px] p-2 mt-2 text-xs sm:w-full w-[250px] text-primary outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground "
                                             />
                                         </Box>
-                                        <Box className="mb-4 ">
+                                        <Box className="mb-4">
                                             <Text
                                                 as="label"
                                                 htmlFor="password"
@@ -724,7 +668,7 @@ const Login = () => {
                                                     placeholder="******"
                                                     onChange={(e) => setPassword(e.target.value)}
                                                     value={password}
-                                                    className="bg-white border-none shadow-md p-2 pt-2 mt-2 rounded-[5px] sm:w-full w-[250px]  outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
+                                                    className="bg-white border-none text-xs shadow-md p-2 pt-2 mt-2 rounded-[5px] sm:w-full w-[250px]  outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
                                                 />
                                                 <button
                                                     type="button"
@@ -734,13 +678,67 @@ const Login = () => {
                                                     {passwordShow ? "Hide" : "Show"}
                                                 </button>
                                             </div>
+                                            {/* Forgot Password Link */}
+                                            <div className="mt-2 text-right">
+                                                <Link to="/forgot-password" className="text-xs text-primary hover:underline">
+                                                    Forgot Password?
+                                                </Link>
+                                            </div>
                                         </Box>
-                                        <Button
-                                            type="submit"
-                                            className="sm:w-full w-[250px] mb-2 ti-btn new-launch !bg-primary !text-white !font-medium border-none shadow-md "
-                                        >
-                                            Login
-                                        </Button>
+
+                                        {/* mobile number----- */}
+                                        <Box className="mb-4">
+                                            <Text
+                                                as="label"
+                                                htmlFor="mobileno"
+                                                className="text-defaultsize font-semibold text-primary">
+                                                Mobile Number
+                                            </Text>
+                                            <div className="relative sm:max-w-full sm:w-full max-w-[250px] w-[250px]">
+                                                <input
+                                                    id="mobileno"
+                                                    type="tel"
+                                                    placeholder="Mobile Number"
+                                                    onChange={(e) => setMobileNo(e.target.value)}
+                                                    value={mobileNo}
+                                                    className="bg-white border-none text-xs shadow-md p-2 pt-2 mt-2 rounded-[5px] sm:w-full w-[250px]  outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
+                                                />
+                                            </div>
+                                        </Box>
+                                        {/* otp input---- */}
+                                        {!isOtpVisible && !isLoginButtonVisible && (
+                                            <Button type="button" onClick={handleAdminGetOtp} className="ti-btn new-launch !bg-primary !text-white !font-medium border-none shadow-md w-full">
+                                                Get OTP
+                                            </Button>
+                                        )}
+
+                                        {isOtpVisible && (
+                                            <>
+                                                <Box className="mb-4">
+                                                    <Text as="label" htmlFor="adminotp" className="text-defaultsize font-semibold text-primary">
+                                                        OTP
+                                                    </Text>
+                                                    <input
+                                                        id="adminotp"
+                                                        type="text"
+                                                        placeholder="Enter OTP"
+                                                        onChange={(e) => setAdminOtp(e.target.value)}
+                                                        value={adminOtp}
+                                                        className="bg-white border-none text-xs shadow-md p-2 pt-2 mt-2 rounded-[5px] sm:w-full w-[250px] outline-none focus:outline-none focus:ring-0 no-outline focus:border-defaultbackground"
+                                                    />
+                                                </Box>
+                                                <Button type="button" onClick={handleOtpVerification} className="w-full mb-2 ti-btn new-launch !bg-primary !text-white !font-medium border-none shadow-md">
+                                                    Verify OTP
+                                                </Button>
+                                                {isTimerActive && <Text className="text-center text-default">You can resend OTP in {timer} seconds</Text>}
+                                            </>
+                                        )}
+
+                                        {isLoginButtonVisible && (
+                                            <Button type="submit" className="w-full mb-2 ti-btn new-launch !bg-primary !text-white !font-medium border-none shadow-md">
+                                                Login
+                                            </Button>
+                                        )}
                                     </form>
                                 )}
 
