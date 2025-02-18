@@ -13,21 +13,21 @@ const AdminProfile = () => {
     const fileInputRef = useRef(null);
     const [UserImage, setUserImage] = useState('')
     const [changeImage, setchangeImage] = useState('');
-    const [firstName, setFirstName] = useState(''); // State to store first name
-    const [lastName, setLastName] = useState(''); // State to store first name
-    const [username, setUsername] = useState(''); // State to store first name
-    const [fullname, setFullname] = useState(''); // State to store first name
-    const [email, setEmail] = useState(''); // State to store first name
-    const [phone, setPhone] = useState(''); // State to store first name
-    const [mobileno, setMobileno] = useState(''); // State to store first name
-    const [gender, setGender] = useState(''); // State to store first name
+    const [firstName, setFirstName] = useState(''); 
+    const [lastName, setLastName] = useState(''); 
+    const [username, setUsername] = useState(''); 
+    const [fullname, setFullname] = useState(''); 
+    const [email, setEmail] = useState('');
+    // const [phone, setPhone] = useState(''); 
+    const [mobileno, setMobileno] = useState(''); 
+    const [gender, setGender] = useState(''); 
     const [genders, setGenders] = useState([]);
-    const [birthdate, setBirthdate] = useState(''); // State to store first name
-    const [location, setLocation] = useState(''); // State to store first name
+    const [birthdate, setBirthdate] = useState(''); 
+    const [location, setLocation] = useState(''); 
 
-    const [isValid, setIsValid] = useState(true); // State to track validity
-    const [showNewPassword, setShowNewPassword] = useState(false);  // State to track show and hide newpassword
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to track show and hide confirm password
+    const [isValid, setIsValid] = useState(true);
+    const [showNewPassword, setShowNewPassword] = useState(false); 
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordsMatch, setPasswordsMatch] = useState(false);
@@ -91,7 +91,7 @@ const AdminProfile = () => {
                 setUsername(userdata.data.data.username || "");
                 setFullname(userdata.data.data.full_name || "");
                 setEmail(userdata.data.data.email || "");
-                setPhone(userdata.data.data.phone || "");
+                // setPhone(userdata.data.data.phone || "");
                 setMobileno(userdata.data.data.mobile_no || "");
                 setGender(userdata.data.data.gender || "");
                 setBirthdate(userdata.data.data.birth_date || "");
@@ -150,7 +150,7 @@ const AdminProfile = () => {
                 last_name: lastName,
                 full_name: fullname,
                 username,
-                phone,
+                // phone,
                 mobile_no: mobileno,
                 gender,
                 birth_date: birthdate,
@@ -419,20 +419,20 @@ const AdminProfile = () => {
                                                         readOnly
                                                     />
                                                 </div>
-                                                <div className="xl:col-span-6 col-span-12">
+                                                {/* <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="phone" className="form-label text-sm text-defaulttextcolor font-semibold">Phone</label>
                                                     <input type="text" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="phone" placeholder="contact details"
                                                         value={phone} // Set the value from the state
                                                         onChange={(e) => setPhone(e.target.value)}
                                                     />
-                                                </div>
+                                                </div> */}
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="mobile-number" className="form-label text-sm text-defaulttextcolor font-semibold">Mobile Number</label>
                                                     <input
                                                         type="text"
                                                         className={`outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm ${isValid ? '' : 'border-red-500'}`}
                                                         id="mobile-number"
-                                                        placeholder="contact details"
+                                                        placeholder="mobile number"
                                                         value={mobileno} // Set the value from the state
                                                         onChange={handleMobileNumberChange} // Handle validation on change
                                                     />

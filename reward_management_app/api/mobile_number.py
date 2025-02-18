@@ -3,7 +3,6 @@ import random
 from frappe.model.document import Document
 from datetime import datetime, timedelta
 import requests
-
 from reward_management_app.api.auth import generate_keys
 
 @frappe.whitelist(allow_guest=True)
@@ -73,6 +72,62 @@ def generate_or_update_otp(mobile_number):
 #         print(f"{key}: {value}")
 
 #     return result
+
+
+# Verify admin mobile OTP and check if the user exists
+@frappe.whitelist(allow_guest=True)
+def verify_admin_otp(mobile_number, otp):
+    if not mobile_number or not otp:
+        return {'status': 'failed', 'message': 'Mobile number and OTP are required'}
+    
+    # Step 1: Verify if the mobile number exists in the User doctype
+    user = frappe.get_list("User", filters={"mobile_no": mobile_number}, fields=["name"], limit=1)
+    
+    if not user:
+        return {'status': 'failed', 'message': 'User not found for this mobile number'}
+    
+    # Step 2: Fetch the Mobile Verification document
+    otp_verification = frappe.get_all('Mobile Verification', filters={'mobile_number': mobile_number, 'otp': otp}, fields=["name", "mobile_number", "otp", "modified"], limit=1)
+    
+    if otp_verification:
+        modified_time = otp_verification[0].modified
+        time_diff = datetime.now() - modified_time
+
+        if time_diff <= timedelta(minutes=1):
+            result = {'status': 'success', 'message': 'OTP matched successfully', 'mobile_number': mobile_number, 'otp': otp, 'modified': modified_time}
+        else:
+            result = {'status': 'failed', 'message': 'OTP expired', 'mobile_number': mobile_number, 'otp': otp, 'modified': modified_time}
+    else:
+        result = {'status': 'failed', 'message': 'Invalid OTP', 'mobile_number': mobile_number, 'otp': otp}
+    
+    # Print values for debugging
+    for key, value in result.items():
+        print(f"{key}: {value}")
+
+    return result
+
+# Check admin user with mobile number
+@frappe.whitelist(allow_guest=True)
+def verify_admin_user(mobile_no,email):
+    try:
+        # Ignore permissions to allow access to all users
+        user = frappe.get_list("User", filters={"mobile_no": mobile_no,"name":email}, fields=["name"], limit=1, ignore_permissions=True)
+        
+        if user:
+            return {
+                "message": user,
+                "success": True
+            }
+        else:
+            return {
+                "success": False,
+                "message": "User not found for this mobile number"
+            }
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"An error occurred: {str(e)}"
+        }
 
 
 @frappe.whitelist(allow_guest=True)
@@ -194,3 +249,7 @@ def send_sms_otp(mobile_number, otp):
     except Exception as e:
         frappe.logger().error(f"SMS Sending Error: {str(e)}")
         frappe.throw(("An error occurred while sending the SMS: {0}".format(str(e))))
+        
+        
+
+    
