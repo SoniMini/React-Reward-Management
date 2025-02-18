@@ -107,10 +107,12 @@ def verify_admin_otp(mobile_number, otp):
     return result
 
 # Check admin user with mobile number
-@frappe.whitelist()
-def verify_admin_user(mobile_no):
+@frappe.whitelist(allow_guest=True)
+def verify_admin_user(mobile_no,email):
     try:
-        user = frappe.get_list("User", filters={"mobile_no": mobile_no}, fields=["name"], limit=1)
+        # Ignore permissions to allow access to all users
+        user = frappe.get_list("User", filters={"mobile_no": mobile_no,"name":email}, fields=["name"], limit=1, ignore_permissions=True)
+        
         if user:
             return {
                 "message": user,
@@ -126,6 +128,7 @@ def verify_admin_user(mobile_no):
             "success": False,
             "message": f"An error occurred: {str(e)}"
         }
+
 
 @frappe.whitelist(allow_guest=True)
 def verify_otp(mobile_number, otp):
@@ -246,3 +249,7 @@ def send_sms_otp(mobile_number, otp):
     except Exception as e:
         frappe.logger().error(f"SMS Sending Error: {str(e)}")
         frappe.throw(("An error occurred while sending the SMS: {0}".format(str(e))))
+        
+        
+
+    

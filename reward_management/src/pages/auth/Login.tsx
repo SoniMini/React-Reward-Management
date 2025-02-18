@@ -104,31 +104,46 @@ const Login = () => {
     // Handle Admin Login Form--------
     const handleAdminGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
         try {
+            // Step 1: Verify if user exists
+            const verifyUserResponse = await axios.post("/api/method/reward_management_app.api.mobile_number.verify_admin_user", {
+                mobile_no: mobileNo,
+                email:username,
+            }, {
+                headers: { "Content-Type": "application/json" },
+            });
+             console.log("verify admin user",verifyUserResponse);
+    
+            if (!verifyUserResponse.data.message.success) {
+                notyf.error(verifyUserResponse.data.message || "User not found for this mobile number.");
+                return;
+            }
+    
+            // Step 2: Generate OTP if user exists
             const response = await axios.post("/api/method/reward_management_app.api.mobile_number.generate_or_update_otp", {
                 mobile_number: mobileNo,
             }, {
                 headers: { "Content-Type": "application/json" },
             });
-
+    
             if (response.data.message.status === "success") {
                 const generatedOtp = response.data.message.otp;
                 console.log("login otp", generatedOtp);
-
-                setAlertTitle('Success');
+    
+                setAlertTitle("Success");
                 setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
                 setShowSuccessAlert(true);
                 setIsOtpVisible(true);
                 setIsTimerActive(true);
                 setIsLoginButtonVisible(false);
                 setGeneratedadminOtp(generatedOtp);
-
+    
                 let timeLeft = 30;
                 setTimer(timeLeft);
-
+    
                 const interval = setInterval(() => {
                     timeLeft -= 1;
                     setTimer(timeLeft);
-
+    
                     if (timeLeft <= 0) {
                         clearInterval(interval);
                         setIsTimerActive(false);
@@ -136,15 +151,15 @@ const Login = () => {
                         setAdminOtp("");
                     }
                 }, 1000);
-
-                // Send OTP via SMS API
-                await axios.post('/api/method/reward_management_app.api.mobile_number.send_sms_otp', {
+    
+                // Step 3: Send OTP via SMS API
+                await axios.post("/api/method/reward_management_app.api.mobile_number.send_sms_otp", {
                     mobile_number: mobileNo,
-                    otp: generatedOtp
+                    otp: generatedOtp,
                 }, {
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: { "Content-Type": "application/json" },
                 });
-
+    
                 console.log("SMS API called successfully");
             } else {
                 notyf.error("Failed to generate OTP. Please try again.");
@@ -154,6 +169,7 @@ const Login = () => {
             notyf.error(`Error generating OTP: ${error.message}`);
         }
     };
+    
     //admin otp verification ------
     const handleOtpVerification = () => {
         if (adminOtp === generatedadminOtp) {

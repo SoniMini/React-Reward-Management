@@ -78,14 +78,14 @@ const Forgotpassword = () => {
     
         try {
             const response = await axios.post(
-                `/api/method/reward_management_app.api.admin_profile.update_password_without_current`,
+                `/api/method/reward_management_app.api.forgot_password.update_password_without_current`,
                 {
                     email: username,
                     new_password: password
                 }
             );
     
-            if (response.data.message.status === "success") {
+            if (response.data.message.success === true) {
                 setAlertTitle('Success');
                 setAlertMessage('Your password has been successfully reset.');
                 setShowSuccessAlert(true);
