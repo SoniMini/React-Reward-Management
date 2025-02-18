@@ -29,7 +29,7 @@ def get_user_details(name):
         # Fetch specific fields from User document based on email
         user = frappe.get_value("User", {"name": name}, 
                                 ["name", "email", "first_name", "last_name", "full_name",
-                                 "username", "bio", "location", "mobile_no", "phone","interest",
+                                 "username", "bio", "location", "mobile_no","interest",
                                  "gender", "birth_date", "user_image","new_password","user_image"], as_dict=True)
 
         if user:
@@ -41,7 +41,7 @@ def get_user_details(name):
                 "last_name": user.get("last_name"),
                 "full_name": user.get("full_name"),
                 "username": user.get("username"),
-                "phone": user.get("phone"),
+                # "phone": user.get("phone"),
                 "mobile_no": user.get("mobile_no"),
                 "gender": user.get("gender"),
                 "birth_date": user.get("birth_date"),
@@ -86,7 +86,7 @@ def update_user_details():
         user.last_name = user_data.get('last_name', user.last_name)
         user.full_name = user_data.get('full_name', user.full_name)
         user.username = user_data.get('username', user.username)
-        user.phone = user_data.get('phone', user.phone)
+        # user.phone = user_data.get('phone', user.phone)
         user.mobile_no = user_data.get('mobile_no', user.mobile_no)
         user.gender = user_data.get('gender', user.gender)
         user.birth_date = user_data.get('birth_date', user.birth_date)
@@ -154,7 +154,7 @@ def remove_user_image(name):
 @frappe.whitelist()
 def update_password_without_current():
     try:
-        user_data = frappe.form_dict  # Use form_dict to get form data
+        user_data = frappe.form_dict  
         email = user_data.get('email')
         new_password = user_data.get('new_password')
 
@@ -162,7 +162,7 @@ def update_password_without_current():
         user = frappe.get_doc("User", {"email": email})
 
         # Set new password
-        user.new_password = new_password  # Assuming 'new_password' is the field name in User doctype
+        user.new_password = new_password 
         user.save()
 
         return {"status": "success", "message": "Password updated successfully."}
