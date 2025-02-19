@@ -1,5 +1,8 @@
 import frappe
 from frappe import _
+import requests
+from reward_management_app.api.sms_api import reject_pending_reward_request_sms
+from reward_management_app.api.sms_api import pending_reward_request_approved_sms
 
 @frappe.whitelist()
 def get_redeem_request():
@@ -109,6 +112,9 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
             # carpainter.point_requested = (carpainter.point_requested or 0) - redeem_request.redeemed_points
             carpainter.redeem_points = (carpainter.redeem_points or 0) - redeem_request.redeemed_points
             redeem_request.current_point_status = carpainter.current_points
+            
+            # Call the SMS API when reward request is Cancel
+            reject_pending_reward_request_sms(redeem_request.mobile_number, redeem_request.redeemed_points)
         
         # Handling Approval from Cancel
         elif request_action == 'Cancel' and action == 'Approved':
@@ -120,6 +126,13 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
             redeem_request.current_point_status = carpainter.current_points
             redeem_request.total_points = carpainter.total_points
             create_bank_balance(redeem_request.name, redeem_request.redeemed_points, transaction_id)
+            
+            # Call the SMS API when changing from Cancel to Approved
+            if transaction_id:
+                sms_response = pending_reward_request_approved_sms(redeem_request.mobile_number, redeem_request.redeemed_points, transaction_id)
+            else:
+                sms_response = "Transaction ID missing, SMS not sent."
+            # pending_reward_request_approved_sms(redeem_request.mobile_number, redeem_request.redeemed_points,transaction_id)
         
         # Handling New Approvals
         elif action == "Approved":
@@ -129,6 +142,13 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
             # carpainter.point_requested = (carpainter.point_requested or 0) - redeem_request.redeemed_points
             carpainter.redeem_points = (carpainter.redeem_points or 0) + redeem_request.redeemed_points
             create_bank_balance(redeem_request.name, redeem_request.redeemed_points, transaction_id)
+            
+            # Call the SMS API when reward request is Approved
+            if transaction_id:
+                sms_response = pending_reward_request_approved_sms(redeem_request.mobile_number, redeem_request.redeemed_points, transaction_id)
+            else:
+                sms_response = "Transaction ID missing, SMS not sent."
+            # pending_reward_request_approved_sms(redeem_request.mobile_number, redeem_request.redeemed_points,transaction_id)
         
         # Handling New Cancellations
         elif action == "Cancel":
@@ -137,6 +157,8 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
             carpainter.point_requested = 0
             # carpainter.point_requested = (carpainter.point_requested or 0) - redeem_request.redeemed_points
             redeem_request.current_point_status = carpainter.current_points
+            # Call the SMS API when changing from Approved to Cancel
+            reject_pending_reward_request_sms(redeem_request.mobile_number, redeem_request.redeemed_points)
 
         # Save both documents
         redeem_request.save(ignore_permissions=True)
@@ -145,7 +167,9 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
         # Commit the transaction
         frappe.db.commit()
         
-        return {"status":200, "success":True, "message": _("Redeem request status updated successfully.")}
+        return {"status":200, "success":True, 
+                "message": "Redeem request status updated successfully.",
+                "sms_response":sms_response}
     
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), _("Error in update_redeem_request_status"))

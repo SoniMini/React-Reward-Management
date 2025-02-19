@@ -13,15 +13,15 @@ const QRScanner = () => {
   const [showPointCollectAlert, setShowPointCollectAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>('');
   const [alertTitle, setAlertTitle] = useState<string>('');
-
   const [isError, setIsError] = useState<boolean>(false);
   const [isCollectingPoints, setIsCollectingPoints] = useState<boolean>(false);
   const qrScannerRef = useRef<HTMLDivElement | null>(null);
   const [customerId, setCustomerId] = useState<string>('');
   const [productTableName, setProductTableName] = useState<string>('');
   const [productQrId, setProductQrId] = useState<string>('');
-
   const [productQrPoints, setProductQrPoints] = useState<string>('');
+  const [mobileNumber,setMobileNumber] = useState<string>('');
+
   useEffect(() => {
     const fetchUserEmailAndInitScanner = async () => {
       try {
@@ -51,7 +51,9 @@ const QRScanner = () => {
           const customer = carpenterResponse.data.message;
           console.log("Customer Name:", customer.name);
           console.log("Total Points:", customer.total_points);
-          setCarpenterData(customer); // Save the customer data to state
+          setCarpenterData(customer);
+          setMobileNumber(customer.mobile_number || ''); 
+
         } else {
           console.error("Error fetching carpenter data:", carpenterResponse.error);
         }
@@ -206,6 +208,17 @@ const QRScanner = () => {
 
       if (response.data.message?.success === true) {
         console.log("Carpenter points updated successfully:", response);
+        axios.post('/api/method/reward_management_app.api.sms_api.reward_point_deposited_after_qr_scan_sms', {
+          mobile_number: mobileNumber,
+          point:productQrPoints
+      }, {
+          headers: {
+              'Content-Type': 'application/json',
+
+          }
+      });
+
+      console.log("QR Code scanned and collect point SMS API called successfully");
         // Close the alert or perform other actions if needed
         setShowPointCollectAlert(false);
       } else {

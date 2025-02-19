@@ -286,6 +286,16 @@ const Login = () => {
 
                 if (registerResponse.message.status === "success") {
                     console.log("Carpainter registered successfully:", registerResponse);
+                    axios.post('/api/method/reward_management_app.api.sms_api.pending_account_sms', {
+                        mobile_number: mobile,
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json',
+
+                        }
+                    });
+
+                    console.log("Pending Approval SMS API called successfully");
                     setAlertTitle("Success");
                     setAlertMessage(
                         "Customer Registration Sent to the Admin Successfully."
