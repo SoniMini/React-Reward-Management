@@ -1,6 +1,8 @@
 import frappe
 from frappe import _
 from datetime import datetime
+import requests
+from reward_management_app.api.sms_api import festival_bonus_sms
 
 
 @frappe.whitelist()
@@ -52,66 +54,6 @@ def get_notifications_log():
         return notifications
 
 
-
-# Get top 10 notifications for the current user
-@frappe.whitelist()
-def get_top_ten_notifications_log():
-    # Get the current user
-    user = frappe.session.user
-
-    # Check if the user is "Administrator"
-    if user == "Administrator":
-        # Fetch all users with the "Admin" role
-        admin_users = frappe.get_all("User", filters={"role_profile_name": "Admin"}, pluck="name")
-
-        if admin_users:
-            # Fetch notifications for any of the admin users
-            notifications = frappe.get_all(
-                "Notification Log",
-                filters={"for_user": ["in", admin_users]},  # Filter for any admin user
-                fields=["name", "subject", "email_content", "document_type", "for_user", "creation"],
-                order_by="creation desc",
-                limit_page_length=15
-
-
-            )
-            
-            if notifications:
-                # Find the first admin user with notifications
-                first_admin_with_notifications = next(
-                    (admin_user for admin_user in admin_users if any(n['for_user'] == admin_user for n in notifications)),
-                    None
-                )
-
-                if first_admin_with_notifications:
-                    # Fetch notifications specifically for that first admin user
-                    notifications = frappe.get_all(
-                        "Notification Log",
-                        filters={"for_user": first_admin_with_notifications},
-                        fields=["name", "subject", "email_content", "document_type", "for_user", "creation"],
-                        order_by="creation desc",
-                        limit_page_length=15
-
-                    )
-                
-                return notifications
-            else:
-                return []
-        else:
-            return []
-    else:
-        # Fetch notifications for the logged-in user
-        notifications = frappe.get_all(
-            "Notification Log",
-            filters={"for_user": user},
-            fields=["name", "subject", "email_content", "document_type", "for_user", "creation"],
-            order_by="creation desc",
-            limit_page_length=15
-
-        )
-
-        return notifications
-
 # Notification Updatetion for read notifications----
 
 @frappe.whitelist()
@@ -153,7 +95,7 @@ def send_system_notification(doc, method=None):
             'for_user': user_email,
             'type': 'Alert',
             'subject': 'Your Account Has Been Approved',
-            'email_content': f'{username}, Your registration request has been approved, and your account has been created successfully.',
+            'email_content': f'{username},Your registration request has been approved, and your account has been created successfully.',
             'document_type': 'User',
             'name': 'Welcome Notification'
         })
@@ -293,17 +235,21 @@ def send_welcome_bonus_points_notification(doc, method=None):
             'for_user': user,
             'subject':'Welcome Bonus Points',
             'type': 'Alert',
-            'email_content': f"""Dear {carpenter.carpenter_name},<br>Thank you for joining us! {carpenter.bonus_points} bonus points have been added to your account as a welcome reward.
+            'email_content': f"""Dear {carpenter.carpenter_name},
+            Thank you for joining us! {carpenter.bonus_points} bonus points have been added to your account as a welcome reward.
             """,
             'document_type': 'WelCome Bonus History',
             'document_name': doc.name
         })
         notification.insert(ignore_permissions=True)
         frappe.db.commit()
+        # Call the welcome_bonus_sms function to send SMS
+        sms_response = welcome_bonus_sms(carpenter_mobile, carpenter.bonus_points)
 
         return {
             "success": True,
-            "message": "Notification sent successfully to the Carpenter"
+            "message": "Notification sent successfully to the Carpenter",
+            "sms_response":sms_response
         }
     # else:
     #     return {
@@ -312,7 +258,27 @@ def send_welcome_bonus_points_notification(doc, method=None):
     #     }
 
 
+# welcome bonus sms api---
+@frappe.whitelist(allow_guest=False)
+def welcome_bonus_sms(mobile_number,point):
+    url = "https://login.raidbulksms.com/unified.php"
+    params = {
+        "key": "1n4812wh341u41U1NWH34812",
+        "ph": mobile_number,
+        "sndr": "FLAREO",
+        "text": f"Welcome to Flare Overseas Mobile App! You've received free {point} reward points as part of your welcome bonus. Start earning more by scanning product QR codes"
+    }
 
+    try:
+        response = requests.get(url, params=params)
+        frappe.logger().info(f"SMS API Response: {response.status_code}, {response.text}")
+        if response.status_code == 200:
+            return {"status": "success", "response": response.text}
+        else:
+            frappe.throw(_("Failed to send SMS: {0}".format(response.text)))
+    except Exception as e:
+        frappe.logger().error(f"SMS Sending Error: {str(e)}")
+        frappe.throw(("An error occurred while sending the SMS: {0}".format(str(e))))
 
 
 # send system notification to carpenter for festival bonus ---------
@@ -346,15 +312,22 @@ def send_festival_bonus_points_notification(doc, method=None):
         'for_user': user,
         'subject':'Congratulations! You have Earned a Festival Bonus',
         'type': 'Alert',
-        'email_content': f"""Dear {carpenter.carpenter_name},<br>{doc.bonus_message},<br>You have been awarded a bonus of {doc.bonus_points} points.
+        'email_content': f"""Dear {carpenter.carpenter_name},<br>{doc.bonus_message},You have been awarded a bonus of {doc.bonus_points} points.
         """,
         'document_type': 'Festival Bonus History',
         'document_name': doc.name
     })
     notification.insert(ignore_permissions=True)
     frappe.db.commit()
+    
+    # Call the imported welcome_bonus_sms function
+    festival_bonus_sms_response = festival_bonus_sms(carpenter_mobile, carpenter.bonus_points)
 
-    return {"success": True, "message": "Notification sent successfully to the Carpenter"}
+    return {
+            "success": True,
+            "message": "Notification sent successfully to the Carpenter",
+            "festival_bonus":festival_bonus_sms_response
+             }
 
 
  

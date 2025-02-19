@@ -183,7 +183,6 @@ const CarpenterRewardRequest: React.FC = () => {
                 // alert('Redeem Request updated successfully!');
                 setShowSuccessAlert(true);
                 handleCloseModal();
-                // Optionally, you can re-fetch the data here or use a state update to reflect changes.
             } else {
                 console.error("Failed to update Redeem Request:", response.data);
                 alert('Failed to update Redeem Request.');
@@ -206,7 +205,7 @@ const CarpenterRewardRequest: React.FC = () => {
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                window.location.reload(); 
+                // window.location.reload(); 
             }, 3000); 
             return () => clearTimeout(timer);
         }

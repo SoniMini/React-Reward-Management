@@ -201,6 +201,18 @@ const CarpenterRegistration: React.FC = () => {
 
             if (response.data.message.status === "success") {
                 console.log("Registration request status updated successfully and create a new user");
+                // approved account sms api called--------
+                axios.post('/api/method/reward_management_app.api.sms_api.approved_account_sms', {
+                    mobile_number: selectedCarpenter?.mobile_number,
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+
+                    }
+                });
+
+                console.log(" Approve Account SMS API called successfully");
+
                 // Set the success alert and trigger page reload
                 setShowSuccessAlert(true);
                 setAlertMessage('Registration Request Approved Successsfully!!!');
@@ -238,6 +250,17 @@ const CarpenterRegistration: React.FC = () => {
 
             if (response.data.message.status === "success") {
                 console.log("Registration request status updated successfully and cancel request successfully.");
+                // Cancel Account Approval sms api called-------
+                axios.post('/api/method/reward_management_app.api.sms_api.reject_account_sms', {
+                    mobile_number: selectedCarpenter?.mobile_number,
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+
+                    }
+                });
+                
+                console.log(" Approve Account SMS API called successfully");
                 // Set the success alert and trigger page reload
                 setShowSuccessAlert(true);
                 setAlertMessage('Registration Request Cancelled Successsfully!!!');
@@ -257,19 +280,11 @@ const CarpenterRegistration: React.FC = () => {
     };
 
 
-
-
-
-
-
-
-
     // const handleStatusUpdate = async (carpenter: CarpenterRegistrations) => {
     //     if (carpenter.status?.toLowerCase() === 'approved') {
     //         await updateRegistrationStatus(carpenter.name, carpenter.status);
     //     }
     // };  
-
 
 
     const formatDate = (dateString: string | undefined) => {

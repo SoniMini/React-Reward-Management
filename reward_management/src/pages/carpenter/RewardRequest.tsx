@@ -36,13 +36,15 @@ const RedeemRequest: React.FC = () => {
     const [searchQuery , setSearchQuery] = useState('');
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
+    const [mobileNumber,setMobileNumber] = useState<string>('');
+    
 
 
     useEffect(() => {
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                window.location.reload(); 
+                // window.location.reload(); 
             }, 3000);
             return () => clearTimeout(timer);
         }
@@ -64,8 +66,11 @@ const RedeemRequest: React.FC = () => {
             console.log("Carpenter details:", response);
             const points = response.data.message.current_points || '0';
             const customer_id = response.data.message.name || '';
+            const mobile_number = response.data.message.mobile_number || '';
             setCurrentPoints(points);
-            setCustomerId(customer_id); 
+            setCustomerId(customer_id);
+            setMobileNumber(mobile_number); 
+ 
         } catch (error) {
             console.error("Error fetching carpenter details:", error);
         }
@@ -187,6 +192,18 @@ const RedeemRequest: React.FC = () => {
                 redeemed_points: redeemedPoints,
             });
             console.log("Redeem request successful:", response.data);
+            axios.post('/api/method/reward_management_app.api.sms_api.reward_point_withdrawal_request_sms', {
+                mobile_number: mobileNumber,
+                point:redeemedPoints
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+      
+                } 
+             });
+
+            console.log("Redeem Request SMS API called successfully");
+
             setIsModalOpen(false);
             setShowSuccessAlert(true);  // Show success alert
             setPointRedeem(''); // Clear the input field after a successful request
