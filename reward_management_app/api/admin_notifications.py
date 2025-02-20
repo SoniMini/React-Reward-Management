@@ -173,7 +173,7 @@ def send_customer_reward_approved_notification(doc, method=None):
             'for_user': user, 
             'subject': 'Reward Request Approved',
             'type': 'Alert',
-            'email_content': f'<strong>{customer.full_name},</strong>\nYour request for <strong>{doc.redeemed_points}</strong> points redemption has been approved!',
+            'email_content': f'{customer.full_name},\nYour request for {doc.redeemed_points} points redemption has been approved!',
             'document_type': 'Redeem Request',
             'document_name': doc.name
         })
@@ -231,7 +231,7 @@ def send_welcome_bonus_points_notification(doc, method=None):
             'for_user': user,
             'subject':'Welcome Bonus Points',
             'type': 'Alert',
-            'email_content': f"""<strong>Dear {carpenter.carpenter_name},</strong>\nThank you for joining us! {carpenter.bonus_points} bonus points have been added to your account as a welcome reward.""",
+            'email_content': f"""{carpenter.carpenter_name},\nThank you for joining us! {carpenter.bonus_points} bonus points have been added to your account as a welcome reward.""",
             'document_type': 'WelCome Bonus History',
             'document_name': doc.name
         })
@@ -306,7 +306,7 @@ def send_festival_bonus_points_notification(doc, method=None):
         'for_user': user,
         'subject':'Congratulations! You have Earned a Festival Bonus',
         'type': 'Alert',
-        'email_content': f"""<strong>Dear {carpenter.carpenter_name},</strong>\n{doc.bonus_message},\nYou have been awarded a bonus of {doc.bonus_points} points.""",
+        'email_content': f"""{carpenter.carpenter_name},\n{doc.bonus_message},\nYou have been awarded a bonus of {doc.bonus_points} points.""",
         'document_type': 'Festival Bonus History',
         'document_name': doc.name
     })

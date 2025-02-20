@@ -44,7 +44,7 @@ const RedeemRequest: React.FC = () => {
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                // window.location.reload(); 
+                window.location.reload(); 
             }, 3000);
             return () => clearTimeout(timer);
         }
