@@ -24,7 +24,7 @@ def generate_or_update_otp(mobile_number):
 
     # Assign a fixed OTP for a specific number 9144513164
     if mobile_number == "9586867272": 
-        otp = "1234"
+        otp = "123456"
     else:
         otp = str(random.randint(100000, 999999))
 
