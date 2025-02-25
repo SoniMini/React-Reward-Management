@@ -17,15 +17,12 @@ def get_mobile_verification_fields():
 # generate random otp and also default otp for one number----
 
 
-import frappe
-import random
-
 @frappe.whitelist(allow_guest=True)
 def generate_or_update_otp(mobile_number):
     if not mobile_number:
         return {'status': 'failed', 'message': 'Mobile number is required'}
 
-    # Assign a fixed OTP for a specific number 9586867272
+    # Assign a fixed OTP for a specific number 9144513164
     if mobile_number == "9586867272": 
         otp = "1234"
     else:
