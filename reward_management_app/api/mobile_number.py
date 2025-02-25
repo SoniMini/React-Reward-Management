@@ -25,9 +25,9 @@ def generate_or_update_otp(mobile_number):
     if not mobile_number:
         return {'status': 'failed', 'message': 'Mobile number is required'}
 
-    # Assign a fixed OTP for a specific number
-    if mobile_number == "9586867272":  # Replace with your desired number
-        otp = "123456"
+    # Assign a fixed OTP for a specific number 9586867272
+    if mobile_number == "9586867272": 
+        otp = "1234"
     else:
         otp = str(random.randint(100000, 999999))
 
