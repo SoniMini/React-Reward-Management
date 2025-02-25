@@ -12,15 +12,24 @@ def get_mobile_verification_fields():
         return otp
     except Exception as e:
         return e
+    
+    
+# generate random otp and also default otp for one number----
 
-# Generate random OTP for mobile number and set value
+
+import frappe
+import random
+
 @frappe.whitelist(allow_guest=True)
 def generate_or_update_otp(mobile_number):
     if not mobile_number:
         return {'status': 'failed', 'message': 'Mobile number is required'}
 
-    # Generate OTP
-    otp = str(random.randint(100000, 999999))
+    # Assign a fixed OTP for a specific number
+    if mobile_number == "9586867272":  # Replace with your desired number
+        otp = "123456"
+    else:
+        otp = str(random.randint(100000, 999999))
 
     # Check if a document already exists for the given mobile number
     existing_verification = frappe.get_all('Mobile Verification', filters={'mobile_number': mobile_number}, fields=["name", "mobile_number", "otp"], limit=1)
@@ -46,6 +55,41 @@ def generate_or_update_otp(mobile_number):
         print(f"{key}: {value}")
 
     return result
+
+
+# Generate random OTP for mobile number and set value
+# @frappe.whitelist(allow_guest=True)
+# def generate_or_update_otp(mobile_number):
+#     if not mobile_number:
+#         return {'status': 'failed', 'message': 'Mobile number is required'}
+
+#     # Generate OTP
+#     otp = str(random.randint(100000, 999999))
+
+#     # Check if a document already exists for the given mobile number
+#     existing_verification = frappe.get_all('Mobile Verification', filters={'mobile_number': mobile_number}, fields=["name", "mobile_number", "otp"], limit=1)
+    
+#     if existing_verification:
+#         # If a document exists, update the existing OTP
+#         doc = frappe.get_doc('Mobile Verification', existing_verification[0].name)
+#         doc.otp = otp
+#         doc.save(ignore_permissions=True)
+#         result = {'status': 'success', 'message': 'OTP updated successfully', 'mobile_number': mobile_number, 'otp': otp}
+#     else:
+#         # If no document exists, create a new one with the generated OTP
+#         doc = frappe.get_doc({
+#             'doctype': 'Mobile Verification',
+#             'mobile_number': mobile_number,
+#             'otp': otp
+#         })
+#         doc.insert(ignore_permissions=True)
+#         result = {'status': 'success', 'message': 'OTP generated successfully', 'mobile_number': mobile_number, 'otp': otp}
+    
+#     # Print values for debugging
+#     for key, value in result.items():
+#         print(f"{key}: {value}")
+
+#     return result
 
 # Match OTP
 # @frappe.whitelist(allow_guest=True)
