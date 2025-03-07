@@ -77,6 +77,9 @@ def show_total_points():
 @frappe.whitelist()
 def get_points_data(carpenter_id):
     try:
+        # Replace underscores with spaces
+        # carpenter_id = carpenter_id.replace("_", " ")
+
         carpainters = frappe.get_list(
             "Carpenter",
             filters={"name": carpenter_id},
