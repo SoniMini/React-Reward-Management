@@ -153,7 +153,8 @@ const TableComponent = <T,>({
                                         )}
                                         {showProductQRView && (
                                             <Link aria-label="anchor"   
-                                            to={productQRViewLink?.replace(":name", item["name"]?.replace(/\s+/g, '_'))} 
+                                            to={productQRViewLink?.replace(":name", item.name as string)} 
+                                            // to={productQRViewLink?.replace(":name", item["name"]?.replace(/\s+/g, '_'))} 
                                             className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] px-[11px] py-[10px] rounded-full mr-2">
                                                 <i className={iconsConfig.viewIcon || "ti ti-eye-check"}></i>
                                             </Link>
